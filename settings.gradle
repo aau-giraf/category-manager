@@ -1,0 +1,4 @@
+include ':Ambilwarna'
+include ':pictogram-lib'
+include ':OasisLib'
+include ':CategoryLib'

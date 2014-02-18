@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Git/Cat/res/values/strings.xml -->
+    <eat-comment />
+
+    <string-array name="dialog_options">
+        <item>Titel</item>
+        <item>Farve</item>
+        <item>Icon</item>
+    </string-array>
+    <!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Git/Cat/build/exploded-bundles/CatPictogramLibUnspecified.aar/res/values/values.xml -->
+    <eat-comment />
+
+    <declare-styleable name="Pictogram">
+        <attr name="width" format="integer" />
+        <!-- <attr name="height" format="integer"/> -->
+    </declare-styleable>
+    <!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Git/Cat/res/values/dimens.xml -->
+    <eat-comment />
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Git/Cat/build/exploded-bundles/CatAmbilwarnaUnspecified.aar/res/values/values.xml -->
+    <eat-comment />
+
+    <dimen name="ambilwarna_hsvHeight">240dp</dimen>
+    <dimen name="ambilwarna_hsvWidth">240dp</dimen>
+    <dimen name="ambilwarna_hueWidth">30dp</dimen>
+    <dimen name="ambilwarna_spacer">8dp</dimen>
+    <!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Git/Cat/res/values/strings.xml -->
+    <eat-comment />
+
+    <string name="app_name">CAT</string>
+    <string name="back">Tilbage</string>
+    <string name="categories">Kategorier</string>
+    <string name="currentChild">Aktivt barn: </string>
+    <string name="dialog_title">Fejl i Login</string>
+    <string name="errorLogin">Ugyldige Login informationer</string>
+    <!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Git/Cat/build/exploded-bundles/CatOasisLibUnspecified.aar/res/values/values.xml -->
+    <eat-comment />
+
+    <string name="hello">Hello World!</string>
+    <!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Git/Cat/res/values/strings.xml -->
+    <eat-comment />
+
+    <string name="menu_settings">Settings</string>
+    <string name="pictograms">Pictogrammer</string>
+    <string name="picture">Default picture content description</string>
+    <string name="pressInfo">Tryk i lang tid for yderligere options</string>
+    <string name="returnItem">Afslut</string>
+    <string name="subcategories">Under kategorier</string>
+    <string name="title_activity_admin_category">AdminCategory</string>
+    <string name="title_activity_help_menu">HelpMenu</string>
+    <string name="title_activity_picto_main">Søg og Send</string>
+    <!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Git/Cat/res/values/styles.xml -->
+    <eat-comment />
+
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+</resources>

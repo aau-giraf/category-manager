@@ -1,0 +1,202 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:orientation="vertical"
+    tools:context=".AdminCategory" >
+
+    <LinearLayout
+        android:id="@+id/description_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" >
+
+        <TextView
+            android:id="@+id/DescriptionText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/currentChild"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/currentChildName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/main_category_admin_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.90"
+        android:baselineAligned="false" >
+
+        <LinearLayout
+            android:id="@+id/category_columb"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:orientation="vertical" >
+
+            
+            <TextView
+                    android:id="@+id/category_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/categories"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center" >
+
+                <ImageButton
+                    android:id="@+id/add_new_category_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/content_new"
+                    android:contentDescription="@string/picture"
+                    android:onClick="createCategory" />
+
+                <ImageButton
+                    android:id="@+id/delete_selected_category_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/content_discard"
+                    android:contentDescription="@string/picture"
+                    android:visibility="gone"
+                    android:onClick="deleteCategory" />
+
+            </LinearLayout>
+
+            <GridView
+                android:id="@+id/category_gridview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="@drawable/sentenceboardlayout"
+                android:numColumns="1"
+                android:listSelector="@drawable/sentenceboardlayout" >
+
+            </GridView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subcategory_coloumb"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:orientation="vertical" >
+
+            
+            <TextView
+                android:id="@+id/subcategory_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/subcategories"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center" >
+
+                <ImageButton
+                    android:id="@+id/add_new_subcategory_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/picture"
+                    android:onClick="createSubCategory"
+                    android:src="@drawable/content_new"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/delete_selected_subcategory_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/picture"
+                    android:onClick="deleteSubCategory"
+                    android:src="@drawable/content_discard"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <GridView
+                android:id="@+id/subcategory_gridview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="@drawable/sentenceboardlayout"   
+                android:numColumns="1"
+                android:listSelector="@drawable/sentenceboardlayout" >
+            </GridView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pictogram_coloumb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5.00"
+            android:orientation="vertical" >
+            
+            <TextView
+                    android:id="@+id/pictogram_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pictograms"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center" >
+
+                <ImageButton
+                    android:id="@+id/add_new_picture_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/content_new_picture"
+                    android:contentDescription="@string/picture"
+                    android:visibility="invisible"
+                    android:onClick="createPictogram" />
+
+                <ImageButton
+                    android:id="@+id/delete_selected_picture_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/content_discard"
+                    android:contentDescription="@string/picture"
+                    android:visibility="gone"
+                    android:onClick="deletePictogram" />
+
+            </LinearLayout>
+
+            <GridView
+                android:id="@+id/pictogram_gridview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:numColumns="6"
+                android:background="@drawable/sentenceboardlayout"
+                android:listSelector="@drawable/sentenceboardlayout" >
+            </GridView>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tip_error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pressInfo"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</LinearLayout>

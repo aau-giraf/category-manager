@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dialog_options">
+        <item>Titel</item>
+        <item>Farve</item>
+        <item>Icon</item>
+    </string-array>
+	
+	<string name="app_name">CAT</string>
+    <string name="currentChild">Aktivt barn: </string>
+    <string name="categories">Kategorier</string>
+    <string name="subcategories">Under kategorier</string>
+    <string name="pictograms">Pictogrammer</string>
+    <string name="pressInfo">Tryk i lang tid for yderligere options</string>
+    <string name="back">Tilbage</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_help_menu">HelpMenu</string>
+    <string name="picture">Default picture content description</string>
+    <string name="title_activity_admin_category">AdminCategory</string>
+    <string name="title_activity_picto_main">Søg og Send</string>
+    <string name="returnItem">Afslut</string>
+    <string name="dialog_title">Fejl i Login</string>
+    <string name="errorLogin">Ugyldige Login informationer</string>
+
+
+</resources>

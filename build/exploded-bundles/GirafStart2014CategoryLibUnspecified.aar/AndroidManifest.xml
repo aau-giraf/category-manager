@@ -1,0 +1,19 @@
+<!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Workspace/GirafStart2014/CategoryLib/AndroidManifest.xml -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.example.categorymanager">
+
+    <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="19"/>
+
+    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:theme="@style/AppTheme">
+    
+        <!-- From: file:/C:/Users/ALEXAN~1/AppData/Local/Temp/manifestMerge1053688040769949080.xml -->
+        <activity android:label="@string/app_name" android:name="dk.aau.cs.giraf.pictogram.ACTIVITY_ENTRY_NAME">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- From: file:/D:/Windows%207/Dokumenter/SVN/P6%20-%20SW615F14/Temp%20Workspace/GirafStart2014/CategoryLib/AndroidManifest.xml -->
+        </application>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+</manifest>
