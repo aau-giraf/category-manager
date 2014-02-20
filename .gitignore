@@ -1,6 +1,7 @@
 ﻿#Ignore the build directory
 /build
 /.gradle
+/gradle
 local.properties
 *.iml
 
@@ -11,3 +12,5 @@ local.properties
 /.idea/misc.xml
 /.idea/libraries/android_support_v4.xml
 /.idea/libraries/Gradle__android_support_v4.xml
+/gradlew
+/gradlew.bat
