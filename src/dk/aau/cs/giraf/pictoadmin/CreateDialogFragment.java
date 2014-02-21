@@ -64,10 +64,10 @@ public class CreateDialogFragment extends DialogFragment{
         }
 
         builder.setView(layout)
-        	   .setTitle(getString(R.string.create_new) + message)
+        	   .setTitle(String.format("%s %s", getString(R.string.create_new), message))
                .setPositiveButton(getString(R.string.finished), new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                	   listener.onDialogPositiveClick(CreateDialogFragment.this, titelText.getText().toString(), isCategory);
+                       listener.onDialogPositiveClick(CreateDialogFragment.this, titelText.getText().toString(), isCategory);
                    }
                })
                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
