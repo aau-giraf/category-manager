@@ -15,7 +15,7 @@ import dk.aau.cs.giraf.pictogram.Pictogram;
  * @author Anders Vinther, SW605f13 Parrot-group
  */
 public class BitmapWorker extends AsyncTask<Object, Void, Bitmap> {
-	// En weak reference g�r den "flagged" som "garbage collectable" :)
+	// En weak reference gør den "flagged" som "garbage collectable" :)
 	// A weak reference flags the imageview as garbage collectable
 	private final WeakReference<ImageView> imageview;
 

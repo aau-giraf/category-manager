@@ -21,6 +21,22 @@
     <string name="returnItem">Afslut</string>
     <string name="dialog_title">Fejl i Login</string>
     <string name="errorLogin">Ugyldige Login informationer</string>
+    <string name="title_used">Den valgte titel er allerede anvendt af en anden kategori</string>
+    <string name="title_missing">Mangler titel</string>
+    <string name="title_used_short">Titlen er anvendt</string>
+    <string name="name_used">Navn er allerede brugt</string>
+    <string name="search_missing">Search not installed</string>
+    <string name="croc_missing">Croc not installed</string>
+    <string name="create_new">Opret ny </string>
+    <string name="finished">Færdig</string>
+    <string name="cancel">Anuller</string>
+    <string name="confirm_delete">Er du sikker på, at du vil slette?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
+    <string name="change_icon">Ændre icon</string>
+    <string name="ok">ok</string>
+    <string name="edit_category">Rediger kategori</string>
+    <string name="title_change">Ændre titel</string>
 
 
 </resources>
