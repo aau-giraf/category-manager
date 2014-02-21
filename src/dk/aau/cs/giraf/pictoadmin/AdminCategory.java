@@ -494,7 +494,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	 * DONE: The following methods handle the creation and deletion of categories and sub-categories
 	 */
 	public void createCategory(View view) {
-		CreateDialogFragment createDialog = new CreateDialogFragment(true, "kategori");
+		CreateDialogFragment createDialog = new CreateDialogFragment(true, R.string.category);
 		createDialog.show(getFragmentManager(), "dialog");
 	}
 	
@@ -506,7 +506,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	
 	// DONE
 	public void createSubCategory(View view) {
-		CreateDialogFragment createDialog = new CreateDialogFragment(false, "under kategori");
+		CreateDialogFragment createDialog = new CreateDialogFragment(false, R.string.subcategory);
 		createDialog.show(getFragmentManager(), "dialog");
 	}
 	

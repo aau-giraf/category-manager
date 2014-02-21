@@ -9,7 +9,9 @@
 	<string name="app_name">CAT</string>
     <string name="currentChild">Aktivt barn: </string>
     <string name="categories">Kategorier</string>
-    <string name="subcategories">Under kategorier</string>
+    <string name="subcategories">Underkategorier</string>
+    <string name="category">kategori</string>
+    <string name="subcategory">underkategori</string>
     <string name="pictograms">Pictogrammer</string>
     <string name="pressInfo">Tryk i lang tid for yderligere options</string>
     <string name="back">Tilbage</string>
