@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -70,20 +71,23 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 		Bundle extras = getIntent().getExtras();
 		if(extras == null){
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this)
-			.setTitle(R.string.dialog_title)
-			.setMessage(R.string.errorLogin)
-			.setNegativeButton(R.string.returnItem, new DialogInterface.OnClickListener() {
-	               @Override
-	               public void onClick(DialogInterface dialog, int id) {
-	                   // User clicked OK, so save the mSelectedItems results somewhere
-	                   // or return them to the component that opened the dialog
-	            	   finish();
-	               }
-			 });
-			// 3. Get the AlertDialog from create()
-				AlertDialog dialog = builder.create();
-				dialog.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.dialog_title);
+            builder.setMessage(R.string.errorLogin);
+            builder.setNegativeButton(R.string.returnItem, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked OK, so save the mSelectedItems results somewhere
+                    // or return them to the component that opened the dialog
+                    finish();
+                }
+
+            });
+
+            // 3. Get the AlertDialog from create()
+            AlertDialog dialog = builder.create();
+            dialog.setCancelable(false);
+            dialog.show();
 		}
 		else{
 			getProfiles(extras);
