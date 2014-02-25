@@ -12,6 +12,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,6 +69,16 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 		proHelp =  new ProfilesHelper(this);
 		
 		Bundle extras = getIntent().getExtras();
+        
+        //if a debugger is attatched at startup don't require login info
+        if(extras == null && Debug.isDebuggerConnected())
+        {
+            extras = new Bundle();
+            extras.putLong("currentChildID", 1);
+            extras.putLong("currentGuardianID", 1);
+        }
+        
+        
 		if(extras == null){
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(this)
@@ -388,10 +399,11 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	 * This method gets all extras in the extras bundle from the intent that started this activity
 	 */
 	private void getProfiles(Bundle extras) {
-		if(getIntent().hasExtra("currentChildID")){
+        
+		if(extras.containsKey("currentChildID")){
 			child = proHelp.getProfileById(extras.getLong("currentChildID"));
 		}
-		if(getIntent().hasExtra("currentGuardianID")){
+		if(extras.containsKey("currentGuardianID")){
 			
 			guardian = proHelp.getProfileById(extras.getLong("currentGuardianID"));
 		}
