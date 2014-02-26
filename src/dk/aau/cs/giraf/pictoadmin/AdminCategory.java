@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -81,20 +82,23 @@ public class AdminCategory extends Activity implements CreateDialogListener{
         
 		if(extras == null){
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this)
-			.setTitle(R.string.dialog_title)
-			.setMessage(R.string.errorLogin)
-			.setNegativeButton(R.string.returnItem, new DialogInterface.OnClickListener() {
-	               @Override
-	               public void onClick(DialogInterface dialog, int id) {
-	                   // User clicked OK, so save the mSelectedItems results somewhere
-	                   // or return them to the component that opened the dialog
-	            	   finish();
-	               }
-			 });
-			// 3. Get the AlertDialog from create()
-				AlertDialog dialog = builder.create();
-				dialog.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.dialog_title);
+            builder.setMessage(R.string.errorLogin);
+            builder.setNegativeButton(R.string.returnItem, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked OK, so save the mSelectedItems results somewhere
+                    // or return them to the component that opened the dialog
+                    finish();
+                }
+
+            });
+
+            // 3. Get the AlertDialog from create()
+            AlertDialog dialog = builder.create();
+            dialog.setCancelable(false);
+            dialog.show();
 		}
 		else{
 			getProfiles(extras);
@@ -170,7 +174,8 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 		}
 	}
 
-	@Override
+
+    @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_admin_category, menu);
 		return true;
@@ -231,7 +236,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 					categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
 				}
 				else {
-					message = new MessageDialogFragment("Den valgte titel er allerede anvendt af en anden kategori");
+					message = new MessageDialogFragment(R.string.title_used);
 					message.show(getFragmentManager(), "usedTitle");
 				}
 			}
@@ -247,13 +252,13 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 					subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
 				}
 				else {
-					message = new MessageDialogFragment("Den valgte titel er allerede anvendt af en anden kategori");
+					message = new MessageDialogFragment(R.string.title_used);
 					message.show(getFragmentManager(), "usedTitle");
 				}
 			}
 		}
 		else {
-			message = new MessageDialogFragment("Mangler titel");
+			message = new MessageDialogFragment(R.string.title_missing);
 			message.show(getFragmentManager(), "missingTitle");
 		}
 		newCategoryColor = 0;
@@ -348,7 +353,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			for(PARROTCategory c : categoryList) {
 				if(c.getCategoryName().equals(tempCategory.getCategoryName())) {
 					legal = false;
-					message = new MessageDialogFragment("Titlen er anvendt");
+					message = new MessageDialogFragment(R.string.title_used_short);
 					message.show(getFragmentManager(), "invalidName");
 					break;
 				}
@@ -362,7 +367,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			for(PARROTCategory sc : subcategoryList){
 				if(sc.getCategoryName().equals(tempCategory.getCategoryName())){
 					legal = false;
-					message = new MessageDialogFragment("Navn er allerede brugt");
+					message = new MessageDialogFragment(R.string.name_used);
 					message.show(getFragmentManager(), "invalidName");
 					break;
 				}
@@ -506,7 +511,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	 * DONE: The following methods handle the creation and deletion of categories and sub-categories
 	 */
 	public void createCategory(View view) {
-		CreateDialogFragment createDialog = new CreateDialogFragment(true, "kategori");
+		CreateDialogFragment createDialog = new CreateDialogFragment(true, R.string.category);
 		createDialog.show(getFragmentManager(), "dialog");
 	}
 	
@@ -518,7 +523,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	
 	// DONE
 	public void createSubCategory(View view) {
-		CreateDialogFragment createDialog = new CreateDialogFragment(false, "under kategori");
+		CreateDialogFragment createDialog = new CreateDialogFragment(false, R.string.subcategory);
 		createDialog.show(getFragmentManager(), "dialog");
 	}
 	
@@ -541,7 +546,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			startActivityForResult(request, RESULT_FIRST_USER);
 		}
 		catch (Exception e) {
-			message = new MessageDialogFragment("Search not installed");
+			message = new MessageDialogFragment(R.string.search_missing);
 			message.show(getFragmentManager(), "notInstalled");
 		}
 	}
@@ -563,7 +568,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			startActivity(croc);
 		}
 		catch (Exception e) {
-			message = new MessageDialogFragment("Croc not installed");
+			message = new MessageDialogFragment(R.string.croc_missing);
 			message.show(getFragmentManager(), "notInstalled");
 		}
 	}

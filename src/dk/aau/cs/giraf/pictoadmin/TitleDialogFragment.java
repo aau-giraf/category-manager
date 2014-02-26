@@ -35,8 +35,8 @@ public class TitleDialogFragment extends DialogFragment{
         
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(layout)
-        	   .setTitle("Ændre titel")
-               .setPositiveButton("Færdig", new DialogInterface.OnClickListener() {
+        	   .setTitle(R.string.title_change)
+               .setPositiveButton(R.string.finished, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                 	   /* tempCategory is used to hold the new title. The reason for using a category instead of sending
                 	    * a string is to keep the updateSettings method simple
@@ -45,7 +45,7 @@ public class TitleDialogFragment extends DialogFragment{
                 	   startActiviy.updateSettings(tempCategory, pos, isCategory, "title");
                    }
                })
-               .setNegativeButton("Annuller", new DialogInterface.OnClickListener() {
+               .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                 	   // Do nothing
                    }

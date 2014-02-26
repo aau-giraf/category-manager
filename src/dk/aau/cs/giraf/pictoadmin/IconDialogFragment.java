@@ -51,8 +51,8 @@ public class IconDialogFragment extends DialogFragment{
 		});
         
         builder.setView(layout)
-        	   .setTitle("Ændre icon")
-               .setPositiveButton("Færdig", new DialogInterface.OnClickListener() {
+        	   .setTitle(R.string.change_icon)
+               .setPositiveButton(R.string.finished, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                 	   if(icon != null){
                 		   changedCategory.setIcon(icon);
@@ -60,7 +60,7 @@ public class IconDialogFragment extends DialogFragment{
                 	   }
                    }
                })
-               .setNegativeButton("Annuller", new DialogInterface.OnClickListener() {
+               .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                    }
                });
