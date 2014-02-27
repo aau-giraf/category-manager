@@ -236,7 +236,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 					categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
 				}
 				else {
-					message = new MessageDialogFragment(R.string.title_used);
+					message = new MessageDialogFragment(getString(R.string.title_used));
 					message.show(getFragmentManager(), "usedTitle");
 				}
 			}
@@ -252,13 +252,13 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 					subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
 				}
 				else {
-					message = new MessageDialogFragment(R.string.title_used);
+					message = new MessageDialogFragment(getString(R.string.title_used));
 					message.show(getFragmentManager(), "usedTitle");
 				}
 			}
 		}
 		else {
-			message = new MessageDialogFragment(R.string.title_missing);
+			message = new MessageDialogFragment(getString(R.string.title_missing));
 			message.show(getFragmentManager(), "missingTitle");
 		}
 		newCategoryColor = 0;
@@ -353,7 +353,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			for(PARROTCategory c : categoryList) {
 				if(c.getCategoryName().equals(tempCategory.getCategoryName())) {
 					legal = false;
-					message = new MessageDialogFragment(R.string.title_used_short);
+					message = new MessageDialogFragment(getString(R.string.title_used_short));
 					message.show(getFragmentManager(), "invalidName");
 					break;
 				}
@@ -367,7 +367,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			for(PARROTCategory sc : subcategoryList){
 				if(sc.getCategoryName().equals(tempCategory.getCategoryName())){
 					legal = false;
-					message = new MessageDialogFragment(R.string.name_used);
+					message = new MessageDialogFragment(getString(R.string.name_used));
 					message.show(getFragmentManager(), "invalidName");
 					break;
 				}
@@ -546,7 +546,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			startActivityForResult(request, RESULT_FIRST_USER);
 		}
 		catch (Exception e) {
-			message = new MessageDialogFragment(R.string.search_missing);
+			message = new MessageDialogFragment(getString(R.string.search_missing));
 			message.show(getFragmentManager(), "notInstalled");
 		}
 	}
@@ -568,7 +568,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			startActivity(croc);
 		}
 		catch (Exception e) {
-			message = new MessageDialogFragment(R.string.croc_missing);
+			message = new MessageDialogFragment(getString(R.string.croc_missing));
 			message.show(getFragmentManager(), "notInstalled");
 		}
 	}
@@ -576,48 +576,52 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Bundle extras = data.getExtras();
-		
-		if(data.hasExtra("checkoutIds")){
-			long[] checkoutIds = new long[extras.getLongArray("checkoutIds").length];
-			checkoutIds = extras.getLongArray("checkoutIds");
-			boolean legal = true;
-			
-			// Add pictograms to selectedCategory if no sub-category is selected
-			if(selectedSubCategory == null){
-				for(long id : checkoutIds){
-					legal = true;
-					
-					for(Pictogram p : pictograms){
-						if(p.getPictogramID() == id){
-							legal = false;
-						}
-					}
-					if(legal){
-						selectedCategory.addPictogram(PictoFactory.getPictogram(this, id));
-						selectedCategory.setChanged(true);
-						pictograms = selectedCategory.getPictograms();
-					}
-				}
-			}
-			else{
-				for(long id : checkoutIds){
-					legal = true;
-					
-					for(Pictogram p : pictograms){
-						if(p.getPictogramID() == id){
-							legal = false;
-							break;
-						}
-					}
-					if(legal){
-						selectedSubCategory.addPictogram(PictoFactory.getPictogram(this, id));
-						selectedCategory.setChanged(true);
-						pictograms = selectedSubCategory.getPictograms();
-					}
-				}
-			}
-			pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
-		}
+        if(data==null)
+        {
+            return;
+        }
+        Bundle extras = data.getExtras();
+
+        if(data.hasExtra("checkoutIds")){
+            long[] checkoutIds = extras.getLongArray("checkoutIds");
+            boolean legal;
+
+            // Add pictograms to selectedCategory if no sub-category is selected
+            if(selectedSubCategory == null){
+                for(long id : checkoutIds){
+                    legal = true;
+
+                    for(Pictogram p : pictograms){
+                        if(p.getPictogramID() == id){
+                            legal = false;
+                        }
+                    }
+                    if(legal){
+                        selectedCategory.addPictogram(PictoFactory.getPictogram(this, id));
+                        selectedCategory.setChanged(true);
+                        pictograms = selectedCategory.getPictograms();
+                    }
+                }
+            }
+            else{
+                for(long id : checkoutIds){
+                    legal = true;
+
+                    for(Pictogram p : pictograms){
+                        if(p.getPictogramID() == id){
+                            legal = false;
+                            break;
+                        }
+                    }
+                    if(legal){
+                        selectedSubCategory.addPictogram(PictoFactory.getPictogram(this, id));
+                        selectedCategory.setChanged(true);
+                        pictograms = selectedSubCategory.getPictograms();
+                    }
+                }
+            }
+            pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
+        }
+
 	}
 }
