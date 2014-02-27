@@ -17,8 +17,8 @@ public class MessageDialogFragment extends DialogFragment {
 
 	public String message;
 	
-	public MessageDialogFragment(int msg) {
-		this.message = getString(msg);
+	public MessageDialogFragment(String msg) {
+		this.message = msg;
 	}
 	
 	@Override
