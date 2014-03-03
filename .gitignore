@@ -5,6 +5,8 @@
 /.idea
 local.properties
 *.iml
+/bin
+/gen
 
 /gradlew
 /gradlew.bat
