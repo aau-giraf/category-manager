@@ -247,7 +247,9 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 					}
 				}
 				if(legal){
-					subcategoryList.add(new PARROTCategory(titel, selectedCategory.getCategoryColor(), categoryList.get(0).getIcon()));
+                    PARROTCategory cat = new PARROTCategory(titel, selectedCategory.getCategoryColor(), categoryList.get(0).getIcon());
+                    cat.setSuperCategory(selectedCategory);
+					subcategoryList.add(cat);
 					selectedCategory.setChanged(true);
 					subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
 				}
