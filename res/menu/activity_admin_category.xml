@@ -5,7 +5,7 @@
         android:id="@+id/action_save"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Gem ændringer"
+        android:title="@string/save_changes"
         android:onClick="saveChanges">
         </item>
         
@@ -13,7 +13,7 @@
         android:id="@+id/action_back"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Luk"
+        android:title="@string/close"
         android:onClick="returnToCaller">
         </item>
 

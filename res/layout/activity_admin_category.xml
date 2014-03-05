@@ -57,35 +57,34 @@
                 android:layout_height="wrap_content"
                 android:gravity="center" >
 
-                <ImageButton
+                <dk.aau.cs.giraf.gui.GButton
                     android:id="@+id/add_new_category_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/content_new"
+                    android:drawableRight="@drawable/content_new"
                     android:contentDescription="@string/picture"
                     android:onClick="createCategory" />
 
-                <ImageButton
+                <dk.aau.cs.giraf.gui.GButton
                     android:id="@+id/delete_selected_category_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/content_discard"
+                    android:drawableRight="@drawable/content_discard"
                     android:contentDescription="@string/picture"
                     android:visibility="gone"
                     android:onClick="deleteCategory" />
 
             </LinearLayout>
-
-            <GridView
+            <dk.aau.cs.giraf.gui.GList
                 android:id="@+id/category_gridview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:background="@drawable/sentenceboardlayout"
                 android:numColumns="1"
-                android:listSelector="@drawable/sentenceboardlayout" >
+                android:listSelector="@drawable/sentenceboardlayout" />
 
-            </GridView>
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -110,34 +109,35 @@
                 android:layout_height="wrap_content"
                 android:gravity="center" >
 
-                <ImageButton
+                <dk.aau.cs.giraf.gui.GButton
                     android:id="@+id/add_new_subcategory_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/picture"
                     android:onClick="createSubCategory"
-                    android:src="@drawable/content_new"
+                    android:drawableRight="@drawable/content_new"
                     android:visibility="gone" />
 
-                <ImageButton
+                <dk.aau.cs.giraf.gui.GButton
                     android:id="@+id/delete_selected_subcategory_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/picture"
                     android:onClick="deleteSubCategory"
-                    android:src="@drawable/content_discard"
+                    android:drawableRight="@drawable/content_discard"
                     android:visibility="invisible" />
             </LinearLayout>
 
-            <GridView
+            <dk.aau.cs.giraf.gui.GList
                 android:id="@+id/subcategory_gridview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:background="@drawable/sentenceboardlayout"   
+                android:background="@drawable/sentenceboardlayout"
                 android:numColumns="1"
-                android:listSelector="@drawable/sentenceboardlayout" >
-            </GridView>
+                android:listSelector="@drawable/sentenceboardlayout" />
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -160,34 +160,33 @@
                 android:layout_height="wrap_content"
                 android:gravity="center" >
 
-                <ImageButton
+                <dk.aau.cs.giraf.gui.GButton
                     android:id="@+id/add_new_picture_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/content_new_picture"
+                    android:drawableRight="@drawable/content_new_picture"
                     android:contentDescription="@string/picture"
                     android:visibility="invisible"
                     android:onClick="createPictogram" />
 
-                <ImageButton
+                <dk.aau.cs.giraf.gui.GButton
                     android:id="@+id/delete_selected_picture_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/content_discard"
+                    android:drawableRight="@drawable/content_discard"
                     android:contentDescription="@string/picture"
                     android:visibility="gone"
                     android:onClick="deletePictogram" />
 
             </LinearLayout>
 
-            <GridView
+            <dk.aau.cs.giraf.gui.GGridView
                 android:id="@+id/pictogram_gridview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:numColumns="6"
                 android:background="@drawable/sentenceboardlayout"
-                android:listSelector="@drawable/sentenceboardlayout" >
-            </GridView>
+                android:listSelector="@drawable/sentenceboardlayout" />
         </LinearLayout>
     </LinearLayout>
 

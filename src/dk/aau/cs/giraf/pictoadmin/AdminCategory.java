@@ -2,13 +2,15 @@ package dk.aau.cs.giraf.pictoadmin;
 
 import java.util.ArrayList;
 
+import dk.aau.cs.giraf.gui.GButton;
+import dk.aau.cs.giraf.gui.GGridView;
+import dk.aau.cs.giraf.gui.GList;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,8 +23,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import dk.aau.cs.giraf.categorylib.CategoryHelper;
 import dk.aau.cs.giraf.categorylib.PARROTCategory;
@@ -49,9 +49,9 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	private ArrayList<PARROTCategory> subcategoryList = new ArrayList<PARROTCategory>();
 	private ArrayList<Pictogram> 	  pictograms	  = new ArrayList<Pictogram>();
 	
-	private GridView categoryGrid;
-	private GridView subcategoryGrid;
-	private GridView pictogramGrid;
+	private GList categoryGrid;
+	private GList subcategoryGrid;
+	private GGridView pictogramGrid;
 	
 	private boolean somethingChanged = false; // If something is deleted, is has to be noted
 	private int     selectedLocation; // Stores the location of the last pressed item in any gridview
@@ -114,15 +114,15 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			}
 	
 			// Setup category gridview
-			categoryGrid = (GridView) findViewById(R.id.category_gridview);
+			categoryGrid = (GList) findViewById(R.id.category_gridview);
 			if(categoryList != null){
 				categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
 			}
 			categoryGrid.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					categoryGrid.setBackgroundColor(categoryList.get(position).getCategoryColor());
-					subcategoryGrid.setBackgroundColor(categoryList.get(position).getCategoryColor());
+					//categoryGrid.setBackgroundColor(categoryList.get(position).getCategoryColor());
+					//subcategoryGrid.setBackgroundColor(categoryList.get(position).getCategoryColor());
 					updateSelected(v, position, 1);
 					updateButtonVisibility(v);
 				}
@@ -139,11 +139,11 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			});
 			
 			// Setup sub-category gridview
-			subcategoryGrid = (GridView) findViewById(R.id.subcategory_gridview);
+			subcategoryGrid = (GList) findViewById(R.id.subcategory_gridview);
 			subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					subcategoryGrid.setBackgroundColor(subcategoryList.get(position).getCategoryColor());
+					//subcategoryGrid.setBackgroundColor(subcategoryList.get(position).getCategoryColor());
 					updateSelected(v, position, 0);
 					updateButtonVisibility(v);
 				}
@@ -160,7 +160,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			});
 			
 			// Setup pictogram gridview
-			pictogramGrid = (GridView) findViewById(R.id.pictogram_gridview);
+			pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
 			pictogramGrid.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
@@ -247,7 +247,9 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 					}
 				}
 				if(legal){
-					subcategoryList.add(new PARROTCategory(titel, selectedCategory.getCategoryColor(), categoryList.get(0).getIcon()));
+                    PARROTCategory cat = new PARROTCategory(titel, selectedCategory.getCategoryColor(), categoryList.get(0).getIcon());
+                    cat.setSuperCategory(selectedCategory);
+					subcategoryList.add(cat);
 					selectedCategory.setChanged(true);
 					subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
 				}
@@ -449,11 +451,11 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	 * the buttons the user has access to, thereby limiting what the user can do (such as deletion and addition)
 	 */
 	public void updateButtonVisibility(View v) {
-		ImageButton delcat = (ImageButton) findViewById(R.id.delete_selected_category_button);
-		ImageButton delsub = (ImageButton) findViewById(R.id.delete_selected_subcategory_button);
-		ImageButton delpic = (ImageButton) findViewById(R.id.delete_selected_picture_button);
-		ImageButton addsub = (ImageButton) findViewById(R.id.add_new_subcategory_button);
-		ImageButton addpic = (ImageButton) findViewById(R.id.add_new_picture_button);
+        GButton delcat = (GButton) findViewById(R.id.delete_selected_category_button);
+        GButton delsub = (GButton) findViewById(R.id.delete_selected_subcategory_button);
+        GButton delpic = (GButton) findViewById(R.id.delete_selected_picture_button);
+        GButton addsub = (GButton) findViewById(R.id.add_new_subcategory_button);
+        GButton addpic = (GButton) findViewById(R.id.add_new_picture_button);
 		
 		if(selectedCategory != null) {	
 			delcat.setVisibility(View.VISIBLE);
