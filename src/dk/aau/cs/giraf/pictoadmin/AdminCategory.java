@@ -216,25 +216,25 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	 * The following methods handle the creation of new categories and sub-categories
 	 */
 	@Override
-	public void onDialogPositiveClick(DialogFragment dialog, String titel, boolean isCategory) {
+	public void onDialogPositiveClick(DialogFragment dialog, String title, boolean isCategory) {
 		boolean legal = true;
 
-		if(titel.isEmpty() == false) {
+		if(!title.isEmpty()) {
 			if(isCategory){
 				if(!categoryList.isEmpty()){
 					for(PARROTCategory c : categoryList) {
-						if(c.getCategoryName().equals(titel)){
+						if(c.getCategoryName().equals(title)){
 							legal = false;
 						}
 					}
 				}
 				if(legal){
 					if(!categoryList.isEmpty()){
-						categoryList.add(new PARROTCategory(titel, newCategoryColor, categoryList.get(0).getIcon()));
+						categoryList.add(new PARROTCategory(title, newCategoryColor, categoryList.get(0).getIcon()));
 					}
 					else{
 						categoryList = new ArrayList<PARROTCategory>();
-						categoryList.add(new PARROTCategory(titel, newCategoryColor, PictoFactory.getPictogram(this, 1)));
+						categoryList.add(new PARROTCategory(title, newCategoryColor, PictoFactory.getPictogram(this, 1)));
 					}
 					
 					categoryList.get(categoryList.size()-1).setChanged(true);
@@ -248,12 +248,12 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			}
 			else {
 				for(PARROTCategory sc : subcategoryList) {
-					if(sc.getCategoryName().equals(titel)){
+					if(sc.getCategoryName().equals(title)){
 						legal = false;
 					}
 				}
 				if(legal){
-                    PARROTCategory cat = new PARROTCategory(titel, selectedCategory.getCategoryColor(), categoryList.get(0).getIcon());
+                    PARROTCategory cat = new PARROTCategory(title, newCategoryColor, categoryList.get(0).getIcon());
                     cat.setSuperCategory(selectedCategory);
 					subcategoryList.add(cat);
 					selectedCategory.setChanged(true);
