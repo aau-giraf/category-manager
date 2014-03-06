@@ -264,17 +264,20 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 					message.show(getFragmentManager(), "usedTitle");
 				}
 			}
+            dialog.dismiss();
 		}
 		else {
 			message = new MessageDialogFragment(getString(R.string.title_missing));
 			message.show(getFragmentManager(), "missingTitle");
 		}
+
 		newCategoryColor = 0;
 	}
 
 	@Override
 	public void onDialogNegativeClick(DialogFragment dialog) {
 		// Do nothing
+        dialog.dismiss();
 	}
 
 	@Override
@@ -523,8 +526,8 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 		//CreateDialogFragment createDialog = new CreateDialogFragment(true, R.string.category);
 		//createDialog.show(getFragmentManager(), "dialog");
 
-        CreateCategoryDialog ccd = new CreateCategoryDialog(R.string.category);
-        ccd.show(getFragmentManager(),"dialog");
+        CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.category);
+        createDialog.show(getFragmentManager(),"dialog");
 	}
 	
 	// DONE
@@ -535,8 +538,8 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	
 	// DONE
 	public void createSubCategory(View view) {
-		CreateDialogFragment createDialog = new CreateDialogFragment(false, R.string.subcategory);
-		createDialog.show(getFragmentManager(), "dialog");
+        CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.category, true);
+        createDialog.show(getFragmentManager(),"dialog");
 	}
 	
 	// DONE

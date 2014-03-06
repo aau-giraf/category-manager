@@ -1,17 +1,12 @@
 package dk.aau.cs.giraf.pictoadmin;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import dk.aau.cs.giraf.gui.GButton;
@@ -22,18 +17,31 @@ import dk.aau.cs.giraf.gui.GButton;
 public class CreateCategoryDialog extends DialogFragment {
 
     private final int category;
+    private boolean isSub = false;
 
     public CreateCategoryDialog(int category) {
         this.category = category;
     }
-
-    public interface CreateDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog, String titel);
-        public void onDialogNegativeClick(DialogFragment dialog);
+    public CreateCategoryDialog(int category, boolean sub) {
+        this.category = category;
+        isSub = sub;
     }
 
-    CreateDialogListener listener;
 
+    CreateDialogFragment.CreateDialogListener listener;
+
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            listener = (CreateDialogFragment.CreateDialogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement NoticeDialogListener");
+        }
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -52,7 +60,7 @@ public class CreateCategoryDialog extends DialogFragment {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                listener.onDialogPositiveClick(CreateCategoryDialog.this, titleText.getText().toString(), !isSub);
             }
         });
 
@@ -61,10 +69,9 @@ public class CreateCategoryDialog extends DialogFragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dial.dismiss();
+                listener.onDialogNegativeClick(CreateCategoryDialog.this);
             }
         });
-
         dial.setContentView(layout);
         return dial;
 
