@@ -3,11 +3,13 @@ package dk.aau.cs.giraf.pictoadmin;
 import java.util.ArrayList;
 
 import dk.aau.cs.giraf.gui.GButton;
+import dk.aau.cs.giraf.gui.GDialog;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -17,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,10 +64,13 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	private ProfilesHelper proHelp;
 	
 	private MessageDialogFragment message;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+
+
 		setContentView(R.layout.activity_admin_category);
 		catHelp =  new CategoryHelper(this);
 		proHelp =  new ProfilesHelper(this);
@@ -149,15 +155,15 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 				}
 			});
 			subcategoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
-				@Override
-				public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					SettingDialogFragment settingDialog = new SettingDialogFragment(AdminCategory.this,
-																					subcategoryList.get(position),
-																					position, false);
-					settingDialog.show(getFragmentManager(), "chooseSettings");
-					return false;
-				}
-			});
+                @Override
+                public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                    SettingDialogFragment settingDialog = new SettingDialogFragment(AdminCategory.this,
+                            subcategoryList.get(position),
+                            position, false);
+                    settingDialog.show(getFragmentManager(), "chooseSettings");
+                    return false;
+                }
+            });
 			
 			// Setup pictogram gridview
 			pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
@@ -300,7 +306,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	public void updateSettings(PARROTCategory category, int pos, boolean isCategory, String setting) {
 		
 		if(setting.toLowerCase().equals("title")){
-			updateTitel(category, pos, isCategory);
+			updateTitle(category, pos, isCategory);
 		}
 		else if(setting.toLowerCase().equals("color")){
 			updateColor(category, pos, isCategory);
@@ -315,6 +321,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 				catHelp.deleteCategory(selectedCategory);
 				categoryList.remove(pos);
 				selectedCategory = null;
+                selectedSubCategory = null;
 			}
 			else {
 				pictograms.removeAll(pictograms);
@@ -348,7 +355,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	}
 	
 	// DONE
-	private void updateTitel(PARROTCategory tempCategory, int pos, boolean isCategory) {
+	private void updateTitle(PARROTCategory tempCategory, int pos, boolean isCategory) {
 		boolean legal = true;
 		
 		if(isCategory) {
@@ -462,19 +469,19 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			addsub.setVisibility(View.VISIBLE);
 			addpic.setVisibility(View.VISIBLE);
 		}
-		else if(selectedCategory == null || categoryList.size() == 1) {
+		else if(categoryList.size() == 1) {
 			delcat.setVisibility(View.GONE);
 		}
 		if(selectedSubCategory != null) {
 			delsub.setVisibility(View.VISIBLE);
 		}
-		else if(selectedSubCategory == null) {
+		else {
 			delsub.setVisibility(View.GONE);
 		}
 		if(selectedPictogram != null) {
 			delpic.setVisibility(View.VISIBLE);
 		}
-		else if(selectedPictogram == null) {
+		else {
 			delpic.setVisibility(View.GONE);
 		}
 	}
@@ -513,8 +520,11 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	 * DONE: The following methods handle the creation and deletion of categories and sub-categories
 	 */
 	public void createCategory(View view) {
-		CreateDialogFragment createDialog = new CreateDialogFragment(true, R.string.category);
-		createDialog.show(getFragmentManager(), "dialog");
+		//CreateDialogFragment createDialog = new CreateDialogFragment(true, R.string.category);
+		//createDialog.show(getFragmentManager(), "dialog");
+
+        CreateCategoryDialog ccd = new CreateCategoryDialog(R.string.category);
+        ccd.show(getFragmentManager(),"dialog");
 	}
 	
 	// DONE

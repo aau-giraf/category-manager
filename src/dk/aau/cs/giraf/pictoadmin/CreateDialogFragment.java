@@ -51,9 +51,9 @@ public class CreateDialogFragment extends DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View layout = inflater.inflate(R.layout.dialog_create, null);
-        
         final EditText titelText = (EditText) layout.findViewById(R.id.username);
         Button colorButton = (Button) layout.findViewById(R.id.colorButton);
         /*  Only choose color if creating new category. Sub-categories automatically has the
@@ -63,18 +63,18 @@ public class CreateDialogFragment extends DialogFragment{
         	colorButton.setVisibility(View.GONE);
         }
 
-        builder.setView(layout)
-        	   .setTitle(String.format("%s %s", getString(R.string.create_new), getString(message)))
-               .setPositiveButton(getString(R.string.finished), new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                       listener.onDialogPositiveClick(CreateDialogFragment.this, titelText.getText().toString(), isCategory);
-                   }
-               })
-               .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                       listener.onDialogNegativeClick(CreateDialogFragment.this);
-                   }
-               });
+        builder.setView(layout);
+        builder.setTitle(String.format("%s %s", getString(R.string.create_new), getString(message)));
+        builder.setPositiveButton(getString(R.string.finished), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                listener.onDialogPositiveClick(CreateDialogFragment.this, titelText.getText().toString(), isCategory);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                listener.onDialogNegativeClick(CreateDialogFragment.this);
+            }
+        });
         // Create the AlertDialog object and return it
         return builder.create();
     }
