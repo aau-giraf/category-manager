@@ -81,12 +81,11 @@
 
                 </LinearLayout>
                 <dk.aau.cs.giraf.gui.GList
-                    android:id="@+id/category_gridview"
+                    android:id="@+id/category_listview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:listSelector="@drawable/glistitem"
-                    />
+                    android:listSelector="@drawable/glistitem"/>
 
             </LinearLayout>
 
@@ -132,7 +131,7 @@
                 </LinearLayout>
 
                 <dk.aau.cs.giraf.gui.GList
-                    android:id="@+id/subcategory_gridview"
+                    android:id="@+id/subcategory_listview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"

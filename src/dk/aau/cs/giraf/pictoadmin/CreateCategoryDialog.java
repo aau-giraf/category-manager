@@ -12,23 +12,27 @@ import android.widget.TextView;
 import dk.aau.cs.giraf.gui.GButton;
 
 /**
- * Created by Martin on 06/03/14.
+ * @author SW605f13 Parrot-group
+ * @author SW614f14 Cat sprint 1
+ * Dialog displayed when creating new category with input options; title and color, where only title is recurred.
+ * Color is set to default 0, if no color if chosen.
+ * Edited to use an interface more streamlined with the other parts of the multiproject.
  */
 public class CreateCategoryDialog extends DialogFragment {
 
     private final int category;
-    private boolean isSub = false;
+    private boolean isSubCategory = false;
 
     public CreateCategoryDialog(int category) {
         this.category = category;
     }
     public CreateCategoryDialog(int category, boolean sub) {
         this.category = category;
-        isSub = sub;
+        isSubCategory = sub;
     }
 
 
-    CreateDialogFragment.CreateDialogListener listener;
+    CreateCategoryListener listener;
 
 
 
@@ -36,7 +40,7 @@ public class CreateCategoryDialog extends DialogFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            listener = (CreateDialogFragment.CreateDialogListener) activity;
+            listener = (CreateCategoryListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement NoticeDialogListener");
@@ -60,7 +64,7 @@ public class CreateCategoryDialog extends DialogFragment {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDialogPositiveClick(CreateCategoryDialog.this, titleText.getText().toString(), !isSub);
+                listener.onCatCreateDialogPositiveClick(CreateCategoryDialog.this, titleText.getText().toString(), !isSubCategory);
             }
         });
 
@@ -69,7 +73,7 @@ public class CreateCategoryDialog extends DialogFragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDialogNegativeClick(CreateCategoryDialog.this);
+                listener.onCatCreateDialogNegativeClick(CreateCategoryDialog.this);
             }
         });
         dial.setContentView(layout);

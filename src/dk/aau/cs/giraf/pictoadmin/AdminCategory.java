@@ -3,13 +3,11 @@ package dk.aau.cs.giraf.pictoadmin;
 import java.util.ArrayList;
 
 import dk.aau.cs.giraf.gui.GButton;
-import dk.aau.cs.giraf.gui.GDialog;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -19,7 +17,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +28,6 @@ import dk.aau.cs.giraf.categorylib.CategoryHelper;
 import dk.aau.cs.giraf.categorylib.PARROTCategory;
 import dk.aau.cs.giraf.oasis.lib.controllers.ProfilesHelper;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
-import dk.aau.cs.giraf.pictoadmin.CreateDialogFragment.CreateDialogListener;
 import dk.aau.cs.giraf.pictogram.PictoFactory;
 import dk.aau.cs.giraf.pictogram.Pictogram;
 
@@ -40,7 +36,7 @@ import dk.aau.cs.giraf.pictogram.Pictogram;
  * This is the main class in the CAT application.
  */
 @SuppressLint("DefaultLocale")
-public class AdminCategory extends Activity implements CreateDialogListener{
+public class AdminCategory extends Activity implements CreateCategoryListener{
 	private Profile child;
 	private Profile guardian;
 	
@@ -120,7 +116,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			}
 	
 			// Setup category gridview
-			categoryGrid = (GList) findViewById(R.id.category_gridview);
+			categoryGrid = (GList) findViewById(R.id.category_listview);
 			if(categoryList != null){
 				categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
 			}
@@ -145,7 +141,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 			});
 			
 			// Setup sub-category gridview
-			subcategoryGrid = (GList) findViewById(R.id.subcategory_gridview);
+			subcategoryGrid = (GList) findViewById(R.id.subcategory_listview);
 			subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
@@ -216,7 +212,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	 * The following methods handle the creation of new categories and sub-categories
 	 */
 	@Override
-	public void onDialogPositiveClick(DialogFragment dialog, String title, boolean isCategory) {
+	public void onCatCreateDialogPositiveClick(DialogFragment dialog, String title, boolean isCategory) {
 		boolean legal = true;
 
 		if(!title.isEmpty()) {
@@ -275,7 +271,7 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	}
 
 	@Override
-	public void onDialogNegativeClick(DialogFragment dialog) {
+	public void onCatCreateDialogNegativeClick(DialogFragment dialog) {
 		// Do nothing
         dialog.dismiss();
 	}
@@ -523,9 +519,6 @@ public class AdminCategory extends Activity implements CreateDialogListener{
 	 * DONE: The following methods handle the creation and deletion of categories and sub-categories
 	 */
 	public void createCategory(View view) {
-		//CreateDialogFragment createDialog = new CreateDialogFragment(true, R.string.category);
-		//createDialog.show(getFragmentManager(), "dialog");
-
         CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.category);
         createDialog.show(getFragmentManager(),"dialog");
 	}
