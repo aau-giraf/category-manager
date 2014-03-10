@@ -127,6 +127,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 					//subcategoryGrid.setBackgroundColor(categoryList.get(position).getCategoryColor());
 					updateSelected(v, position, 1);
 					updateButtonVisibility(v);
+
 				}
 			});
 			categoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -488,10 +489,12 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	 */
 	private void updateSelected(View view, int position, int id) {
 		selectedLocation = position;
-		
+
+        //id 2 is the Grid with pictograms
 		if(id == 2) {
 			selectedPictogram = pictograms.get(position);
 		}
+        //id 1 is the list of categories
 		if(id == 1) {
 			selectedCategory    = categoryList.get(position);
 			selectedSubCategory = null;
