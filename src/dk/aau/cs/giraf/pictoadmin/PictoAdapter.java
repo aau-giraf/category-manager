@@ -63,11 +63,15 @@ public class PictoAdapter extends BaseAdapter {
 
 		ImageView imageView = (ImageView) convertView.findViewById(R.id.pictogrambitmap); 
 		imageView.setLayoutParams(layoutParams);
-		
+
+
+        TextView textView = (TextView) convertView.findViewById(R.id.pictogramtext);
 		if(displayText) {
-			TextView textView = (TextView) convertView.findViewById(R.id.pictogramtext);
 			textView.setText(pctNew.getTextLabel());
 		}
+        else{
+            textView.setText("");
+        }
 		
 		BitmapWorker worker = new BitmapWorker(imageView);
 		worker.execute(pctNew);
