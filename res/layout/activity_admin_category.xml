@@ -41,7 +41,6 @@
             android:baselineAligned="false" >
 
             <LinearLayout
-                android:id="@+id/category_columb"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
@@ -84,13 +83,11 @@
                     android:id="@+id/category_listview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:listSelector="@drawable/glistitem"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/subcategory_coloumb"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
@@ -134,7 +131,6 @@
                     android:id="@+id/subcategory_listview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:listSelector="@drawable/glistitem" />
 
 
