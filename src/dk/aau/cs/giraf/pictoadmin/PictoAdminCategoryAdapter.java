@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import dk.aau.cs.giraf.categorylib.PARROTCategory;
 import dk.aau.cs.giraf.pictogram.Pictogram;
@@ -64,9 +65,8 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		imageView.setImageBitmap(BitmapFactory.decodeFile(pct.getImagePath()));
 		
 		return imageView;*/
-		
-		Pictogram pct = catList.get(position).getIcon();
-		
+
+
 		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(85, 85);
 
 		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -80,9 +80,13 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		textView.setText(catList.get(position).getCategoryName());
 		
 		BitmapWorker worker = new BitmapWorker(imageView);
-		worker.execute(pct);
+
+        Pictogram pct = catList.get(position).getIcon();
+        worker.execute(pct);
 		
 		convertView.setPadding(10, 10, 10, 10);
+
+        //convertView.setBackgroundColor(catList.get(position).getCategoryColor());
 
 		return convertView;
 	}
