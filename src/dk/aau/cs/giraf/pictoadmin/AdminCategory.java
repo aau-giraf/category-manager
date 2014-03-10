@@ -348,9 +348,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		
 		subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
 		pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
-		updateButtonVisibility(categoryGrid);
-		updateButtonVisibility(subcategoryGrid);
-		updateButtonVisibility(pictogramGrid);
+		updateButtonVisibility(null);
 	}
 	
 	// DONE
