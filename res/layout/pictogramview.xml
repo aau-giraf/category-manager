@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/transparent_color">
 
     <ImageView
         android:id="@+id/pictogrambitmap"
@@ -17,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:gravity="center_horizontal"
-        android:textColor="#FF000000" />
+        android:textColor="#FF000000"
+        android:text="img description"/>
 
 </LinearLayout>
