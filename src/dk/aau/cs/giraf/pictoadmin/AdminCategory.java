@@ -472,6 +472,11 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		else if(categoryList.size() == 1) {
 			delcat.setVisibility(View.GONE);
 		}
+        else{
+            delcat.setVisibility(View.GONE);
+            addsub.setVisibility(View.INVISIBLE);
+            addpic.setVisibility(View.INVISIBLE);
+        }
 		if(selectedSubCategory != null) {
 			delsub.setVisibility(View.VISIBLE);
 		}
