@@ -352,7 +352,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		updateButtonVisibility(null);
 	}
 	
-    
+
 	private void updateTitle(PARROTCategory changedCategory, int pos, boolean isCategory) {
 		if(isCategory) {
             checkAndChangeTitle(changedCategory, pos, categoryList);
@@ -501,6 +501,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
 			pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
 		}
+        //id 0 is the list of subcategories
 		else if(id == 0) {
 			selectedSubCategory = subcategoryList.get(position);
 			selectedPictogram   = null;
@@ -594,40 +595,32 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 
             // Add pictograms to selectedCategory if no sub-category is selected
             if(selectedSubCategory == null){
-                for(long id : checkoutIds){
-                    legal = true;
-
-                    for(Pictogram p : pictograms){
-                        if(p.getPictogramID() == id){
-                            legal = false;
-                        }
-                    }
-                    if(legal){
-                        selectedCategory.addPictogram(PictoFactory.getPictogram(this, id));
-                        selectedCategory.setChanged(true);
-                        pictograms = selectedCategory.getPictograms();
-                    }
-                }
+                checkAndAddPictograms(checkoutIds,selectedCategory);
             }
             else{
-                for(long id : checkoutIds){
-                    legal = true;
-
-                    for(Pictogram p : pictograms){
-                        if(p.getPictogramID() == id){
-                            legal = false;
-                            break;
-                        }
-                    }
-                    if(legal){
-                        selectedSubCategory.addPictogram(PictoFactory.getPictogram(this, id));
-                        selectedCategory.setChanged(true);
-                        pictograms = selectedSubCategory.getPictograms();
-                    }
-                }
+                checkAndAddPictograms(checkoutIds,selectedSubCategory);
             }
             pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
         }
 
 	}
+
+    private void checkAndAddPictograms(long[] checkoutIds, PARROTCategory category) {
+        boolean legal;
+        for(long id : checkoutIds){
+            legal = true;
+
+            for(Pictogram p : pictograms){
+                if(p.getPictogramID() == id){
+                    legal = false;
+                    break;
+                }
+            }
+            if(legal){
+                category.addPictogram(PictoFactory.getPictogram(this, id));
+                category.setChanged(true);
+                pictograms = category.getPictograms();
+            }
+        }
+    }
 }
