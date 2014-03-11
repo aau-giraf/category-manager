@@ -448,10 +448,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		
 		somethingChanged = false;
 	}
-	
-	public void returnToCaller(MenuItem item) {
-		finish();
-	}
+
 
 	/*
 	 * DONE: The following method update the visibility of buttons. This depends on what is selected. This limits

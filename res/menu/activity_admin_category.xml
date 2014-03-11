@@ -9,12 +9,4 @@
         android:onClick="saveChanges">
         </item>
         
-    <item
-        android:id="@+id/action_back"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/close"
-        android:onClick="returnToCaller">
-        </item>
-
 </menu>
