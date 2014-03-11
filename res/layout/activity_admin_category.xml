@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -131,7 +131,7 @@
                     android:id="@+id/subcategory_listview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:listSelector="@drawable/glistitem" />
+                    android:listSelector="@drawable/glistitem"/>
 
 
             </LinearLayout>
@@ -181,7 +181,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:numColumns="6"
-                    android:listSelector="@drawable/glistitem" />
+                    android:listSelector="@drawable/glistitem"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -194,4 +194,11 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </LinearLayout>
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_color2"
+        android:id="@+id/back_dim_layout"
+        android:visibility="gone"
+        />
+</RelativeLayout>

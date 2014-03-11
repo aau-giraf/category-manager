@@ -262,6 +262,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 				}
 			}
             dialog.dismiss();
+            findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 		}
 		else {
 			message = new MessageDialogFragment(getString(R.string.title_missing));
@@ -275,6 +276,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	public void onCatCreateDialogNegativeClick(DialogFragment dialog) {
 		// Do nothing
         dialog.dismiss();
+        findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 	}
 
 	@Override
@@ -522,6 +524,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	public void createCategory(View view) {
         CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.category);
         createDialog.show(getFragmentManager(),"dialog");
+        findViewById(R.id.back_dim_layout).setVisibility(View.VISIBLE);
 	}
 	
 	// DONE
@@ -534,6 +537,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	public void createSubCategory(View view) {
         CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.category, true);
         createDialog.show(getFragmentManager(),"dialog");
+        findViewById(R.id.back_dim_layout).setVisibility(View.VISIBLE);
 	}
 	
 	// DONE

@@ -88,6 +88,8 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 
         //convertView.setBackgroundColor(catList.get(position).getCategoryColor());
 
+        convertView.setBackgroundResource(R.drawable.grow);
+
 		return convertView;
 	}
 
