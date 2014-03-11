@@ -306,34 +306,32 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	 * a category or sub-category. Depending on the setting parameter, individual methods for updating is called
 	 */
 	public void updateSettings(PARROTCategory category, int pos, boolean isCategory, String setting) {
-		
-		if(setting.toLowerCase().equals("title")){
+		String settingLower = setting.toLowerCase();
+		if(settingLower.equals("title")){
 			updateTitle(category, pos, isCategory);
 		}
-		else if(setting.toLowerCase().equals("color")){
+		else if(settingLower.equals("color")){
 			updateColor(category, pos, isCategory);
 		}
-		else if(setting.toLowerCase().equals("icon")){
+		else if(settingLower.equals("icon")){
 			updateIcon(category, pos, isCategory);
 		}
-		else if(setting.toLowerCase().equals("delete")){
+		else if(settingLower.equals("delete")){
 			if(isCategory){
 				subcategoryList.removeAll(subcategoryList);
-				pictograms.removeAll(pictograms);
 				catHelp.deleteCategory(selectedCategory);
 				categoryList.remove(pos);
 				selectedCategory = null;
-                selectedSubCategory = null;
 			}
 			else {
-				pictograms.removeAll(pictograms);
 				subcategoryList.remove(pos);
 				selectedCategory.setChanged(true);
-				selectedSubCategory = null;
 			}
+            pictograms.removeAll(pictograms);
+            selectedSubCategory = null;
 			somethingChanged = true;
 		}
-		else if(setting.toLowerCase().equals("deletepictogram")){
+		else if(settingLower.equals("deletepictogram")){
 			if(selectedSubCategory == null){
 				selectedCategory.removePictogram(selectedLocation);
 			}
@@ -354,41 +352,34 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		updateButtonVisibility(null);
 	}
 	
-	// DONE
-	private void updateTitle(PARROTCategory tempCategory, int pos, boolean isCategory) {
-		boolean legal = true;
-		
+    
+	private void updateTitle(PARROTCategory changedCategory, int pos, boolean isCategory) {
 		if(isCategory) {
-			for(PARROTCategory c : categoryList) {
-				if(c.getCategoryName().equals(tempCategory.getCategoryName())) {
-					legal = false;
-					message = new MessageDialogFragment(getString(R.string.title_used_short));
-					message.show(getFragmentManager(), "invalidName");
-					break;
-				}
-			}
-			if(legal) {
-				categoryList.get(pos).setCategoryName(tempCategory.getCategoryName());
-				categoryList.get(pos).setChanged(true);
-			}
+            checkAndChangeTitle(changedCategory, pos, categoryList);
 		}
 		else {
-			for(PARROTCategory sc : subcategoryList){
-				if(sc.getCategoryName().equals(tempCategory.getCategoryName())){
-					legal = false;
-					message = new MessageDialogFragment(getString(R.string.name_used));
-					message.show(getFragmentManager(), "invalidName");
-					break;
-				}
-			}
-			if(legal){
-				subcategoryList.get(pos).setCategoryName(tempCategory.getCategoryName());
-				selectedCategory.setChanged(true);
-			}
+            checkAndChangeTitle(changedCategory, pos, subcategoryList);
 		}
 	}
-	
-	// DONE
+
+    private void checkAndChangeTitle(PARROTCategory changedCategory, int pos, ArrayList<PARROTCategory> list) {
+        boolean legal = true;
+        String catName = changedCategory.getCategoryName();
+        for(PARROTCategory c : list) {
+            if(c.getCategoryName().equals(catName)) {
+                legal = false;
+                message = new MessageDialogFragment(getString(R.string.name_used));
+                message.show(getFragmentManager(), "invalidName");
+                break;
+            }
+        }
+        if(legal) {
+            list.get(pos).setCategoryName(catName);
+            list.get(pos).setChanged(true);
+        }
+    }
+
+    // DONE
 	private void updateColor(PARROTCategory category, int pos, boolean isCategory) {
 		category.setChanged(true);
 		
@@ -547,7 +538,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		DeleteDialogFragment deleteDialog = new DeleteDialogFragment(this, selectedSubCategory, selectedLocation, false);
 		deleteDialog.show(getFragmentManager(), "deleteSubCategory?");
 	}
-	
+
 	// Goes to pictogram search function
 	public void createPictogram(View view) {
 		Intent request = new Intent();
