@@ -1,6 +1,7 @@
 package dk.aau.cs.giraf.pictoadmin;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -16,12 +17,12 @@ import android.os.Bundle;
 public class MessageDialogFragment extends DialogFragment {
 
 	public String message;
-	
-	public MessageDialogFragment(int msg) {
-		this.message = getString(msg);
-	}
-	
-	@Override
+
+    public MessageDialogFragment(int title_missing, Activity act) {
+        this.message = act.getString(title_missing);
+    }
+
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

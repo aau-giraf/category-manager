@@ -239,7 +239,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 					categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
 				}
 				else {
-					message = new MessageDialogFragment(R.string.title_used);
+					message = new MessageDialogFragment(R.string.title_used,this);
 					message.show(getFragmentManager(), "usedTitle");
 				}
 			}
@@ -257,7 +257,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 					subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
 				}
 				else {
-					message = new MessageDialogFragment(R.string.title_used);
+					message = new MessageDialogFragment(R.string.title_used,this);
 					message.show(getFragmentManager(), "usedTitle");
 				}
 			}
@@ -265,7 +265,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
             findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 		}
 		else {
-			message = new MessageDialogFragment(R.string.title_missing);
+			message = new MessageDialogFragment(R.string.title_missing,this);
 			message.show(getFragmentManager(), "missingTitle");
 		}
 
@@ -368,7 +368,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
         for(PARROTCategory c : list) {
             if(c.getCategoryName().equals(catName)) {
                 legal = false;
-                message = new MessageDialogFragment(R.string.name_used);
+                message = new MessageDialogFragment(R.string.name_used,this);
                 message.show(getFragmentManager(), "invalidName");
                 break;
             }
@@ -529,7 +529,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	
 	// DONE
 	public void createSubCategory(View view) {
-        CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.category, true);
+        CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.subcategory, true);
         createDialog.show(getFragmentManager(),"dialog");
         findViewById(R.id.back_dim_layout).setVisibility(View.VISIBLE);
 	}
@@ -553,7 +553,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			startActivityForResult(request, RESULT_FIRST_USER);
 		}
 		catch (Exception e) {
-			message = new MessageDialogFragment(R.string.search_missing);
+			message = new MessageDialogFragment(R.string.search_missing,this);
 			message.show(getFragmentManager(), "notInstalled");
 		}
 	}
@@ -575,7 +575,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			startActivity(croc);
 		}
 		catch (Exception e) {
-			message = new MessageDialogFragment(R.string.croc_missing);
+			message = new MessageDialogFragment(R.string.croc_missing,this);
 			message.show(getFragmentManager(), "notInstalled");
 		}
 	}
@@ -591,7 +591,6 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 
         if(data.hasExtra("checkoutIds")){
             long[] checkoutIds = extras.getLongArray("checkoutIds");
-            boolean legal;
 
             // Add pictograms to selectedCategory if no sub-category is selected
             if(selectedSubCategory == null){
