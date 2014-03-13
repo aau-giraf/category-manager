@@ -233,7 +233,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
         ArrayList<PARROTCategory> relatedCategories = isCategory ? categoryList : subcategoryList;
         boolean categoryWithNameExists = false;
         for(PARROTCategory sc : relatedCategories) {
-            if (sc.getCategoryName().equals(title)) {
+            if (sc.getCategoryName().equalsIgnoreCase(title)) {
                 categoryWithNameExists = true;
                 break;
             }
