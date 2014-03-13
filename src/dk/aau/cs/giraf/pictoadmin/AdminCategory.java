@@ -3,6 +3,7 @@ package dk.aau.cs.giraf.pictoadmin;
 import java.util.ArrayList;
 
 import dk.aau.cs.giraf.gui.GButton;
+import dk.aau.cs.giraf.gui.GDialog;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
 import yuku.ambilwarna.AmbilWarnaDialog;
@@ -523,8 +524,13 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	
 	// DONE
 	public void deleteCategory(View view) {
-		DeleteDialogFragment deleteDialog = new DeleteDialogFragment(this, selectedCategory, selectedLocation, true);
-		deleteDialog.show(getFragmentManager(), "deleteCategory?");
+        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.ic_launcher, getString(R.string.confirm_delete), "", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateSettings(selectedCategory, selectedLocation, true, "delete");
+            }
+        });
+        deleteDialog.show();
 	}
 	
 	// DONE
