@@ -26,6 +26,7 @@
     <string name="title_used">Den valgte titel er allerede anvendt af en anden kategori</string>
     <string name="title_missing">Mangler titel</string>
     <string name="title_used_short">Titlen er anvendt</string>
+    <string name="category_color_missing">Vælg venligst en farve til kategorien</string>
     <string name="name_used">Navn er allerede brugt</string>
     <string name="search_missing">Search not installed</string>
     <string name="croc_missing">Croc not installed</string>
