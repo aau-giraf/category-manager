@@ -3,6 +3,10 @@ package dk.aau.cs.giraf.pictoadmin;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +48,7 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	//create an image view for each icon of the categories in the list.
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -75,9 +79,17 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		ImageView imageView = (ImageView) convertView.findViewById(R.id.pictogrambitmap); 
 		imageView.setLayoutParams(layoutParams);
 		imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-		
+
+        int categoryColor = catList.get(position).getCategoryColor();
+        int red = Color.red(categoryColor);
+        int green = Color.green(categoryColor);
+        int blue = Color.blue(categoryColor);
+        float average = (red + green + blue) / 3;
+        int textColor = average > 255 / 2 ? Color.BLACK : Color.WHITE;
+
 		TextView textView = (TextView) convertView.findViewById(R.id.pictogramtext);
 		textView.setText(catList.get(position).getCategoryName());
+        textView.setTextColor(textColor);
 		
 		BitmapWorker worker = new BitmapWorker(imageView);
 
@@ -86,9 +98,10 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		
 		convertView.setPadding(10, 10, 10, 10);
 
-        //convertView.setBackgroundColor(catList.get(position).getCategoryColor());
-
-        convertView.setBackgroundResource(R.drawable.grow);
+        LayerDrawable background = (LayerDrawable)convertView.getResources().getDrawable(R.drawable.category);
+        final GradientDrawable shape = (GradientDrawable)background.findDrawableByLayerId(R.id.category_background);
+        shape.setColor(categoryColor);
+        convertView.setBackgroundDrawable(background);
 
 		return convertView;
 	}

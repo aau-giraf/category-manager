@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/pictogramtext"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center_horizontal"
         android:textColor="#FF000000"
