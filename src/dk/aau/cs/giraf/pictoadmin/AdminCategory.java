@@ -265,7 +265,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
             findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 		}
 		else {
-			message = new MessageDialogFragment(R.string.title_missing);
+			message = new MessageDialogFragment(R.string.title_missing,this);
 			message.show(getFragmentManager(), "missingTitle");
 		}
 
