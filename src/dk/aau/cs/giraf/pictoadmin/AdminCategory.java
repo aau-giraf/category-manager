@@ -591,7 +591,6 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 
         if(data.hasExtra("checkoutIds")){
             long[] checkoutIds = extras.getLongArray("checkoutIds");
-            boolean legal;
 
             // Add pictograms to selectedCategory if no sub-category is selected
             if(selectedSubCategory == null){
