@@ -17,10 +17,6 @@ import android.os.Bundle;
 public class MessageDialogFragment extends DialogFragment {
 
 	public String message;
-	
-	public MessageDialogFragment(int msg) {
-        this.message = getString(msg);
-	}
 
     public MessageDialogFragment(int title_missing, Activity act) {
         this.message = act.getString(title_missing);
