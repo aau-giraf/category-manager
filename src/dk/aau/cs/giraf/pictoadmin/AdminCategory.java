@@ -529,7 +529,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	
 	// DONE
 	public void createSubCategory(View view) {
-        CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.category, true);
+        CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.subcategory, true);
         createDialog.show(getFragmentManager(),"dialog");
         findViewById(R.id.back_dim_layout).setVisibility(View.VISIBLE);
 	}
