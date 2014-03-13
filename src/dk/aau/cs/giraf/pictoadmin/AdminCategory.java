@@ -14,6 +14,7 @@ import android.app.DialogFragment;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
@@ -39,26 +40,26 @@ import dk.aau.cs.giraf.pictogram.Pictogram;
 public class AdminCategory extends Activity implements CreateCategoryListener{
 	private Profile child;
 	private Profile guardian;
-	
+
 	private PARROTCategory selectedCategory    = null;
 	private PARROTCategory selectedSubCategory = null;
 	private Pictogram 	   selectedPictogram   = null;
-	
+
 	private ArrayList<PARROTCategory> categoryList    = new ArrayList<PARROTCategory>();
 	private ArrayList<PARROTCategory> subcategoryList = new ArrayList<PARROTCategory>();
 	private ArrayList<Pictogram> 	  pictograms	  = new ArrayList<Pictogram>();
-	
+
 	private GList categoryGrid;
 	private GList subcategoryGrid;
 	private GGridView pictogramGrid;
-	
+
 	private boolean somethingChanged = false; // If something is deleted, is has to be noted
 	private int     selectedLocation; // Stores the location of the last pressed item in any gridview
 	private int     newCategoryColor; // Hold the value set when creating a new category or sub-category
-	
+
 	private CategoryHelper catHelp;
 	private ProfilesHelper proHelp;
-	
+
 	private MessageDialogFragment message;
 
 	@Override
@@ -70,9 +71,9 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		setContentView(R.layout.activity_admin_category);
 		catHelp =  new CategoryHelper(this);
 		proHelp =  new ProfilesHelper(this);
-		
+
 		Bundle extras = getIntent().getExtras();
-        
+
         //if a debugger is attatched at startup don't require login info
         if(extras == null && Debug.isDebuggerConnected())
         {
@@ -80,8 +81,8 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
             extras.putLong("currentChildID", 1);
             extras.putLong("currentGuardianID", 1);
         }
-        
-        
+
+
 		if(extras == null){
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -106,15 +107,15 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			getProfiles(extras);
 			Log.v("PROFILE","child " +child);
 			Log.v("PROFILE","guardian" + guardian);
-		
-		
+
+
 			Log.v("admincategory","child is " + child.getId());
 			categoryList = catHelp.getChildsCategories(child.getId());
 			if(categoryList == null)
 			{
 				categoryList = new ArrayList<PARROTCategory>();
 			}
-	
+
 			// Setup category gridview
 			categoryGrid = (GList) findViewById(R.id.category_listview);
 			if(categoryList != null){
@@ -140,7 +141,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 					return false;
 				}
 			});
-			
+
 			// Setup sub-category gridview
 			subcategoryGrid = (GList) findViewById(R.id.subcategory_listview);
 			subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
@@ -161,7 +162,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
                     return false;
                 }
             });
-			
+
 			// Setup pictogram gridview
 			pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
 			pictogramGrid.setOnItemClickListener(new OnItemClickListener() {
@@ -171,7 +172,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 					updateButtonVisibility(v);
 				}
 			});
-			
+
 			TextView currentChild = (TextView) findViewById(R.id.currentChildName);
 			currentChild.setText(child.getFirstname()+ " " + child.getSurname());
 		}
@@ -183,7 +184,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		getMenuInflater().inflate(R.menu.activity_admin_category, menu);
 		return true;
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -198,7 +199,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			for(PARROTCategory c : categoryList){
 				if(c.isChanged()){
 					Log.v("klim", "ready to save");
-					somethingChanged = true;				
+					somethingChanged = true;
 					catHelp.saveCategory(c, child.getId());
 				}
 			}
@@ -208,66 +209,63 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			catHelp.saveChangesToXML();
 		}
 	}
-	
+
 	/*
 	 * The following methods handle the creation of new categories and sub-categories
 	 */
 	@Override
 	public void onCatCreateDialogPositiveClick(DialogFragment dialog, String title, boolean isCategory) {
-		boolean legal = true;
+        // Ensure that a title has been set
+        if (title.isEmpty()) {
+            message = new MessageDialogFragment(R.string.title_missing,this);
+            message.show(getFragmentManager(), "missingTitle");
+            return;
+        }
 
-		if(!title.isEmpty()) {
-			if(isCategory){
-				if(!categoryList.isEmpty()){
-					for(PARROTCategory c : categoryList) {
-						if(c.getCategoryName().equals(title)){
-							legal = false;
-						}
-					}
-				}
-				if(legal){
-					if(!categoryList.isEmpty()){
-						categoryList.add(new PARROTCategory(title, newCategoryColor, categoryList.get(0).getIcon()));
-					}
-					else{
-						categoryList = new ArrayList<PARROTCategory>();
-						categoryList.add(new PARROTCategory(title, newCategoryColor, PictoFactory.getPictogram(this, 1)));
-					}
-					
-					categoryList.get(categoryList.size()-1).setChanged(true);
-					somethingChanged = true;
-					categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
-				}
-				else {
-					message = new MessageDialogFragment(R.string.title_used,this);
-					message.show(getFragmentManager(), "usedTitle");
-				}
-			}
-			else {
-				for(PARROTCategory sc : subcategoryList) {
-					if(sc.getCategoryName().equals(title)){
-						legal = false;
-					}
-				}
-				if(legal){
-                    PARROTCategory cat = new PARROTCategory(title, newCategoryColor, categoryList.get(0).getIcon());
-                    cat.setSuperCategory(selectedCategory);
-					subcategoryList.add(cat);
-					selectedCategory.setChanged(true);
-					subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
-				}
-				else {
-					message = new MessageDialogFragment(R.string.title_used,this);
-					message.show(getFragmentManager(), "usedTitle");
-				}
-			}
-            dialog.dismiss();
-            findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
-		}
-		else {
-			message = new MessageDialogFragment(R.string.title_missing,this);
-			message.show(getFragmentManager(), "missingTitle");
-		}
+        // Ensure that a color has been selected
+        if (newCategoryColor == 0) {
+            message = new MessageDialogFragment(R.string.category_color_missing, this);
+            message.show(getFragmentManager(), "categoryColorMissing");
+            return;
+        }
+
+        // Check if a related category ("main category" or subcategory) with same name exists
+        ArrayList<PARROTCategory> relatedCategories = isCategory ? categoryList : subcategoryList;
+        boolean categoryWithNameExists = false;
+        for(PARROTCategory sc : relatedCategories) {
+            if (sc.getCategoryName().equals(title)) {
+                categoryWithNameExists = true;
+                break;
+            }
+        }
+
+        if (categoryWithNameExists) {
+            message = new MessageDialogFragment(R.string.title_used,this);
+            message.show(getFragmentManager(), "usedTitle");
+            return;
+        }
+
+        if (isCategory) { // Create category
+            if (!categoryList.isEmpty()) {
+                categoryList.add(new PARROTCategory(title, newCategoryColor, categoryList.get(0).getIcon()));
+            } else {
+                categoryList = new ArrayList<PARROTCategory>();
+                categoryList.add(new PARROTCategory(title, newCategoryColor, PictoFactory.getPictogram(this, 1)));
+            }
+
+            categoryList.get(categoryList.size()-1).setChanged(true);
+            somethingChanged = true;
+            categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+        } else { // Create subcategory
+            PARROTCategory cat = new PARROTCategory(title, newCategoryColor, categoryList.get(0).getIcon());
+            cat.setSuperCategory(selectedCategory);
+            subcategoryList.add(cat);
+            selectedCategory.setChanged(true);
+            subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+        }
+
+        dialog.dismiss();
+        findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 
 		newCategoryColor = 0;
 	}
@@ -283,7 +281,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	public void onBackPressed() {
 		finish();
 	}
-	
+
 	// DONE: Called when pressing the @id/colorButton and updates the newCategoryColor
 	public void setNewCategoryColor(View view)
 	{
@@ -292,7 +290,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			public void onOk(AmbilWarnaDialog dialog, int color) {
 				newCategoryColor = color;
 			}
-			
+
 			@Override
 			public void onCancel(AmbilWarnaDialog dialog) {
 				// Do nothing
@@ -300,7 +298,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		});
 		colorDialog.show();
 	}
-	
+
 	/*
 	 * The following methods handle updating of categories and sub-categories. This occurs when long-clicking either
 	 * a category or sub-category. Depending on the setting parameter, individual methods for updating is called
@@ -342,16 +340,16 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			selectedPictogram = null;
 			somethingChanged = true;
 		}
-		
+
 		if(isCategory){
 			categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
 		}
-		
+
 		subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
 		pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
 		updateButtonVisibility(null);
 	}
-	
+
 
 	private void updateTitle(PARROTCategory changedCategory, int pos, boolean isCategory) {
 		if(isCategory) {
@@ -382,16 +380,16 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
     // DONE
 	private void updateColor(PARROTCategory category, int pos, boolean isCategory) {
 		category.setChanged(true);
-		
+
 		if(isCategory){
 			categoryList.set(pos, category);
 		}
 	}
-	
+
 	// DONE
 	private void updateIcon(PARROTCategory category, int pos, boolean isCategory) {
 		category.setChanged(true);
-		
+
 		if(isCategory){
 			categoryList.set(pos, category);
 		}
@@ -399,17 +397,17 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			subcategoryList.set(pos, category);
 		}
 	}
-	
+
 	/*
 	 * This method gets all extras in the extras bundle from the intent that started this activity
 	 */
 	private void getProfiles(Bundle extras) {
-        
+
 		if(extras.containsKey("currentChildID")){
 			child = proHelp.getProfileById(extras.getLong("currentChildID"));
 		}
 		if(extras.containsKey("currentGuardianID")){
-			
+
 			guardian = proHelp.getProfileById(extras.getLong("currentGuardianID"));
 		}
 	}
@@ -424,7 +422,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 				sc.setChanged(false);
 			}
 		}
-		
+
 		for(PARROTCategory c : categoryList){
 			if(c.isChanged()){
 				somethingChanged = true;
@@ -436,7 +434,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		if(somethingChanged){
 			catHelp.saveChangesToXML();
 		}
-		
+
 		somethingChanged = false;
 	}
 
@@ -451,8 +449,8 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
         GButton delpic = (GButton) findViewById(R.id.delete_selected_picture_button);
         GButton addsub = (GButton) findViewById(R.id.add_new_subcategory_button);
         GButton addpic = (GButton) findViewById(R.id.add_new_picture_button);
-		
-		if(selectedCategory != null) {	
+
+		if(selectedCategory != null) {
 			delcat.setVisibility(View.VISIBLE);
 			addsub.setVisibility(View.VISIBLE);
 			addpic.setVisibility(View.VISIBLE);
@@ -478,7 +476,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			delpic.setVisibility(View.GONE);
 		}
 	}
-	
+
 	/*
 	 * DONE: This method update what is currently selected (category, sub-category or pictogram)
 	 */
@@ -494,10 +492,10 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			selectedCategory    = categoryList.get(position);
 			selectedSubCategory = null;
 			selectedPictogram   = null;
-			
+
 			subcategoryList  = selectedCategory.getSubCategories();
 			pictograms 		 = selectedCategory.getPictograms();
-		    
+
 			subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
 			pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
 		}
@@ -505,13 +503,13 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 		else if(id == 0) {
 			selectedSubCategory = subcategoryList.get(position);
 			selectedPictogram   = null;
-			
+
 			pictograms = subcategoryList.get(position).getPictograms();
-			
+
 			pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
 		}
 	}
-	
+
 	/*
 	 * DONE: The following methods handle the creation and deletion of categories and sub-categories
 	 */
@@ -520,20 +518,20 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
         createDialog.show(getFragmentManager(),"dialog");
         findViewById(R.id.back_dim_layout).setVisibility(View.VISIBLE);
 	}
-	
+
 	// DONE
 	public void deleteCategory(View view) {
 		DeleteDialogFragment deleteDialog = new DeleteDialogFragment(this, selectedCategory, selectedLocation, true);
 		deleteDialog.show(getFragmentManager(), "deleteCategory?");
 	}
-	
+
 	// DONE
 	public void createSubCategory(View view) {
         CreateCategoryDialog createDialog = new CreateCategoryDialog(R.string.subcategory, true);
         createDialog.show(getFragmentManager(),"dialog");
         findViewById(R.id.back_dim_layout).setVisibility(View.VISIBLE);
 	}
-	
+
 	// DONE
 	public void deleteSubCategory(View view) {
 		DeleteDialogFragment deleteDialog = new DeleteDialogFragment(this, selectedSubCategory, selectedLocation, false);
@@ -543,13 +541,13 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	// Goes to pictogram search function
 	public void createPictogram(View view) {
 		Intent request = new Intent();
-		
+
 		try{
 			request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
 			request.putExtra("purpose", "CAT");
 			request.putExtra("currentChildID", child.getId());
 			request.putExtra("currentGuardianID", guardian.getId());
-			
+
 			startActivityForResult(request, RESULT_FIRST_USER);
 		}
 		catch (Exception e) {
@@ -557,19 +555,19 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			message.show(getFragmentManager(), "notInstalled");
 		}
 	}
-	
+
 	// DONE
 	public void deletePictogram(View view) {
 		DeleteDialogFragment deleteDialog = new DeleteDialogFragment(this, selectedPictogram, selectedLocation, false);
 		deleteDialog.show(getFragmentManager(), "deletePictogram?");
 	}
-	
+
 	/*
 	 * The following method handle how we access pictoCreator
 	 */
 	public void gotoPictoCreator(View view) {
 		Intent croc = new Intent();
-		
+
 		try{
 			croc.setComponent(new ComponentName("dk.aau.cs.giraf.pictocreator", "dk.aau.cs.giraf.pictocreator.CrocActivity"));
 			startActivity(croc);
@@ -579,7 +577,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			message.show(getFragmentManager(), "notInstalled");
 		}
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
