@@ -306,7 +306,12 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	public void updateSettings(PARROTCategory category, int pos, boolean isCategory, String setting) {
 		String settingLower = setting.toLowerCase();
 		if(settingLower.equals("title")){
-			updateTitle(category, pos, isCategory);
+            if(isCategory) {
+                updateTitle(category, pos, categoryList);
+            }
+            else {
+                updateTitle(category, pos, subcategoryList);
+            }
 		}
 		else if(settingLower.equals("color")){
 			updateColor(category, pos, isCategory);
@@ -351,31 +356,19 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 	}
 
 
-	private void updateTitle(PARROTCategory changedCategory, int pos, boolean isCategory) {
-		if(isCategory) {
-            checkAndChangeTitle(changedCategory, pos, categoryList);
-		}
-		else {
-            checkAndChangeTitle(changedCategory, pos, subcategoryList);
-		}
-	}
-
-    private void checkAndChangeTitle(PARROTCategory changedCategory, int pos, ArrayList<PARROTCategory> list) {
-        boolean legal = true;
+	private void updateTitle(PARROTCategory changedCategory, int pos, ArrayList<PARROTCategory> list) {
         String catName = changedCategory.getCategoryName();
         for(PARROTCategory c : list) {
             if(c.getCategoryName().equals(catName)) {
-                legal = false;
                 message = new MessageDialogFragment(R.string.name_used,this);
                 message.show(getFragmentManager(), "invalidName");
-                break;
+                return;
             }
         }
-        if(legal) {
-            list.get(pos).setCategoryName(catName);
-            list.get(pos).setChanged(true);
-        }
-    }
+        list.get(pos).setCategoryName(catName);
+        list.get(pos).setChanged(true);
+	}
+
 
     // DONE
 	private void updateColor(PARROTCategory category, int pos, boolean isCategory) {
