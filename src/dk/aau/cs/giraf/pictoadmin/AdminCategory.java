@@ -522,7 +522,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 
 	// DONE
 	public void deleteCategory(View view) {
-        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.ic_launcher, getString(R.string.confirm_delete), "", new View.OnClickListener() {
+        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateSettings(selectedCategory, selectedLocation, true, "delete");
