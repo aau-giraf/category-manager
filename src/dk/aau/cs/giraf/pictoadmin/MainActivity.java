@@ -124,8 +124,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			categoryGrid.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					//categoryGrid.setBackgroundColor(categoryList.get(position).getCategoryColor());
-					//subcategoryGrid.setBackgroundColor(categoryList.get(position).getCategoryColor());
 					updateSelected(v, position, 1);
 					updateButtonVisibility(v);
 
@@ -147,7 +145,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					//subcategoryGrid.setBackgroundColor(subcategoryList.get(position).getCategoryColor());
 					updateSelected(v, position, 0);
 					updateButtonVisibility(v);
 				}
