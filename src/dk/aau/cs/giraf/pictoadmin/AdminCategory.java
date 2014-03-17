@@ -569,8 +569,13 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 
 	// DONE
 	public void deletePictogram(View view) {
-		DeleteDialogFragment deleteDialog = new DeleteDialogFragment(this, selectedPictogram, selectedLocation, false);
-		deleteDialog.show(getFragmentManager(), "deletePictogram?");
+        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                updateSettings(selectedSubCategory, selectedLocation, false, "deletepictogram");
+            }
+        });
+        deleteDialog.show();
 	}
 
 	/*
