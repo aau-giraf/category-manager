@@ -56,7 +56,7 @@ public class IconDialogFragment extends DialogFragment{
                    public void onClick(DialogInterface dialog, int id) {
                 	   if(icon != null){
                 		   changedCategory.setIcon(icon);
-                		   startActiviy.updateSettings(changedCategory, pos, isCategory, "icon");
+                		   startActiviy.updateSettings(changedCategory, pos, isCategory, MainActivity.Setting.ICON);
                 	   }
                    }
                })

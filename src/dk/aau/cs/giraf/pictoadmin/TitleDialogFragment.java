@@ -42,7 +42,7 @@ public class TitleDialogFragment extends DialogFragment{
                 	    * a string is to keep the updateSettings method simple
                 	    */
                 	   PARROTCategory tempCategory = new PARROTCategory(titel.getText().toString(), 0, null);
-                	   startActiviy.updateSettings(tempCategory, pos, isCategory, "title");
+                	   startActiviy.updateSettings(tempCategory, pos, isCategory, MainActivity.Setting.TITLE);
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

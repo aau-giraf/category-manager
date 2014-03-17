@@ -57,7 +57,7 @@ public class SettingDialogFragment extends DialogFragment{
                                 public void onOk(AmbilWarnaDialog dialog, int color) {
                                     category.setCategoryColor(color);
 
-                                    startActivity.updateSettings(category, pos, isCategory, "color");
+                                    startActivity.updateSettings(category, pos, isCategory, MainActivity.Setting.COLOR);
                                 }
 
                                 @Override

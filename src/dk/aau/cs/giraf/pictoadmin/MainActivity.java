@@ -62,6 +62,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	private MessageDialogFragment message;
 
+    public enum Setting{TITLE, COLOR, ICON, DELETE, DELETEPICTOGRAM};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -300,48 +302,50 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	 * The following methods handle updating of categories and sub-categories. This occurs when long-clicking either
 	 * a category or sub-category. Depending on the setting parameter, individual methods for updating is called
 	 */
-	public void updateSettings(PARROTCategory category, int pos, boolean isCategory, String setting) {
-		String settingLower = setting.toLowerCase();
-		if(settingLower.equals("title")){
-            if(isCategory) {
-                updateTitle(category, pos, categoryList);
-            }
-            else {
-                updateTitle(category, pos, subcategoryList);
-            }
-		}
-		else if(settingLower.equals("color")){
-			updateColor(category, pos, isCategory);
-		}
-		else if(settingLower.equals("icon")){
-			updateIcon(category, pos, isCategory);
-		}
-		else if(settingLower.equals("delete")){
-			if(isCategory){
-				subcategoryList.removeAll(subcategoryList);
-				catHelp.deleteCategory(selectedCategory);
-				categoryList.remove(pos);
-				selectedCategory = null;
-			}
-			else {
-				subcategoryList.remove(pos);
-				selectedCategory.setChanged(true);
-			}
-            pictograms.removeAll(pictograms);
-            selectedSubCategory = null;
-			somethingChanged = true;
-		}
-		else if(settingLower.equals("deletepictogram")){
-			if(selectedSubCategory == null){
-				selectedCategory.removePictogram(selectedLocation);
-			}
-			else{
-				selectedSubCategory.removePictogram(selectedLocation);
-			}
-			selectedCategory.setChanged(true);
-			selectedPictogram = null;
-			somethingChanged = true;
-		}
+	public void updateSettings(PARROTCategory category, int pos, boolean isCategory, Setting setting) {
+
+        switch (setting){
+            case TITLE:
+                if(isCategory) {
+                    updateTitle(category, pos, categoryList);
+                }
+                else {
+                    updateTitle(category, pos, subcategoryList);
+                }
+                break;
+            case COLOR:
+                updateColor(category, pos, isCategory);
+                break;
+            case ICON:
+                updateIcon(category, pos, isCategory);
+                break;
+            case DELETE:
+                if(isCategory){
+                    subcategoryList.removeAll(subcategoryList);
+                    catHelp.deleteCategory(selectedCategory);
+                    categoryList.remove(pos);
+                    selectedCategory = null;
+                }
+                else {
+                    subcategoryList.remove(pos);
+                    selectedCategory.setChanged(true);
+                }
+                pictograms.removeAll(pictograms);
+                selectedSubCategory = null;
+                somethingChanged = true;
+                break;
+            case DELETEPICTOGRAM:
+                if(selectedSubCategory == null){
+                    selectedCategory.removePictogram(selectedLocation);
+                }
+                else{
+                    selectedSubCategory.removePictogram(selectedLocation);
+                }
+                selectedCategory.setChanged(true);
+                selectedPictogram = null;
+                somethingChanged = true;
+                break;
+        }
 
 		if(isCategory){
 			categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
@@ -514,7 +518,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateSettings(selectedCategory, selectedLocation, true, "delete");
+                updateSettings(selectedCategory, selectedLocation, true, Setting.DELETE);
             }
         });
         deleteDialog.show();
@@ -532,7 +536,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateSettings(selectedSubCategory, selectedLocation, false, "delete");
+                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETE);
             }
         });
         deleteDialog.show();
@@ -561,7 +565,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                updateSettings(selectedSubCategory, selectedLocation, false, "deletepictogram");
+                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
             }
         });
         deleteDialog.show();
