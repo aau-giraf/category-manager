@@ -55,15 +55,7 @@ public class SettingDialogFragment extends DialogFragment{
                             AmbilWarnaDialog colorDialog = new AmbilWarnaDialog(startActivity, category.getCategoryColor(), new OnAmbilWarnaListener() {
                                 @Override
                                 public void onOk(AmbilWarnaDialog dialog, int color) {
-                                    if(!isCategory){
-                                        category = category.getSuperCategory();
-                                    }
-
                                     category.setCategoryColor(color);
-
-                                    for(PARROTCategory sc : category.getSubCategories()){
-                                        sc.setCategoryColor(color);
-                                    }
 
                                     startActivity.updateSettings(category, pos, isCategory, "color");
                                 }
