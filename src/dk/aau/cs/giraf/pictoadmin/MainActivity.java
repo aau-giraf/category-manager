@@ -15,7 +15,6 @@ import android.app.DialogFragment;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
@@ -38,7 +37,7 @@ import dk.aau.cs.giraf.pictogram.Pictogram;
  * This is the main class in the CAT application.
  */
 @SuppressLint("DefaultLocale")
-public class AdminCategory extends Activity implements CreateCategoryListener{
+public class MainActivity extends Activity implements CreateCategoryListener{
 	private Profile child;
 	private Profile guardian;
 
@@ -135,7 +134,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			categoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
 				@Override
 				public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					SettingDialogFragment settingDialog = new SettingDialogFragment(AdminCategory.this,
+					SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
 																				categoryList.get(position),
 																				position, true);
 					settingDialog.show(getFragmentManager(), "chooseSettings");
@@ -156,7 +155,7 @@ public class AdminCategory extends Activity implements CreateCategoryListener{
 			subcategoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
-                    SettingDialogFragment settingDialog = new SettingDialogFragment(AdminCategory.this,
+                    SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
                             subcategoryList.get(position),
                             position, false);
                     settingDialog.show(getFragmentManager(), "chooseSettings");

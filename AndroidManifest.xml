@@ -18,7 +18,7 @@
 
 
         <activity
-            android:name="dk.aau.cs.giraf.pictoadmin.AdminCategory"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/NoActionBar">

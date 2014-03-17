@@ -95,8 +95,6 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 
         Pictogram pct = catList.get(position).getIcon();
         worker.execute(pct);
-		
-		convertView.setPadding(10, 10, 10, 10);
 
         LayerDrawable background = (LayerDrawable)convertView.getResources().getDrawable(R.drawable.category);
         final GradientDrawable shape = (GradientDrawable)background.findDrawableByLayerId(R.id.category_background);

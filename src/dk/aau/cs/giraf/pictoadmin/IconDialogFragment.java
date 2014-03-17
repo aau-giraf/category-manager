@@ -20,13 +20,13 @@ import dk.aau.cs.giraf.pictogram.Pictogram;
  */
 @SuppressLint("ValidFragment")
 public class IconDialogFragment extends DialogFragment{
-	private AdminCategory startActiviy;
+	private MainActivity startActiviy;
 	private Pictogram icon = null;
 	private PARROTCategory changedCategory;
 	private int pos;
 	private boolean isCategory;
 	
-	public IconDialogFragment(AdminCategory activity, PARROTCategory cat, int position, boolean isCategory) {
+	public IconDialogFragment(MainActivity activity, PARROTCategory cat, int position, boolean isCategory) {
 		this.startActiviy =  activity;
 		this.changedCategory = cat;
 		this.pos = position;

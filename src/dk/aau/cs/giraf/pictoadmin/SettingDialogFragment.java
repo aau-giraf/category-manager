@@ -17,12 +17,12 @@ import dk.aau.cs.giraf.categorylib.PARROTCategory;
  */
 @SuppressLint("ValidFragment")
 public class SettingDialogFragment extends DialogFragment{
-    private AdminCategory startActivity;
+    private MainActivity startActivity;
     private PARROTCategory category;
     private int pos;
     private boolean isCategory;
 
-    public SettingDialogFragment(AdminCategory activity, PARROTCategory cat, int position, boolean isCategory) {
+    public SettingDialogFragment(MainActivity activity, PARROTCategory cat, int position, boolean isCategory) {
         this.startActivity = activity;
         this.category = cat;
         this.pos = position;
