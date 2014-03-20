@@ -578,7 +578,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		Intent croc = new Intent();
 
 		try{
-			croc.setComponent(new ComponentName("dk.aau.cs.giraf.pictocreator", "dk.aau.cs.giraf.pictocreator.CrocActivity"));
+			croc.setComponent(new ComponentName("dk.aau.cs.giraf.pictocreator", "dk.aau.cs.giraf.pictocreator.MainActivity"));
 			startActivity(croc);
 		}
 		catch (Exception e) {
