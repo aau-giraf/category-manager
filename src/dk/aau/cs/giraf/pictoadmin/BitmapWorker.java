@@ -35,7 +35,8 @@ public class BitmapWorker extends AsyncTask<Object, Void, Bitmap> {
 			bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.usynlig);
 		}
 		else {
-			bmp = BitmapFactory.decodeFile(pictogram.getImagePath());
+			bmp = pictogram.getImageData();
+			//bmp = BitmapFactory.decodeFile(pictogram.getImageData());
 		}
 		
 		return bmp;

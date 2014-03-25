@@ -15,6 +15,7 @@ import android.app.DialogFragment;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
@@ -77,12 +78,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		Bundle extras = getIntent().getExtras();
 
         //if a debugger is attatched at startup don't require login info
-        if(extras == null && Debug.isDebuggerConnected())
-        {
+//        if(extras == null && Debug.isDebuggerConnected())
+//        {
             extras = new Bundle();
             extras.putLong("currentChildID", 1);
             extras.putLong("currentGuardianID", 1);
-        }
+//        }
 
 
 		if(extras == null){
@@ -107,11 +108,14 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		}
 		else{
 			getProfiles(extras);
+            child = new Profile("navn", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 1, 1, 1);
+
+
 			Log.v("PROFILE","child " +child);
 			Log.v("PROFILE","guardian" + guardian);
 
 
-			Log.v("admincategory","child is " + child.getId());
+//			Log.v("admincategory","child is " + child.getId());
 			categoryList = catHelp.getChildsCategories(child.getId());
 			if(categoryList == null)
 			{
@@ -515,12 +519,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	// DONE
 	public void deleteCategory(View view) {
-        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateSettings(selectedCategory, selectedLocation, true, Setting.DELETE);
-            }
-        });
+//        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                updateSettings(selectedCategory, selectedLocation, true, Setting.DELETE);
+//            }
+//        });
+        GDialog deleteDialog = new GDialog(view.getContext());
 
         deleteDialog.show();
 	}
@@ -534,12 +539,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	// DONE
 	public void deleteSubCategory(View view) {
-		GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETE);
-            }
-        });
+//		GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETE);
+//            }
+//        });
+        GDialog deleteDialog = new GDialog(view.getContext());
         deleteDialog.show();
 	}
 
@@ -563,12 +569,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	// DONE
 	public void deletePictogram(View view) {
-        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
-            }
-        });
+//        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v){
+//                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
+//            }
+//        });
+        GDialog deleteDialog = new GDialog(view.getContext());
         deleteDialog.show();
 	}
 
