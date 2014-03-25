@@ -27,7 +27,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.TextView;
 import dk.aau.cs.giraf.categorylib.CategoryHelper;
 import dk.aau.cs.giraf.categorylib.PARROTCategory;
-import dk.aau.cs.giraf.oasis.lib.controllers.ProfilesHelper;
+import dk.aau.cs.giraf.oasis.lib.controllers.ProfileController;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 import dk.aau.cs.giraf.pictogram.PictoFactory;
 import dk.aau.cs.giraf.pictogram.Pictogram;
@@ -58,7 +58,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	private int     newCategoryColor; // Hold the value set when creating a new category or sub-category
 
 	private CategoryHelper catHelp;
-	private ProfilesHelper proHelp;
+	private ProfileController proHelp;
 
 	private MessageDialogFragment message;
 
@@ -72,7 +72,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 		setContentView(R.layout.activity_admin_category);
 		catHelp =  new CategoryHelper(this);
-		proHelp =  new ProfilesHelper(this);
+		proHelp =  new ProfileController(this);
 
 		Bundle extras = getIntent().getExtras();
 
@@ -173,7 +173,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			});
 
 			TextView currentChild = (TextView) findViewById(R.id.currentChildName);
-			currentChild.setText(child.getFirstname()+ " " + child.getSurname());
+			currentChild.setText(child.getName());
 		}
 	}
 
@@ -398,11 +398,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	private void getProfiles(Bundle extras) {
 
 		if(extras.containsKey("currentChildID")){
-			child = proHelp.getProfileById(extras.getLong("currentChildID"));
+			child = proHelp.getProfileById(extras.getInt("currentChildID"));
 		}
 		if(extras.containsKey("currentGuardianID")){
 
-			guardian = proHelp.getProfileById(extras.getLong("currentGuardianID"));
+			guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
 		}
 	}
 
@@ -521,6 +521,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 updateSettings(selectedCategory, selectedLocation, true, Setting.DELETE);
             }
         });
+
         deleteDialog.show();
 	}
 
@@ -597,7 +598,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         Bundle extras = data.getExtras();
 
         if(data.hasExtra("checkoutIds")){
-            long[] checkoutIds = extras.getLongArray("checkoutIds");
+            int[] checkoutIds = extras.getIntArray("checkoutIds");
 
             // Add pictograms to selectedCategory if no sub-category is selected
             if(selectedSubCategory == null){
@@ -611,9 +612,9 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	}
 
-    private void checkAndAddPictograms(long[] checkoutIds, PARROTCategory category) {
+    private void checkAndAddPictograms(int[] checkoutIds, PARROTCategory category) {
         boolean legal;
-        for(long id : checkoutIds){
+        for(int id : checkoutIds){
             legal = true;
 
             for(Pictogram p : pictograms){
