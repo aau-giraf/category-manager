@@ -259,17 +259,17 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
         if (isCategory) { // Create category
             if (!categoryList.isEmpty()) {
-                categoryList.add(new Category(title, Integer.toString(newCategoryColor), null, categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId())
+                categoryList.add(new Category(title, newCategoryColor, null, categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId())
             } else {
                 categoryList = new ArrayList<Category>();
-                categoryList.add(new Category(title, Integer.toString(newCategoryColor), null, 0)); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
+                categoryList.add(new Category(title, newCategoryColor, null, 0)); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
             }
 
 //            categoryList.get(categoryList.size()-1).setChanged(true);
             somethingChanged = true;
             categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
         } else { // Create subcategory
-            Category cat = new Category(title, Integer.toString(newCategoryColor), null, selectedCategory.getId()); // IMPORTANT: categoryList.get(0).getIcon()
+            Category cat = new Category(title, newCategoryColor, null, selectedCategory.getId()); // IMPORTANT: categoryList.get(0).getIcon()
             subcategoryList.add(cat);
 //            selectedCategory.setChanged(true);
             subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));

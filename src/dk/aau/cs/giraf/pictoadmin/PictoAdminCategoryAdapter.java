@@ -80,7 +80,7 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		imageView.setLayoutParams(layoutParams);
 		imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-        String categoryColor = catList.get(position).getColour();
+        int categoryColor = catList.get(position).getColour();
 //        int red = Color.red(categoryColor);
 //        int green = Color.green(categoryColor);
 //        int blue = Color.blue(categoryColor);

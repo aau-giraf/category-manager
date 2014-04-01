@@ -42,7 +42,7 @@ public class TitleDialogFragment extends DialogFragment{
                 	   /* tempCategory is used to hold the new title. The reason for using a category instead of sending
                 	    * a string is to keep the updateSettings method simple
                 	    */
-                	   Category tempCategory = new Category(titel.getText().toString(), "red?", null, 0);
+                	   Category tempCategory = new Category(titel.getText().toString(), 0, null, 0);
                 	   startActiviy.updateSettings(tempCategory, pos, isCategory, MainActivity.Setting.TITLE);
                    }
                })
