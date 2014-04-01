@@ -1,10 +1,10 @@
 package dk.aau.cs.giraf.pictoadmin;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import dk.aau.cs.giraf.categorylib.PARROTCategory;
+
+import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.pictogram.Pictogram;
 
 /**
@@ -23,12 +23,12 @@ import dk.aau.cs.giraf.pictogram.Pictogram;
  * This class takes a list of categories and loads them into a GridView.
  */
 public class PictoAdminCategoryAdapter extends BaseAdapter{
-	private ArrayList<PARROTCategory> catList;
+	private List<Category> catList;
 	private Context context;
 
 	//Constructor taking List of PARROTCategories, and a Context.
-	public PictoAdminCategoryAdapter(ArrayList<PARROTCategory> catList, Context c){
-		this.catList=catList;
+	public PictoAdminCategoryAdapter(List<Category> catList, Context c){
+		this.catList = catList;
 		context = c;
 	}
 
@@ -80,25 +80,26 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		imageView.setLayoutParams(layoutParams);
 		imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-        int categoryColor = catList.get(position).getCategoryColor();
-        int red = Color.red(categoryColor);
-        int green = Color.green(categoryColor);
-        int blue = Color.blue(categoryColor);
-        float average = (red + green + blue) / 3;
-        int textColor = average > 255 / 2 ? Color.BLACK : Color.WHITE;
+        String categoryColor = catList.get(position).getColour();
+//        int red = Color.red(categoryColor);
+//        int green = Color.green(categoryColor);
+//        int blue = Color.blue(categoryColor);
+//        float average = (red + green + blue) / 3;
+//        int textColor = average > 255 / 2 ? Color.BLACK : Color.WHITE;
+        int textColor = Color.BLACK; // black for now
 
 		TextView textView = (TextView) convertView.findViewById(R.id.pictogramtext);
-		textView.setText(catList.get(position).getCategoryName());
+		textView.setText(catList.get(position).getName());
         textView.setTextColor(textColor);
 		
 		BitmapWorker worker = new BitmapWorker(imageView);
 
-        Pictogram pct = catList.get(position).getIcon();
+        Pictogram pct = null; // IMPORTANT: catList.get(position).getImage();
         worker.execute(pct);
 
         LayerDrawable background = (LayerDrawable)convertView.getResources().getDrawable(R.drawable.category);
         final GradientDrawable shape = (GradientDrawable)background.findDrawableByLayerId(R.id.category_background);
-        shape.setColor(categoryColor);
+        shape.setColor(0); //IMPORTANT: categoryColor
         convertView.setBackgroundDrawable(background);
 
 		return convertView;

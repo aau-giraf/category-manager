@@ -9,7 +9,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import dk.aau.cs.giraf.categorylib.PARROTCategory;
+
+import dk.aau.cs.giraf.oasis.lib.models.Category;
 
 /**
  * @author SW605f13 Parrot-group
@@ -41,7 +42,7 @@ public class TitleDialogFragment extends DialogFragment{
                 	   /* tempCategory is used to hold the new title. The reason for using a category instead of sending
                 	    * a string is to keep the updateSettings method simple
                 	    */
-                	   PARROTCategory tempCategory = new PARROTCategory(titel.getText().toString(), 0, null);
+                	   Category tempCategory = new Category(titel.getText().toString(), "red?", null, 0);
                 	   startActiviy.updateSettings(tempCategory, pos, isCategory, MainActivity.Setting.TITLE);
                    }
                })
