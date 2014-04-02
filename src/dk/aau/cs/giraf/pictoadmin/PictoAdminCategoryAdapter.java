@@ -81,12 +81,11 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         int categoryColor = catList.get(position).getColour();
-//        int red = Color.red(categoryColor);
-//        int green = Color.green(categoryColor);
-//        int blue = Color.blue(categoryColor);
-//        float average = (red + green + blue) / 3;
-//        int textColor = average > 255 / 2 ? Color.BLACK : Color.WHITE;
-        int textColor = Color.BLACK; // black for now
+        int red = Color.red(categoryColor);
+        int green = Color.green(categoryColor);
+        int blue = Color.blue(categoryColor);
+        float average = (red + green + blue) / 3;
+        int textColor = average > 255 / 2 ? Color.BLACK : Color.WHITE;
 
 		TextView textView = (TextView) convertView.findViewById(R.id.pictogramtext);
 		textView.setText(catList.get(position).getName());
