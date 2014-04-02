@@ -26,7 +26,12 @@ android {
         minSdkVersion 15
         targetSdkVersion 19
     }
-    
+
+    //To make the project build in Jenkins
+    lintOptions {
+        abortOnError false
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
