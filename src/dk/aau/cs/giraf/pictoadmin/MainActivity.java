@@ -36,6 +36,8 @@ import dk.aau.cs.giraf.oasis.lib.controllers.CategoryController;
 
 import dk.aau.cs.giraf.pictogram.PictoFactory;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 /**
  * @author SW605f13 Parrot-group
  * This is the main class in the CAT application.
@@ -188,6 +190,9 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			TextView currentChild = (TextView) findViewById(R.id.currentChildName);
 			currentChild.setText(child.getName());
 		}
+
+        // Start logging this activity
+        EasyTracker.getInstance(this).activityStart(this);  // Add this method.
 	}
 
 
