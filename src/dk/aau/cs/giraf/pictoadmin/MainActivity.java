@@ -195,6 +195,15 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         EasyTracker.getInstance(this).activityStart(this);  // Add this method.
 	}
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Stop logging this activity
+        EasyTracker.getInstance(this).activityStop(this);
+    }
+
+
 
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
