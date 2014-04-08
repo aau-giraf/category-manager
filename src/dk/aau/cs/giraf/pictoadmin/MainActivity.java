@@ -8,6 +8,7 @@ import dk.aau.cs.giraf.gui.GButton;
 import dk.aau.cs.giraf.gui.GDialog;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
+import dk.aau.cs.giraf.gui.GPictogramAdapter;
 import dk.aau.cs.giraf.oasis.lib.controllers.PictogramController;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
@@ -78,10 +79,9 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-        Log.v(TAG, "before super");
+        Log.d(TAG, "before super");
     	super.onCreate(savedInstanceState);
-
-        Log.v(TAG, "after super");
+        Log.d(TAG, "after super");
 
 
 		setContentView(R.layout.activity_admin_category);
@@ -89,13 +89,14 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		proHelp =  new ProfileController(this);
 
 		Bundle extras = getIntent().getExtras();
+        Log.d(TAG, "made extras");
 
         //if a debugger is attatched at startup don't require login info
         if(extras == null )
         {
             Log.v(TAG, "extras is null");
             extras = new Bundle();
-            extras.putLong("currentChildID", 1);
+            extras.putLong("currentChildID", 11);
             extras.putLong("currentGuardianID", 1);
         }
 
@@ -122,14 +123,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		}
 		else{
 			getProfiles(extras);
-            child = new Profile("navn", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 1, 1, 1);
+            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
 
-
-			Log.v("PROFILE","child " +child);
-			Log.v("PROFILE","guardian" + guardian);
-
-
-//			Log.v("admincategory","child is " + child.getId());
 			categoryList = catHelp.getCategoriesByProfileId(child.getId());
 			if(categoryList == null)
 			{
@@ -276,7 +271,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
         if (isCategory) { // Create category
             if (!categoryList.isEmpty()) {
-                categoryList.add(new Category(title, newCategoryColor, null, categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId())
+                categoryList.add(new Category(title, newCategoryColor, categoryList.get(0).getImage(), categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId())
             } else {
                 categoryList = new ArrayList<Category>();
                 categoryList.add(new Category(title, newCategoryColor, null, 0)); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
@@ -284,9 +279,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 //            categoryList.get(categoryList.size()-1).setChanged(true);
             somethingChanged = true;
-            categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+            PictoAdminCategoryAdapter pc = new PictoAdminCategoryAdapter(categoryList, this);
+
+            categoryGrid.setAdapter(pc);
         } else { // Create subcategory
-            Category cat = new Category(title, newCategoryColor, null, selectedCategory.getId()); // IMPORTANT: categoryList.get(0).getIcon()
+            Category cat = new Category(title, newCategoryColor, categoryList.get(0).getImage(), selectedCategory.getId());
             subcategoryList.add(cat);
 //            selectedCategory.setChanged(true);
             subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));

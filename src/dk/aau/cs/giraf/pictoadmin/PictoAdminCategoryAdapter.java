@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -16,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import dk.aau.cs.giraf.oasis.lib.models.Category;
-import dk.aau.cs.giraf.pictogram.Pictogram;
 
 /**
  * @author SW605f13 Parrot-group
@@ -93,7 +93,7 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		
 		BitmapWorker worker = new BitmapWorker(imageView);
 
-        Pictogram pct = null; // IMPORTANT: catList.get(position).getImage();
+        Bitmap pct = catList.get(position).getImage(); // IMPORTANT: catList.get(position).getImage();
         worker.execute(pct);
 
         LayerDrawable background = (LayerDrawable)convertView.getResources().getDrawable(R.drawable.category);

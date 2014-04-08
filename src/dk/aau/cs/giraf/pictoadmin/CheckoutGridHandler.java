@@ -2,7 +2,7 @@ package dk.aau.cs.giraf.pictoadmin;
 
 import java.util.ArrayList;
 
-import dk.aau.cs.giraf.pictogram.Pictogram;
+import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
 /**
  * Never used
@@ -23,7 +23,7 @@ public class CheckoutGridHandler {
 		long[] checkout = new long[checkoutList.size()];
 		int i = 0;
 		for(Pictogram p : checkoutList){
-			checkout[i] = p.getPictogramID();
+			checkout[i] = p.getId();
 			i++;
 		}
 		
