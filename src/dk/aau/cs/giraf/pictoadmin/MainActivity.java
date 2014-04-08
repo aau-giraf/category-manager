@@ -74,12 +74,14 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
     private Object smth;
 
+    private static final String TAG = "cat";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        Log.v(TAG, "before super");
+    	super.onCreate(savedInstanceState);
 
-        Log.v("savedInstance", savedInstanceState.toString());
-
-		super.onCreate(savedInstanceState);
+        Log.v(TAG, "after super");
 
 
 		setContentView(R.layout.activity_admin_category);
@@ -89,12 +91,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		Bundle extras = getIntent().getExtras();
 
         //if a debugger is attatched at startup don't require login info
-//        if(extras == null && Debug.isDebuggerConnected())
-//        {
+        if(extras == null )
+        {
+            Log.v(TAG, "extras is null");
             extras = new Bundle();
             extras.putLong("currentChildID", 1);
             extras.putLong("currentGuardianID", 1);
-//        }
+        }
 
 
 		if(extras == null){
