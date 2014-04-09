@@ -93,8 +93,8 @@ public class PictoAdminCategoryAdapter extends BaseAdapter{
 		
 		BitmapWorker worker = new BitmapWorker(imageView);
 
-       // Bitmap pct = catList.get(position).getImage(); // IMPORTANT: catList.get(position).getImage();
-       // worker.execute(pct);
+        //Bitmap pct = catList.get(position).getImage(); // IMPORTANT: catList.get(position).getImage();
+      //  worker.execute(pct);
 
         LayerDrawable background = (LayerDrawable)convertView.getResources().getDrawable(R.drawable.category);
         final GradientDrawable shape = (GradientDrawable)background.findDrawableByLayerId(R.id.category_background);
