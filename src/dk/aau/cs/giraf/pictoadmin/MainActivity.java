@@ -125,9 +125,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		}
 		else{
 			getProfiles(extras);
-            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
+//            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
+            child = proHelp.getChildren().get(1);
 
-			categoryList = catHelp.getCategoriesByProfileId(child.getId());
+//			categoryList = catHelp.getCategoriesByProfileId(child.getId());
+            categoryList = catlibhelp.getCategoriesFromProfile(child);
 			if(categoryList == null)
 			{
 				categoryList = new ArrayList<Category>();
@@ -278,7 +280,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 categoryList = new ArrayList<Category>();
                 categoryList.add(new Category(title, newCategoryColor, null, 0)); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
             }
-
+            Category cat = new Category(title, newCategoryColor, null, 0);
+            catlibhelp.addCategoryToProfile(child, cat);
 //            categoryList.get(categoryList.size()-1).setChanged(true);
             somethingChanged = true;
             PictoAdminCategoryAdapter pc = new PictoAdminCategoryAdapter(categoryList, this);
@@ -291,10 +294,14 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
         }
 
+        List<Category> cattes = catlibhelp.getCategoriesFromProfile(child);
+        int x = cattes.size();
+
         dialog.dismiss();
         findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 
 		newCategoryColor = 0;
+
 	}
 
 	@Override
@@ -515,9 +522,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			selectedSubCategory = null;
 			selectedPictogram   = null;
 
-//			subcategoryList  = catHelp.getSubcategoriesByCategory(selectedCategory);
             subcategoryList = catlibhelp.getSubCategoriesFromCategory(selectedCategory);
-//			pictograms 		 = pictoHelp.getPictogramsByCategory(selectedCategory);
             pictograms = catlibhelp.getPictogramsFromCategory(selectedCategory);
 
 			subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
