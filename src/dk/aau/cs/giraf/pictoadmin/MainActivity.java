@@ -79,6 +79,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        catlibhelp = new CatLibHelper(this);
+
         Log.d(TAG, "before super");
     	super.onCreate(savedInstanceState);
         Log.d(TAG, "after super");
@@ -513,8 +515,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			selectedSubCategory = null;
 			selectedPictogram   = null;
 
-			subcategoryList  = catHelp.getSubcategoriesByCategory(selectedCategory);
-			pictograms 		 = pictoHelp.getPictogramsByCategory(selectedCategory);
+//			subcategoryList  = catHelp.getSubcategoriesByCategory(selectedCategory);
+            subcategoryList = catlibhelp.getSubCategoriesFromCategory(selectedCategory);
+//			pictograms 		 = pictoHelp.getPictogramsByCategory(selectedCategory);
+            pictograms = catlibhelp.getPictogramsFromCategory(selectedCategory);
 
 			subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
 			pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
@@ -524,7 +528,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			selectedSubCategory = subcategoryList.get(position);
 			selectedPictogram   = null;
 
-			pictograms = pictoHelp.getPictogramsByCategory(subcategoryList.get(position));
+//			pictograms = pictoHelp.getPictogramsByCategory(subcategoryList.get(position));
+            pictograms = catlibhelp.getPictogramsFromCategory(subcategoryList.get(position));
 
 			pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
 		}
