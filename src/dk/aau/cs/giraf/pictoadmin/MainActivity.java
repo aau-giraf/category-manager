@@ -281,6 +281,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 categoryList.add(new Category(title, newCategoryColor, null, 0)); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
             }
             Category cat = new Category(title, newCategoryColor, null, 0);
+
             catlibhelp.addCategoryToProfile(child, cat);
 //            categoryList.get(categoryList.size()-1).setChanged(true);
             somethingChanged = true;
@@ -533,7 +534,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			selectedSubCategory = subcategoryList.get(position);
 			selectedPictogram   = null;
 
-//			pictograms = pictoHelp.getPictogramsByCategory(subcategoryList.get(position));
+			pictograms = catlibhelp.getPictogramsFromCategory(subcategoryList.get(position));
             pictograms = catlibhelp.getPictogramsFromCategory(subcategoryList.get(position));
 
 			pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
