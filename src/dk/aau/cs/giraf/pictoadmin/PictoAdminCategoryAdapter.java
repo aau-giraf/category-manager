@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import dk.aau.cs.giraf.oasis.lib.models.Category;
+import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
 /**
  * @author SW605f13 Parrot-group
