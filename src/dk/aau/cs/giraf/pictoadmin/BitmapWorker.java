@@ -7,7 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
-import dk.aau.cs.giraf.pictogram.Pictogram;
+
+import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
 /**
  * This class is used to loading the bitmaps into memory and displaying them in the pictogramGrid when 
@@ -28,17 +29,20 @@ public class BitmapWorker extends AsyncTask<Object, Void, Bitmap> {
 
 	@Override
 	protected Bitmap doInBackground(Object... params) {
-		pictogram = (Pictogram) params[0];
-		Bitmap bmp = null;
+//		pictogram = (Pictogram) params[0];
+//		Bitmap bmp = null;
+//
+//		if(pictogram.getId() == -1) {
+//			bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.usynlig);
+//		}
+//		else {
+//			bmp = pictogram.getImageData();
+//			//bmp = BitmapFactory.decodeFile(pictogram.getImageData());
+//		}
+//
+//		return bmp;
 
-		if(pictogram.getPictogramID() == -1) {
-			bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.usynlig);
-		}
-		else {
-			bmp = BitmapFactory.decodeFile(pictogram.getImagePath());
-		}
-		
-		return bmp;
+        return (Bitmap)params[0];
 	}
 	
 	protected void onPostExecute(Bitmap result) {

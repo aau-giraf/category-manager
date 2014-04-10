@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="TypographyDashes">
+
+    <!--Replace placeholder ID with your tracking ID-->
+    <string name="ga_trackingId">UA-48608499-3</string>
+
+    <!--Enable automatic activity tracking-->
+    <bool name="ga_autoActivityTracking">true</bool>
+
+    <!--Enable automatic exception tracking-->
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+
+    <!--Enable debug mode - Useful when doing debugging and testing new implementation - true = do not send / false = send data -->
+    <bool name="ga_dryRun">true</bool>
+</resources>

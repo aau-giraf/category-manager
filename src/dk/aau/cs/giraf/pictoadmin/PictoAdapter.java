@@ -2,6 +2,7 @@ package dk.aau.cs.giraf.pictoadmin;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import dk.aau.cs.giraf.pictogram.Pictogram;
+import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
 /**
  * @author SW605f13 Parrot-group
@@ -19,16 +20,16 @@ import dk.aau.cs.giraf.pictogram.Pictogram;
  */
 public class PictoAdapter extends BaseAdapter {
 	private Context context;
-	private ArrayList<Pictogram> pictograms;
+	private List<Pictogram> pictograms;
 	private boolean displayText = true;
 	
-	public PictoAdapter(ArrayList<Pictogram> p, Context c) {
+	public PictoAdapter(List<Pictogram> p, Context c) {
 		super();
 		this.pictograms = p;
 		context = c;
 	}
 	
-	public PictoAdapter(ArrayList<Pictogram> p, boolean display, Context c) {
+	public PictoAdapter(List<Pictogram> p, boolean display, Context c) {
 		super();
 		this.pictograms = p;
 		this.displayText = display;
@@ -67,7 +68,7 @@ public class PictoAdapter extends BaseAdapter {
 
         TextView textView = (TextView) convertView.findViewById(R.id.pictogramtext);
 		if(displayText) {
-			textView.setText(pctNew.getTextLabel());
+			textView.setText(pctNew.getInlineText());
 		}
         else{
             textView.setText("");
