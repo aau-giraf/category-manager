@@ -291,9 +291,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         } else { // Create subcategory
             Category cat = new Category(title, newCategoryColor, categoryList.get(0).getImage(), selectedCategory.getId());
             subcategoryList.add(cat);
-//            selectedCategory.setChanged(true);
+            catlibhelp.giveCategorySuperCategory(selectedCategory, cat);
             subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
         }
+
+
 
         List<Category> cattes = catlibhelp.getCategoriesFromProfile(child);
         int x = cattes.size();
