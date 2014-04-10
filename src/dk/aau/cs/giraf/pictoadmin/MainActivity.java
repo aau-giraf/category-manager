@@ -127,6 +127,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			getProfiles(extras);
 //            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
             child = proHelp.getChildren().get(1);
+            guardian = proHelp.getGuardiansByChild(child).get(0);
 
 //			categoryList = catHelp.getCategoriesByProfileId(child.getId());
             categoryList = catlibhelp.getCategoriesFromProfile(child);
@@ -514,7 +515,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	 */
 	private void updateSelected(View view, int position, int id) {
 		selectedLocation = position;
-
+        categoryList = catlibhelp.getCategoriesFromProfile(child);
         //id 2 is the Grid with pictograms
 		if(id == 2) {
 			selectedPictogram = pictograms.get(position);
@@ -541,6 +542,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 			pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
 		}
+
 	}
 
 	/*
