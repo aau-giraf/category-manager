@@ -6,6 +6,7 @@ import java.util.List;
 import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GButton;
 import dk.aau.cs.giraf.gui.GDialog;
+import dk.aau.cs.giraf.gui.GDialogMessage;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
 import dk.aau.cs.giraf.gui.GPictogramAdapter;
@@ -560,9 +561,20 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 //                updateSettings(selectedCategory, selectedLocation, true, Setting.DELETE);
 //            }
 //        });
-        GDialog deleteDialog = new GDialog(view.getContext());
+
+
+        GDialogMessage deleteDialog = new GDialogMessage(this,
+                getString(R.string.confirm_delete),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        catlibhelp.deleteCategory(selectedCategory);
+                    }
+                }
+                );
 
         deleteDialog.show();
+
 	}
 
 	// DONE
