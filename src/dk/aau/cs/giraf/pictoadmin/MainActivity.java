@@ -555,14 +555,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	// DONE
 	public void deleteCategory(View view) {
-//        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                updateSettings(selectedCategory, selectedLocation, true, Setting.DELETE);
-//            }
-//        });
-
-
         GDialogMessage deleteDialog = new GDialogMessage(this,
                 getString(R.string.confirm_delete),
                 new View.OnClickListener() {
@@ -592,7 +584,15 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 //                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETE);
 //            }
 //        });
-        GDialog deleteDialog = new GDialog(view.getContext());
+        GDialogMessage deleteDialog = new GDialogMessage(this,
+                getString(R.string.confirm_delete),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view){
+                        catlibhelp.deleteCategory(selectedSubCategory);
+                    }
+                }
+                );
         deleteDialog.show();
 	}
 
