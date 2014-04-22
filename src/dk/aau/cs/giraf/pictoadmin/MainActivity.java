@@ -127,7 +127,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			getProfiles(extras);
 //            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
             child = proHelp.getChildren().get(1);
-
+            guardian = proHelp.getGuardians().get(1);
 //			categoryList = catHelp.getCategoriesByProfileId(child.getId());
             categoryList = catlibhelp.getCategoriesFromProfile(child);
 			if(categoryList == null)
