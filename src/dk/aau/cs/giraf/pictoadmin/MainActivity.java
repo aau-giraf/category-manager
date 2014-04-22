@@ -561,6 +561,9 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     @Override
                     public void onClick(View view) {
                         catlibhelp.deleteCategory(selectedCategory);
+                        categoryList.remove(selectedLocation);
+                        selectedCategory = null;
+                        categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, view.getContext()));
                     }
                 }
                 );
@@ -590,6 +593,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     @Override
                     public void onClick(View view){
                         catlibhelp.deleteCategory(selectedSubCategory);
+                        subcategoryList.remove(selectedLocation);
+                        selectedSubCategory = null;
+                        subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
+
                     }
                 }
                 );
