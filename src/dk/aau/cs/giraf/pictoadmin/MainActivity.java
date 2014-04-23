@@ -6,6 +6,7 @@ import java.util.List;
 import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GButton;
 import dk.aau.cs.giraf.gui.GDialog;
+import dk.aau.cs.giraf.gui.GDialogMessage;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
 import dk.aau.cs.giraf.gui.GPictogramAdapter;
@@ -127,8 +128,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			getProfiles(extras);
 //            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
             child = proHelp.getChildren().get(1);
-            guardian = proHelp.getGuardiansByChild(child).get(0);
-
+            guardian = proHelp.getGuardians().get(1);
 //			categoryList = catHelp.getCategoriesByProfileId(child.getId());
             categoryList = catlibhelp.getCategoriesFromProfile(child);
 			if(categoryList == null)
@@ -556,15 +556,21 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	// DONE
 	public void deleteCategory(View view) {
-//        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                updateSettings(selectedCategory, selectedLocation, true, Setting.DELETE);
-//            }
-//        });
-        GDialog deleteDialog = new GDialog(view.getContext());
+        GDialogMessage deleteDialog = new GDialogMessage(this,
+                getString(R.string.confirm_delete),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        catlibhelp.deleteCategory(selectedCategory);
+                        categoryList.remove(selectedLocation);
+                        selectedCategory = null;
+                        categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, view.getContext()));
+                    }
+                }
+                );
 
         deleteDialog.show();
+
 	}
 
 	// DONE
@@ -582,7 +588,19 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 //                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETE);
 //            }
 //        });
-        GDialog deleteDialog = new GDialog(view.getContext());
+        GDialogMessage deleteDialog = new GDialogMessage(this,
+                getString(R.string.confirm_delete),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view){
+                        catlibhelp.deleteCategory(selectedSubCategory);
+                        subcategoryList.remove(selectedLocation);
+                        selectedSubCategory = null;
+                        subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
+
+                    }
+                }
+                );
         deleteDialog.show();
 	}
 
