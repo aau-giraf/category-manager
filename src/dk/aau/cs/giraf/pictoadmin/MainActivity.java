@@ -90,6 +90,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		setContentView(R.layout.activity_admin_category);
 		catHelp =  new CategoryController(this);
 		proHelp =  new ProfileController(this);
+        pictoHelp = new PictogramController(this);
 
 		Bundle extras = getIntent().getExtras();
         Log.d(TAG, "made extras");
@@ -610,8 +611,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		try{
 			request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
 			request.putExtra("purpose", "CAT");
-			request.putExtra("currentChildID", child.getId());
-			request.putExtra("currentGuardianID", guardian.getId());
+            //request.putExtra("currentChildID", child.getId());
+			//request.putExtra("currentGuardianID", guardian.getId());
 
 			startActivityForResult(request, RESULT_FIRST_USER);
 		}
