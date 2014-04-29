@@ -29,20 +29,28 @@ public class BitmapWorker extends AsyncTask<Object, Void, Bitmap> {
 
 	@Override
 	protected Bitmap doInBackground(Object... params) {
-//		pictogram = (Pictogram) params[0];
-//		Bitmap bmp = null;
-//
-//		if(pictogram.getId() == -1) {
-//			bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.usynlig);
-//		}
-//		else {
-//			bmp = pictogram.getImageData();
-//			//bmp = BitmapFactory.decodeFile(pictogram.getImageData());
-//		}
-//
-//		return bmp;
 
-        return (Bitmap)params[0];
+        if(params[0]!=null)
+        {
+            pictogram = (Pictogram) params[0];
+        }
+        else
+        {
+            return (Bitmap)params[0];
+        }
+
+		Bitmap bmp = null;
+
+		if(pictogram.getId() == -1) {
+			bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.usynlig);
+		}
+		else {
+			bmp = pictogram.getImageData();
+			//bmp = BitmapFactory.decodeFile(pictogram.getImageData());
+		}
+
+		return bmp;
+//
 	}
 	
 	protected void onPostExecute(Bitmap result) {

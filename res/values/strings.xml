@@ -6,7 +6,7 @@
         <item>Icon</item>
     </string-array>
 	
-	<string name="app_name">CAT</string>
+	<string name="app_name">Kategoriværktøjet</string>
     <string name="currentChild">Aktivt barn: </string>
     <string name="categories">Kategorier</string>
     <string name="subcategories">Underkategorier</string>

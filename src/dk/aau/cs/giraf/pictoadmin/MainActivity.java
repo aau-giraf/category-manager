@@ -74,38 +74,31 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
     public enum Setting{TITLE, COLOR, ICON, DELETE, DELETEPICTOGRAM};
 
-    private Object smth;
-
-    private static final String TAG = "cat";
+    private static final String TAG = "CAT";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_admin_category);
+
         catlibhelp = new CatLibHelper(this);
-
-        Log.d(TAG, "before super");
-    	super.onCreate(savedInstanceState);
-        Log.d(TAG, "after super");
-
-
-		setContentView(R.layout.activity_admin_category);
 		catHelp =  new CategoryController(this);
 		proHelp =  new ProfileController(this);
+        pictoHelp = new PictogramController(this);
 
 		Bundle extras = getIntent().getExtras();
-        Log.d(TAG, "made extras");
 
         //if a debugger is attatched at startup don't require login info
-        if(extras == null )
-        {
-            Log.v(TAG, "extras is null");
-            extras = new Bundle();
-            extras.putLong("currentChildID", 11);
-            extras.putLong("currentGuardianID", 1);
-        }
+//        if(extras == null )
+//        {
+//            Log.v(TAG, "extras is null");
+//            extras = new Bundle();
+//            extras.putLong("currentChildID", 11);
+//            extras.putLong("currentGuardianID", 1);
+//        }
 
-
+        // "Ugyldige login informationer"
 		if(extras == null){
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.dialog_title);
             builder.setMessage(R.string.errorLogin);
@@ -127,8 +120,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		else{
 			getProfiles(extras);
 //            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
-            child = proHelp.getChildren().get(1);
-            guardian = proHelp.getGuardians().get(1);
+//            child = proHelp.getChildren().get(1);
+//            guardian = proHelp.getGuardians().get(1);
+           // child = proHelp.getProfileById(extras.getInt("currentChildID"));
+           // guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
 //			categoryList = catHelp.getCategoriesByProfileId(child.getId());
             categoryList = catlibhelp.getCategoriesFromProfile(child);
 			if(categoryList == null)
@@ -375,10 +370,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 break;
             case DELETEPICTOGRAM:
                 if(selectedSubCategory == null){
-                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
+
+                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
                 }
                 else{
-                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
                 }
 //                selectedCategory.setChanged(true);
                 selectedPictogram = null;
@@ -435,12 +433,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	 * This method gets all extras in the extras bundle from the intent that started this activity
 	 */
 	private void getProfiles(Bundle extras) {
-
-		if(extras.containsKey("currentChildID")){
-			child = proHelp.getProfileById(extras.getInt("currentChildID"));
+		if(extras.containsKey("currentChildID")) {
+			child = proHelp.getProfileById((int)extras.getLong("currentChildID"));
 		}
 		if(extras.containsKey("currentGuardianID")){
-
 			guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
 		}
 	}
@@ -611,8 +607,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		try{
 			request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
 			request.putExtra("purpose", "CAT");
-			request.putExtra("currentChildID", child.getId());
-			request.putExtra("currentGuardianID", guardian.getId());
+            //request.putExtra("currentChildID", child.getId());
+			//request.putExtra("currentGuardianID", guardian.getId());
 
 			startActivityForResult(request, RESULT_FIRST_USER);
 		}
@@ -624,13 +620,21 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	// DONE
 	public void deletePictogram(View view) {
-//        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
-//            }
-//        });
-        GDialog deleteDialog = new GDialog(view.getContext());
+        GDialog deleteDialog = new GDialogMessage(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
+
+                // Håndter om det er cat eller subcat
+                // kun cat for nu
+
+//                Pictogram pic = selectedPictogram;
+//                Category cat = selectedCategory;
+//
+//                catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+            }
+        });
+
         deleteDialog.show();
 	}
 
