@@ -30,7 +30,8 @@ public class BitmapWorker extends AsyncTask<Object, Void, Bitmap> {
 	@Override
 	protected Bitmap doInBackground(Object... params) {
 
-        if(params[0]!=null)
+
+        if(params[0]!=null && params[0] instanceof Pictogram)
         {
             pictogram = (Pictogram) params[0];
         }
