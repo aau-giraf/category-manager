@@ -46,6 +46,8 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
+    private boolean DEBUG = true;
+
 	private Profile child;
 	private Profile guardian;
 
@@ -88,14 +90,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 		Bundle extras = getIntent().getExtras();
 
-        //if a debugger is attatched at startup don't require login info
-//        if(extras == null )
-//        {
-//            Log.v(TAG, "extras is null");
-//            extras = new Bundle();
-//            extras.putLong("currentChildID", 11);
-//            extras.putLong("currentGuardianID", 1);
-//        }
+        // for easier debugging
+        if(DEBUG)
+        {
+            extras = new Bundle();
+            extras.putLong("currentChildID", 31);
+            extras.putInt("currentGuardianID", 20);
+        }
 
         // "Ugyldige login informationer"
 		if(extras == null){
