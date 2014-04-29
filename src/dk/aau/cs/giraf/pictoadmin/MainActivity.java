@@ -623,7 +623,9 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             @Override
             public void onClick(View v){
                 updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
-
+                pictograms.remove(selectedLocation);
+                selectedPictogram = null;
+                pictogramGrid.setAdapter(new PictoAdapter(pictograms, v.getContext()));
                 // Håndter om det er cat eller subcat
                 // kun cat for nu
 
