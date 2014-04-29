@@ -370,10 +370,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 break;
             case DELETEPICTOGRAM:
                 if(selectedSubCategory == null){
-                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
+
+                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
                 }
                 else{
-                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
                 }
 //                selectedCategory.setChanged(true);
                 selectedPictogram = null;
@@ -616,13 +619,21 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	// DONE
 	public void deletePictogram(View view) {
-//        GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
-//            }
-//        });
-        GDialog deleteDialog = new GDialog(view.getContext());
+        GDialog deleteDialog = new GDialogMessage(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
+
+                // Håndter om det er cat eller subcat
+                // kun cat for nu
+
+//                Pictogram pic = selectedPictogram;
+//                Category cat = selectedCategory;
+//
+//                catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+            }
+        });
+
         deleteDialog.show();
 	}
 
