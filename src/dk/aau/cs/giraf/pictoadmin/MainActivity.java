@@ -414,11 +414,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             categoryList :
             subcategoryList);
 
-        for (Category cat : list) {
-            if (cat.getName().equals(copyPropsFromThis.getName())) {
-                message = new MessageDialogFragment(R.string.name_used,this);
-                message.show(getFragmentManager(), "invalidName");
-                return;
+        if (!catToEdit.getName().equals(copyPropsFromThis.getName())) {
+            for (Category cat : list) {
+                if (cat.getName().equals(copyPropsFromThis.getName())) {
+                    message = new MessageDialogFragment(R.string.name_used,this);
+                    message.show(getFragmentManager(), "invalidName");
+                    return;
+                }
             }
         }
 
