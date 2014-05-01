@@ -21,11 +21,13 @@ public class TitleDialogFragment extends DialogFragment{
 	private MainActivity startActiviy;
 	private int pos;
 	private boolean isCategory;
+    private Category editingCat;
 	
-	public TitleDialogFragment(MainActivity activity, int position, boolean isCategory) {
+	public TitleDialogFragment(MainActivity activity, int position, boolean isCategory, Category editingCat) {
 		this.startActiviy =  activity;
 		this.pos = position;
 		this.isCategory = isCategory;
+        this.editingCat = editingCat;
 	}
 	
 	@Override
@@ -42,8 +44,11 @@ public class TitleDialogFragment extends DialogFragment{
                 	   /* tempCategory is used to hold the new title. The reason for using a category instead of sending
                 	    * a string is to keep the updateSettings method simple
                 	    */
-                	   Category tempCategory = new Category(titel.getText().toString(), 0, null, 0);
-                	   startActiviy.updateSettings(tempCategory, pos, isCategory, MainActivity.Setting.TITLE);
+//                	   Category tempCategory = new Category(titel.getText().toString(), 0, null, 0);
+//                	   startActiviy.updateSettings(tempCategory, pos, isCategory, MainActivity.Setting.TITLE);
+
+                        Category newCat = new Category(titel.getText().toString(), editingCat.getColour(), editingCat.getImage(), editingCat.getSuperCategoryId());
+                        startActiviy.editCategory(editingCat, newCat, isCategory);
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

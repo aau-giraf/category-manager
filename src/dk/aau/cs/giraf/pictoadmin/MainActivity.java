@@ -408,11 +408,31 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         list.get(pos).setName(catName);
 //        list.get(pos).setChanged(true);
 	}
-    
-    private void EditCategory(Category catToEdit, Category copyPropsFromThis) {
+
+    public void editCategory(Category catToEdit, Category copyPropsFromThis, boolean isCategory) {
+        List<Category> list = (isCategory ?
+            categoryList :
+            subcategoryList);
+
+        for (Category cat : list) {
+            if (cat.getName().equals(copyPropsFromThis.getName())) {
+                message = new MessageDialogFragment(R.string.name_used,this);
+                message.show(getFragmentManager(), "invalidName");
+                return;
+            }
+        }
+
         catToEdit.setName(copyPropsFromThis.getName());
         catToEdit.setColour(copyPropsFromThis.getColour());
         catToEdit.setImage(copyPropsFromThis.getImage());
+        CategoryController catControl = new CategoryController(this);
+        catControl.modifyCategory(catToEdit);
+
+        if (isCategory) {
+            categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+        } else {
+            subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+        }
     }
 
 

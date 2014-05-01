@@ -47,7 +47,7 @@ public class SettingDialogFragment extends DialogFragment{
                     public void onClick(DialogInterface dialog, int which) {
                         //Change title
                         if(which == 0) {
-                            TitleDialogFragment titelDialog = new TitleDialogFragment(startActivity, pos, isCategory);
+                            TitleDialogFragment titelDialog = new TitleDialogFragment(startActivity, pos, isCategory, category);
                             titelDialog.show(getFragmentManager(), "changeTitle");
                         }
                         //Change color
