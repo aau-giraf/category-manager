@@ -395,7 +395,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		updateButtonVisibility(null);
 	}
 
-
 	private void updateTitle(Category changedCategory, int pos, List<Category> list) {
         String catName = changedCategory.getName();
         for(Category c : list) {
@@ -582,7 +581,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	}
 
 	// DONE
-	public void deleteCategory(View view) {
+	public void askDeleteCategory(View view) {
         GDialogMessage deleteDialog = new GDialogMessage(this,
                 getString(R.string.confirm_delete),
                 new View.OnClickListener() {
@@ -592,6 +591,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         categoryList.remove(selectedLocation);
                         selectedCategory = null;
                         categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, view.getContext()));
+                        //pictograms.removeAll(pictograms);??
+                        //selectedSubCategory = null;??
+                        subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
+                        pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
+                        updateButtonVisibility(null);
                     }
                 }
                 );
@@ -608,7 +612,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	}
 
 	// DONE
-	public void deleteSubCategory(View view) {
+	public void askDeleteSubCategory(View view) {
 //		GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -623,8 +627,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         catlibhelp.deleteCategory(selectedSubCategory);
                         subcategoryList.remove(selectedLocation);
                         selectedSubCategory = null;
+                        //pictograms.removeAll(pictograms);??
                         subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
-
+                        pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
+                        updateButtonVisibility(null);
                     }
                 }
                 );
@@ -650,23 +656,23 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	}
 
 	// DONE
-	public void deletePictogram(View view) {
+	public void askDeletePictogram(View view) {
         GDialog deleteDialog = new GDialogMessage(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                pictograms.remove(pictogramGrid.getSelectedItemPosition());
+                if(selectedSubCategory == null){
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
 
-//                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
-//                pictograms.remove(selectedLocation);
-//                selectedPictogram = null;
-//                pictogramGrid.setAdapter(new PictoAdapter(pictograms, v.getContext()));
-                // Håndter om det er cat eller subcat
-                // kun cat for nu
-
-//                Pictogram pic = selectedPictogram;
-//                Category cat = selectedCategory;
-//
-//                catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+                }
+                else{
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
+                }
+                pictograms.remove(selectedLocation);
+                selectedPictogram = null;
+                //pictograms.removeAll(pictograms);??
+                pictogramGrid.setAdapter(new PictoAdapter(pictograms, v.getContext()));
             }
         });
 
