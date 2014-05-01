@@ -738,4 +738,9 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             }
         }
     }
+
+    public void onCloseButtonPress(View view)
+    {
+        finish();
+    }
 }

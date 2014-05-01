@@ -13,25 +13,45 @@
         android:orientation="vertical"
         tools:context=".AdminCategory">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/description_bar"
             android:layout_width="match_parent"
             android:layout_height="50dp" >
-            <TextView
-                android:id="@+id/DescriptionText"
+
+            <LinearLayout
+                android:id="@+id/inner_description_bar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                >
+
+                <TextView
+                    android:id="@+id/DescriptionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/currentChild"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_alignParentLeft="true"/>
+
+                <TextView
+                    android:id="@+id/currentChildName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_marginLeft="5dp"
+                    android:layout_alignParentLeft="true"/>
+            </LinearLayout>
+            <dk.aau.cs.giraf.gui.GCancelButton
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="@string/currentChild"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:text=""
+                android:layout_marginTop="10dp"
+                android:layout_alignParentRight="true"
+                android:onClick="onCloseButtonPress"/>
+        </RelativeLayout>
 
-            <TextView
-                android:id="@+id/currentChildName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/main_category_admin_layout"
