@@ -5,6 +5,7 @@ import java.util.List;
 
 import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GButton;
+import dk.aau.cs.giraf.gui.GColorPicker;
 import dk.aau.cs.giraf.gui.GDialog;
 import dk.aau.cs.giraf.gui.GDialogMessage;
 import dk.aau.cs.giraf.gui.GGridView;
@@ -151,7 +152,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 				public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
 					SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
 																				categoryList.get(position),
-																				position, true);
+																				position, true, v);
 					settingDialog.show(getFragmentManager(), "chooseSettings");
 					return false;
 				}
@@ -171,7 +172,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
                     SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
                             subcategoryList.get(position),
-                            position, false);
+                            position, false, v);
                     settingDialog.show(getFragmentManager(), "chooseSettings");
                     return false;
                 }
@@ -317,21 +318,20 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		finish();
 	}
 
-	// DONE: Called when pressing the @id/colorButton and updates the newCategoryColor
+    /**
+     * Called when selecting a color for a new category
+     * @param view
+     */
 	public void setNewCategoryColor(View view)
 	{
-		AmbilWarnaDialog colorDialog = new AmbilWarnaDialog(this, 0, new OnAmbilWarnaListener() {
-			@Override
-			public void onOk(AmbilWarnaDialog dialog, int color) {
-				newCategoryColor = color;
-			}
-
-			@Override
-			public void onCancel(AmbilWarnaDialog dialog) {
-				// Do nothing
-			}
-		});
-		colorDialog.show();
+        GColorPicker diag = new GColorPicker(view.getContext(), new GColorPicker.OnOkListener() {
+            @Override
+            public void OnOkClick(GColorPicker diag, int color) {
+                newCategoryColor = color;
+            }
+        });
+        diag.SetCurrColor(0xFF000000);
+        diag.show();
 	}
 
 	/*
