@@ -46,7 +46,7 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
-    private boolean DEBUG = true;
+    private boolean DEBUG = false;
 
 	private Profile child;
 	private Profile guardian;
@@ -393,6 +393,46 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
 		updateButtonVisibility(null);
 	}
+
+    private void deletePictogram()
+    {
+        if(selectedSubCategory == null){
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
+
+            catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+        }
+        else{
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+            catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
+        }
+        selectedPictogram = null;
+        pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
+        updateButtonVisibility(null);
+    }
+
+    private void deleteCategory(Category category, Boolean isCategory, int itemPosition)
+    {
+        if(isCategory){
+            subcategoryList.removeAll(subcategoryList);
+            catlibhelp.deleteCategory(selectedCategory);
+            categoryList.remove(itemPosition);
+            selectedCategory = null;
+        }
+        else {
+            subcategoryList.remove(itemPosition);
+//                    selectedCategory.setChanged(true);
+        }
+        pictograms.removeAll(pictograms);
+        selectedSubCategory = null;
+
+        if(isCategory){
+            categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+        }
+
+        subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+        pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
+        updateButtonVisibility(null);
+    }
 
 
 	private void updateTitle(Category changedCategory, int pos, List<Category> list) {
