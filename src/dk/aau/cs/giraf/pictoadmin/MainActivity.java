@@ -94,7 +94,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         if(DEBUG && extras == null)
         {
             extras = new Bundle();
-            
+
             extras.putLong("currentChildID", proHelp.getChildren().get(0).getId());
             extras.putInt("currentGuardianID", proHelp.getGuardians().get(0).getId());
         }
@@ -408,6 +408,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         list.get(pos).setName(catName);
 //        list.get(pos).setChanged(true);
 	}
+    
+    private void EditCategory(Category catToEdit, Category copyPropsFromThis) {
+        catToEdit.setName(copyPropsFromThis.getName());
+        catToEdit.setColour(copyPropsFromThis.getColour());
+        catToEdit.setImage(copyPropsFromThis.getImage());
+    }
 
 
     // DONE
@@ -626,10 +632,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         GDialog deleteDialog = new GDialogMessage(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
-                pictograms.remove(selectedLocation);
-                selectedPictogram = null;
-                pictogramGrid.setAdapter(new PictoAdapter(pictograms, v.getContext()));
+                pictograms.remove(pictogramGrid.getSelectedItemPosition());
+
+//                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
+//                pictograms.remove(selectedLocation);
+//                selectedPictogram = null;
+//                pictogramGrid.setAdapter(new PictoAdapter(pictograms, v.getContext()));
                 // Håndter om det er cat eller subcat
                 // kun cat for nu
 
