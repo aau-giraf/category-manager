@@ -76,7 +76,7 @@
                         android:drawableRight="@drawable/content_discard"
                         android:contentDescription="@string/picture"
                         android:visibility="gone"
-                        android:onClick="deleteCategory" />
+                        android:onClick="askDeleteCategory" />
 
                 </LinearLayout>
                 <dk.aau.cs.giraf.gui.GList
@@ -122,7 +122,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/picture"
-                        android:onClick="deleteSubCategory"
+                        android:onClick="askDeleteSubCategory"
                         android:drawableRight="@drawable/content_discard"
                         android:visibility="invisible" />
                 </LinearLayout>
@@ -172,7 +172,7 @@
                         android:drawableRight="@drawable/content_discard"
                         android:contentDescription="@string/picture"
                         android:visibility="gone"
-                        android:onClick="deletePictogram" />
+                        android:onClick="askDeletePictogram" />
 
                 </LinearLayout>
 
