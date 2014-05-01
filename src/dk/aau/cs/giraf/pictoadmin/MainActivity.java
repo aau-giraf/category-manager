@@ -91,11 +91,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		Bundle extras = getIntent().getExtras();
 
         // for easier debugging
-        if(DEBUG)
+        if(DEBUG && extras == null)
         {
             extras = new Bundle();
-            extras.putLong("currentChildID", 31);
-            extras.putInt("currentGuardianID", 20);
+            
+            extras.putLong("currentChildID", proHelp.getChildren().get(0).getId());
+            extras.putInt("currentGuardianID", proHelp.getGuardians().get(0).getId());
         }
 
         // "Ugyldige login informationer"
@@ -439,6 +440,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		if(extras.containsKey("currentGuardianID")){
 			guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
 		}
+
+        int x = 1;
 	}
 
 	/*
