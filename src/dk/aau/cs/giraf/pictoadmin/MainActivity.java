@@ -46,6 +46,8 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
+    private boolean DEBUG = true;
+
 	private Profile child;
 	private Profile guardian;
 
@@ -88,14 +90,14 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 		Bundle extras = getIntent().getExtras();
 
-        //if a debugger is attatched at startup don't require login info
-//        if(extras == null )
-//        {
-//            Log.v(TAG, "extras is null");
-//            extras = new Bundle();
-//            extras.putLong("currentChildID", 11);
-//            extras.putLong("currentGuardianID", 1);
-//        }
+        // for easier debugging
+        if(DEBUG && extras == null)
+        {
+            extras = new Bundle();
+
+            extras.putLong("currentChildID", proHelp.getChildren().get(0).getId());
+            extras.putInt("currentGuardianID", proHelp.getGuardians().get(0).getId());
+        }
 
         // "Ugyldige login informationer"
 		if(extras == null){
@@ -271,7 +273,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
         if (isCategory) { // Create category
             if (!categoryList.isEmpty()) {
-                categoryList.add(new Category(title, newCategoryColor, null, categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId())
+                categoryList.add(new Category(title, newCategoryColor, null, categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId()).getImage WORKS
             } else {
                 categoryList = new ArrayList<Category>();
                 categoryList.add(new Category(title, newCategoryColor, null, 0)); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
@@ -393,7 +395,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		updateButtonVisibility(null);
 	}
 
-
 	private void updateTitle(Category changedCategory, int pos, List<Category> list) {
         String catName = changedCategory.getName();
         for(Category c : list) {
@@ -406,6 +407,34 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         list.get(pos).setName(catName);
 //        list.get(pos).setChanged(true);
 	}
+
+    public void editCategory(Category catToEdit, Category copyPropsFromThis, boolean isCategory) {
+        List<Category> list = (isCategory ?
+            categoryList :
+            subcategoryList);
+
+        if (!catToEdit.getName().equals(copyPropsFromThis.getName())) {
+            for (Category cat : list) {
+                if (cat.getName().equals(copyPropsFromThis.getName())) {
+                    message = new MessageDialogFragment(R.string.name_used,this);
+                    message.show(getFragmentManager(), "invalidName");
+                    return;
+                }
+            }
+        }
+
+        catToEdit.setName(copyPropsFromThis.getName());
+        catToEdit.setColour(copyPropsFromThis.getColour());
+        catToEdit.setImage(copyPropsFromThis.getImage());
+        CategoryController catControl = new CategoryController(this);
+        catControl.modifyCategory(catToEdit);
+
+        if (isCategory) {
+            categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+        } else {
+            subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+        }
+    }
 
 
     // DONE
@@ -439,6 +468,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		if(extras.containsKey("currentGuardianID")){
 			guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
 		}
+
+        int x = 1;
 	}
 
 	/*
@@ -551,7 +582,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	}
 
 	// DONE
-	public void deleteCategory(View view) {
+	public void askDeleteCategory(View view) {
         GDialogMessage deleteDialog = new GDialogMessage(this,
                 getString(R.string.confirm_delete),
                 new View.OnClickListener() {
@@ -561,6 +592,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         categoryList.remove(selectedLocation);
                         selectedCategory = null;
                         categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, view.getContext()));
+                        selectedSubCategory = null;
+                        subcategoryList.clear();
+                        pictograms.clear();
+                        subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
+                        pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
+                        updateButtonVisibility(null);
                     }
                 }
                 );
@@ -577,7 +614,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	}
 
 	// DONE
-	public void deleteSubCategory(View view) {
+	public void askDeleteSubCategory(View view) {
 //		GDialog deleteDialog = new GDialog(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -592,8 +629,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         catlibhelp.deleteCategory(selectedSubCategory);
                         subcategoryList.remove(selectedLocation);
                         selectedSubCategory = null;
+                        pictograms.clear();
                         subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
-
+                        pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
+                        updateButtonVisibility(null);
                     }
                 }
                 );
@@ -619,19 +658,23 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	}
 
 	// DONE
-	public void deletePictogram(View view) {
+	public void askDeletePictogram(View view) {
         GDialog deleteDialog = new GDialogMessage(view.getContext(), R.drawable.content_discard, getString(R.string.confirm_delete), "", new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                updateSettings(selectedSubCategory, selectedLocation, false, Setting.DELETEPICTOGRAM);
+                if(selectedSubCategory == null){
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
 
-                // Håndter om det er cat eller subcat
-                // kun cat for nu
-
-//                Pictogram pic = selectedPictogram;
-//                Category cat = selectedCategory;
-//
-//                catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+                }
+                else{
+//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
+                }
+                pictograms.remove(selectedLocation);
+                selectedPictogram = null;
+                //pictograms.removeAll(pictograms);??
+                pictogramGrid.setAdapter(new PictoAdapter(pictograms, v.getContext()));
             }
         });
 
