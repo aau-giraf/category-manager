@@ -273,7 +273,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
         if (isCategory) { // Create category
             if (!categoryList.isEmpty()) {
-                categoryList.add(new Category(title, newCategoryColor, null, categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId())
+                categoryList.add(new Category(title, newCategoryColor, null, categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId()).getImage WORKS
             } else {
                 categoryList = new ArrayList<Category>();
                 categoryList.add(new Category(title, newCategoryColor, null, 0)); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
@@ -591,8 +591,9 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         categoryList.remove(selectedLocation);
                         selectedCategory = null;
                         categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, view.getContext()));
-                        //pictograms.removeAll(pictograms);??
-                        //selectedSubCategory = null;??
+                        selectedSubCategory = null;
+                        subcategoryList.clear();
+                        pictograms.clear();
                         subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
                         pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
                         updateButtonVisibility(null);
@@ -627,7 +628,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         catlibhelp.deleteCategory(selectedSubCategory);
                         subcategoryList.remove(selectedLocation);
                         selectedSubCategory = null;
-                        //pictograms.removeAll(pictograms);??
+                        pictograms.clear();
                         subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
                         pictogramGrid.setAdapter(new PictoAdapter(pictograms, view.getContext()));
                         updateButtonVisibility(null);
