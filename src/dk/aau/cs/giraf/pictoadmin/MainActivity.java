@@ -273,13 +273,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         }
 
         if (isCategory) { // Create category
-            if (!categoryList.isEmpty()) {
-                categoryList.add(new Category(title, newCategoryColor, null, categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId()).getImage WORKS
-            } else {
+            if (categoryList.isEmpty()) {
                 categoryList = new ArrayList<Category>();
-                categoryList.add(new Category(title, newCategoryColor, null, 0)); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
             }
+
             Category cat = new Category(title, newCategoryColor, null, 0);
+
+            categoryList.add(cat); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
 
             catlibhelp.addCategoryToProfile(child, cat);
 //            categoryList.get(categoryList.size()-1).setChanged(true);
