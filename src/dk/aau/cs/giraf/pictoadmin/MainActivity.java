@@ -152,7 +152,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 				public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
 					SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
 																				categoryList.get(position),
-																				position, true);
+																				position, true, v);
 					settingDialog.show(getFragmentManager(), "chooseSettings");
 					return false;
 				}
@@ -172,7 +172,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
                     SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
                             subcategoryList.get(position),
-                            position, false);
+                            position, false, v);
                     settingDialog.show(getFragmentManager(), "chooseSettings");
                     return false;
                 }

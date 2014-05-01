@@ -1,5 +1,6 @@
 package dk.aau.cs.giraf.pictoadmin;
 
+import dk.aau.cs.giraf.gui.GColorPicker;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
@@ -10,6 +11,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.view.View;
 
 /**
  * @author SW605f13 Parrot-group
@@ -21,12 +23,14 @@ public class SettingDialogFragment extends DialogFragment{
     private Category category;
     private int pos;
     private boolean isCategory;
+    private View view;
 
-    public SettingDialogFragment(MainActivity activity, Category cat, int position, boolean isCategory) {
+    public SettingDialogFragment(MainActivity activity, Category cat, int position, boolean isCategory, View view) {
         this.startActivity = activity;
         this.category = cat;
         this.pos = position;
         this.isCategory = isCategory;
+        this.view = view;
     }
 
     public interface SettingDialogListener {
@@ -52,23 +56,15 @@ public class SettingDialogFragment extends DialogFragment{
                         }
                         //Change color
                         if(which == 1) {
-                            AmbilWarnaDialog colorDialog = new AmbilWarnaDialog(startActivity, category.getColour(), new OnAmbilWarnaListener() {
+                            GColorPicker diag = new GColorPicker(view.getContext(), new GColorPicker.OnOkListener() {
                                 @Override
-                                public void onOk(AmbilWarnaDialog dialog, int color) {
-//                                    category.setColour(color);
-//
-//                                    startActivity.updateSettings(category, pos, isCategory, MainActivity.Setting.COLOR);
-
+                                public void OnOkClick(GColorPicker diag, int color) {
                                     Category newCat = new Category(category.getName(), color, category.getImage(), category.getSuperCategoryId());
                                     startActivity.editCategory(category, newCat, isCategory);
                                 }
-
-                                @Override
-                                public void onCancel(AmbilWarnaDialog dialog) {
-                                    // Do nothing
-                                }
                             });
-                            colorDialog.show();
+                            diag.SetCurrColor(0xFF000000);
+                            diag.show();
                         }
                         //Change icon
                         if(which == 2) {
