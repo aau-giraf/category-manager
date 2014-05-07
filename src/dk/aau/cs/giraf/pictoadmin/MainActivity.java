@@ -5,6 +5,7 @@ import java.util.List;
 
 import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GButton;
+import dk.aau.cs.giraf.gui.GColorPicker;
 import dk.aau.cs.giraf.gui.GDialog;
 import dk.aau.cs.giraf.gui.GDialogMessage;
 import dk.aau.cs.giraf.gui.GGridView;
@@ -46,7 +47,7 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
-    private boolean DEBUG = true;
+    private boolean DEBUG = false;
 
 	private Profile child;
 	private Profile guardian;
@@ -123,10 +124,14 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			getProfiles(extras);
 //            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
 //            child = proHelp.getChildren().get(1);
+
 //            guardian = proHelp.getGuardians().get(1);
            // child = proHelp.getProfileById(extras.getInt("currentChildID"));
            // guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
 //			categoryList = catHelp.getCategoriesByProfileId(child.getId());
+
+
+
             categoryList = catlibhelp.getCategoriesFromProfile(child);
 			if(categoryList == null)
 			{
@@ -151,7 +156,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 				public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
 					SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
 																				categoryList.get(position),
-																				position, true);
+																				position, true, v);
 					settingDialog.show(getFragmentManager(), "chooseSettings");
 					return false;
 				}
@@ -171,7 +176,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
                     SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
                             subcategoryList.get(position),
-                            position, false);
+                            position, false, v);
                     settingDialog.show(getFragmentManager(), "chooseSettings");
                     return false;
                 }
@@ -272,13 +277,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         }
 
         if (isCategory) { // Create category
-            if (!categoryList.isEmpty()) {
-                categoryList.add(new Category(title, newCategoryColor, null, categoryList.get(0).getId())); // IMPORTANT: hvor null pictoHelp.getPictogramById(categoryList.get(0).getId()).getImage WORKS
-            } else {
+            if (categoryList.isEmpty()) {
                 categoryList = new ArrayList<Category>();
-                categoryList.add(new Category(title, newCategoryColor, null, 0)); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
             }
+
             Category cat = new Category(title, newCategoryColor, null, 0);
+
+            categoryList.add(cat); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
 
             catlibhelp.addCategoryToProfile(child, cat);
 //            categoryList.get(categoryList.size()-1).setChanged(true);
@@ -317,21 +322,20 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		finish();
 	}
 
-	// DONE: Called when pressing the @id/colorButton and updates the newCategoryColor
+    /**
+     * Called when selecting a color for a new category
+     * @param view
+     */
 	public void setNewCategoryColor(View view)
 	{
-		AmbilWarnaDialog colorDialog = new AmbilWarnaDialog(this, 0, new OnAmbilWarnaListener() {
-			@Override
-			public void onOk(AmbilWarnaDialog dialog, int color) {
-				newCategoryColor = color;
-			}
-
-			@Override
-			public void onCancel(AmbilWarnaDialog dialog) {
-				// Do nothing
-			}
-		});
-		colorDialog.show();
+        GColorPicker diag = new GColorPicker(view.getContext(), new GColorPicker.OnOkListener() {
+            @Override
+            public void OnOkClick(GColorPicker diag, int color) {
+                newCategoryColor = color;
+            }
+        });
+        diag.SetCurrColor(0xFF000000);
+        diag.show();
 	}
 
 	/*
@@ -463,7 +467,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	 */
 	private void getProfiles(Bundle extras) {
 		if(extras.containsKey("currentChildID")) {
-			child = proHelp.getProfileById((int)extras.getLong("currentChildID"));
+			child = proHelp.getProfileById(extras.getInt("currentChildID"));
 		}
 		if(extras.containsKey("currentGuardianID")){
 			guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
@@ -738,5 +742,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 pictograms =pictoHelp.getPictogramsByCategory(category);
             }
         }
+    }
+
+    public void onCloseButtonPress(View view)
+    {
+        finish();
     }
 }
