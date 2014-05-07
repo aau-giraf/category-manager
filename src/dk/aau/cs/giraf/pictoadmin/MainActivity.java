@@ -123,7 +123,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		else{
 			getProfiles(extras);
 //            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
-            child = proHelp.getChildren().get(1);
+//            child = proHelp.getChildren().get(1);
 
 //            guardian = proHelp.getGuardians().get(1);
            // child = proHelp.getProfileById(extras.getInt("currentChildID"));
@@ -467,7 +467,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	 */
 	private void getProfiles(Bundle extras) {
 		if(extras.containsKey("currentChildID")) {
-			child = proHelp.getProfileById((int)extras.getLong("currentChildID"));
+			child = proHelp.getProfileById(extras.getInt("currentChildID"));
 		}
 		if(extras.containsKey("currentGuardianID")){
 			guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
