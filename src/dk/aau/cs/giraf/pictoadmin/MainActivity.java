@@ -47,7 +47,7 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
-    private boolean DEBUG = true;
+    private boolean DEBUG = false;
 
 	private Profile child;
 	private Profile guardian;
@@ -123,11 +123,15 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		else{
 			getProfiles(extras);
 //            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
-//            child = proHelp.getChildren().get(1);
+            child = proHelp.getChildren().get(1);
+
 //            guardian = proHelp.getGuardians().get(1);
            // child = proHelp.getProfileById(extras.getInt("currentChildID"));
            // guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
 //			categoryList = catHelp.getCategoriesByProfileId(child.getId());
+
+
+
             categoryList = catlibhelp.getCategoriesFromProfile(child);
 			if(categoryList == null)
 			{
