@@ -210,7 +210,7 @@
                         android:drawableRight="@drawable/content_discard"
                         android:contentDescription="@string/picture"
                         android:visibility="gone"
-                        android:onClick="deletePictogram" />
+                        android:onClick="askDeletePictogram" />
 
                 </LinearLayout>
 
