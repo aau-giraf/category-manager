@@ -66,8 +66,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	private GGridView pictogramGrid;
 
 	private boolean somethingChanged = false; // If something is deleted, is has to be noted
+    private boolean isIcon = false;
 	private int     selectedLocation; // Stores the location of the last pressed item in any gridview
 	private int     newCategoryColor; // Hold the value set when creating a new category or sub-category
+    private Pictogram   newCategoryIcon; // Hold the value set when creating a new category or sub-category
 
 	private CategoryController catHelp;
 	private ProfileController proHelp;
@@ -261,7 +263,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 categoryList = new ArrayList<Category>();
             }
 
-            Category cat = new Category(title, newCategoryColor, null, 0);
+            Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), 0);
 
             categoryList.add(cat); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
 
@@ -272,7 +274,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
             categoryGrid.setAdapter(pc);
         } else { // Create subcategory
-            Category cat = new Category(title, newCategoryColor, categoryList.get(0).getImage(), selectedCategory.getId());
+            Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), selectedCategory.getId());
             subcategoryList.add(cat);
             catlibhelp.giveCategorySuperCategory(selectedCategory, cat);
             subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
@@ -287,7 +289,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 
 		newCategoryColor = 0;
-
+        newCategoryIcon = new Pictogram();
 	}
 
 	@Override
@@ -320,7 +322,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
     public void setNewCategoryIcon(View view)
     {
-
+        isIcon = true;
+        createPictogram(view); //Gets pictogram
     }
 
 	/*
@@ -688,25 +691,42 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-        if(data==null)
+
+        if(isIcon!=true)
         {
-            return;
-        }
-        Bundle extras = data.getExtras();
-
-        if(data.hasExtra("checkoutIds")){
-            int[] checkoutIds = extras.getIntArray("checkoutIds");
-
-            // Add pictograms to selectedCategory if no sub-category is selected
-            if(selectedSubCategory == null){
-                checkAndAddPictograms(checkoutIds,selectedCategory);
+            if(data==null)
+            {
+                return;
             }
-            else{
-                checkAndAddPictograms(checkoutIds,selectedSubCategory);
-            }
-            pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
-        }
+            Bundle extras = data.getExtras();
 
+            if(data.hasExtra("checkoutIds")){
+                int[] checkoutIds = extras.getIntArray("checkoutIds");
+
+                // Add pictograms to selectedCategory if no sub-category is selected
+                if(selectedSubCategory == null){
+                    checkAndAddPictograms(checkoutIds,selectedCategory);
+                }
+                else{
+                    checkAndAddPictograms(checkoutIds,selectedSubCategory);
+                }
+                pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
+            }
+        }
+        else
+        {
+            isIcon = false;
+            if(data==null)
+            {
+                return;
+            }
+            Bundle extras = data.getExtras();
+
+            if(data.hasExtra("checkoutIds")){
+                int[] checkoutIds = extras.getIntArray("checkoutIds");
+                newCategoryIcon = pictoHelp.getPictogramById(checkoutIds[0]);
+            }
+        }
 	}
 
     private void checkAndAddPictograms(int[] checkoutIds, Category category) {
