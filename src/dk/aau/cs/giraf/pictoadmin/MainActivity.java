@@ -48,7 +48,7 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
-    private boolean DEBUG = false;
+    private boolean DEBUG = true;
 
 	private Profile child;
 	private Profile guardian;
@@ -122,7 +122,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             // Will be used when the new profile selector is implemented launcher
             if (child.getId() == -1) {
                 GDialogAlert diag = new GDialogAlert(this,
-                        "Vælg venligst et barn",
+                        getString(R.string.select_citizen),
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
