@@ -7,6 +7,7 @@ import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GButton;
 import dk.aau.cs.giraf.gui.GColorPicker;
 import dk.aau.cs.giraf.gui.GDialog;
+import dk.aau.cs.giraf.gui.GDialogAlert;
 import dk.aau.cs.giraf.gui.GDialogMessage;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
@@ -125,15 +126,19 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		}
 		else{
 			getProfiles(extras);
-//            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
-//            child = proHelp.getChildren().get(1);
 
-//            guardian = proHelp.getGuardians().get(1);
-           // child = proHelp.getProfileById(extras.getInt("currentChildID"));
-           // guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
-//			categoryList = catHelp.getCategoriesByProfileId(child.getId());
-
-
+            // Will be used when the new profile selector is implemented launcher
+            if (child.getId() == -1) {
+                GDialogAlert diag = new GDialogAlert(this,
+                        "Vælg venligst et barn",
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                finish();
+                            }
+                        });
+                diag.show();
+            }
 
             categoryList = catlibhelp.getCategoriesFromProfile(child);
 			if(categoryList == null)
