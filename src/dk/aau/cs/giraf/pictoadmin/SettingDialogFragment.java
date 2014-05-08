@@ -82,9 +82,9 @@ public class SettingDialogFragment extends DialogFragment{
                                 request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
                                 request.putExtra("purpose", "CAT");
                                 if (isCategory == true) {
-                                    getActivity().startActivityForResult(request, 2);
+                                    getActivity().startActivityForResult(request, 2); //Sends the info to OnActivityResult in MainActivity. Category
                                 } else {
-                                    getActivity().startActivityForResult(request, 3);
+                                    getActivity().startActivityForResult(request, 3); //Sends the info to OnActivityResult in MainActivity. Subcategory
                                 }
                             } catch (Exception e) {
 
