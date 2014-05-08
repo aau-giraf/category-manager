@@ -318,6 +318,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         diag.show();
 	}
 
+    public void setNewCategoryIcon(View view)
+    {
+
+    }
+
 	/*
 	 * The following methods handle updating of categories and sub-categories. This occurs when long-clicking either
 	 * a category or sub-category. Depending on the setting parameter, individual methods for updating is called
