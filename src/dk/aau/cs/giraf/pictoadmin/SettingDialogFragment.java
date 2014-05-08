@@ -1,6 +1,7 @@
 package dk.aau.cs.giraf.pictoadmin;
 
 import dk.aau.cs.giraf.gui.GColorPicker;
+import dk.aau.cs.giraf.gui.GDialogAlert;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
@@ -50,12 +51,12 @@ public class SettingDialogFragment extends DialogFragment{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //Change title
-                        if(which == 0) {
+                        if (which == 0) {
                             TitleDialogFragment titelDialog = new TitleDialogFragment(startActivity, pos, isCategory, category);
                             titelDialog.show(getFragmentManager(), "changeTitle");
                         }
                         //Change color
-                        if(which == 1) {
+                        if (which == 1) {
                             GColorPicker diag = new GColorPicker(view.getContext(), new GColorPicker.OnOkListener() {
                                 @Override
                                 public void OnOkClick(GColorPicker diag, int color) {
@@ -67,9 +68,36 @@ public class SettingDialogFragment extends DialogFragment{
                             diag.show();
                         }
                         //Change icon
-                        if(which == 2) {
+                        if (which == 2) {
                             IconDialogFragment iconDialog = new IconDialogFragment(startActivity, category, pos, isCategory);
                             iconDialog.show(getFragmentManager(), "changeIcon");
+                        }
+                        if (which == 3) {
+                            // It's a category - copy to another child
+                            if (isCategory) {
+                                GDialogAlert diag = new GDialogAlert(startActivity,
+                                        "Det er endnu ikke implementeret at kunne kopiere kategorier.",
+                                        new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view1) {
+
+                                            }
+                                        });
+                                diag.show();
+                            }
+
+                            // Sub category: copy to another category
+                            else {
+                                GDialogAlert diag = new GDialogAlert(startActivity,
+                                        "Det er endnu ikke implementeret at kunne kopiere underkategorier",
+                                        new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view1) {
+
+                                            }
+                                        });
+                                diag.show();
+                            }
                         }
                     }
                 })
