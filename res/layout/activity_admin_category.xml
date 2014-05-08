@@ -28,7 +28,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_margin="5dp"
-                    android:text="@string/change_profile"/>
+                    android:text="@string/change_profile"
+                    android:onClick="onChangeProfileButtonPress"/>
 
                 <TextView
                     android:id="@+id/DescriptionText"

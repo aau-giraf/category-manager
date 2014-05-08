@@ -750,4 +750,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     {
         finish();
     }
+
+    public void onChangeProfileButtonPress(View view) {
+        // Change profile
+    }
 }
