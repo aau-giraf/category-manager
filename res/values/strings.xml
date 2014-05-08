@@ -4,6 +4,7 @@
         <item>Titel</item>
         <item>Farve</item>
         <item>Icon</item>
+        <item>Kopier</item>
     </string-array>
 	
 	<string name="app_name">Kategoriværktøjet</string>
