@@ -24,6 +24,12 @@
                 android:layout_height="50dp"
                 >
 
+                <dk.aau.cs.giraf.gui.GButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="5dp"
+                    android:text="@string/change_profile"/>
+
                 <TextView
                     android:id="@+id/DescriptionText"
                     android:layout_width="wrap_content"
@@ -45,8 +51,8 @@
             <TextView
                 android:id="@+id/DebugText"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="100dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:text="DEBUGGING"
                 android:textColor="#FF0000"
                 android:visibility="invisible"

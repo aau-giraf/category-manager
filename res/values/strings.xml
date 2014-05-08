@@ -42,6 +42,7 @@
     <string name="title_change">Ændre titel</string>
     <string name="close">Luk</string>
     <string name="save_changes">Gem ændringer</string>
+    <string name="change_profile">Skift profil</string>
 
 
 </resources>
