@@ -219,26 +219,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if(subcategoryList != null){
-			for(Category sc : subcategoryList){
-//				if(sc.isChanged()){
-//					sc.getSuperCategory().setChanged(true);
-//				}
-			}
-		}
-		if(categoryList != null){
-			for(Category c : categoryList){
-//				if(c.isChanged()){
-//					Log.v("klim", "ready to save");
-//					somethingChanged = true;
-//					catHelp.saveCategory(c, child.getId());
-//				}
-			}
-		}
-
-		if(somethingChanged){
-//			catHelp.saveChangesToXML();
-		}
 	}
 
 	/*
