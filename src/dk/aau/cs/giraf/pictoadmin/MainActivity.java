@@ -242,6 +242,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             return;
         }
 
+        if(newCategoryIcon == null)
+        {
+            newCategoryIcon = new Pictogram();
+        }
+
         // Check if a related category ("main category" or subcategory) with same name exists
         List<Category> relatedCategories = isCategory ? categoryList : subcategoryList;
         boolean categoryWithNameExists = false;
@@ -289,7 +294,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 
 		newCategoryColor = 0;
-        newCategoryIcon = new Pictogram();
+        newCategoryIcon = null;
 	}
 
 	@Override
@@ -724,6 +729,22 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
             if(data.hasExtra("checkoutIds")){
                 int[] checkoutIds = extras.getIntArray("checkoutIds");
+
+                if(checkoutIds.length>1)
+                {
+                    GDialogAlert diag = new GDialogAlert(this,
+                            R.drawable.ic_launcher,
+                            "Kun et pictogram kan vælges som ikon til kategorien.",
+                            "Det øverste i listen er valgt.",
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            });
+                    diag.show();
+                }
+
                 newCategoryIcon = pictoHelp.getPictogramById(checkoutIds[0]);
             }
         }
