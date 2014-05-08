@@ -328,7 +328,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     public void setNewCategoryIcon(View view)
     {
         isIcon = true;
-        createPictogram(view); //Gets pictogram
+        createPictogram(view); //Opens PictoSearch
     }
 
 	/*
@@ -382,7 +382,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 somethingChanged = true;
                 break;
         }
-
 		if(isCategory){
 			categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
 		}
@@ -697,7 +696,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-        if(isIcon!=true)
+        if(requestCode==2 || requestCode==3)
         {
             if(data==null)
             {
@@ -707,45 +706,94 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
             if(data.hasExtra("checkoutIds")){
                 int[] checkoutIds = extras.getIntArray("checkoutIds");
+                Pictogram pictoHolder = new Pictogram();
+                if(checkoutIds.length>=1)
+                {
+                    pictoHolder = pictoHelp.getPictogramById(checkoutIds[0]);
+                    if(checkoutIds.length>1)
+                    {
+                        GDialogAlert diag = new GDialogAlert(this,
+                                R.drawable.ic_launcher,
+                                "Kun et pictogram kan vælges som ikon til kategorien.",
+                                "Det øverste i listen er valgt.",
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 
-                // Add pictograms to selectedCategory if no sub-category is selected
-                if(selectedSubCategory == null){
-                    checkAndAddPictograms(checkoutIds,selectedCategory);
+                                    }
+                                });
+                        diag.show();
+                    }
                 }
-                else{
-                    checkAndAddPictograms(checkoutIds,selectedSubCategory);
+                if(requestCode == 2)//Category
+                {
+                    selectedCategory.setImage(pictoHolder.getImage());
+                    updateIcon(selectedCategory, selectedLocation, true);
+                    categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+                    catHelp.modifyCategory(selectedCategory);
                 }
-                pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
+                else//Subcategory
+                {
+                    selectedSubCategory.setImage(pictoHolder.getImage());
+                    updateIcon(selectedSubCategory, selectedLocation, false);
+                    subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+                    catHelp.modifyCategory(selectedSubCategory);
+                }
+
             }
         }
         else
         {
-            isIcon = false;
-            if(data==null)
+            if(isIcon!=true)
             {
-                return;
-            }
-            Bundle extras = data.getExtras();
-
-            if(data.hasExtra("checkoutIds")){
-                int[] checkoutIds = extras.getIntArray("checkoutIds");
-
-                if(checkoutIds.length>1)
+                if(data==null)
                 {
-                    GDialogAlert diag = new GDialogAlert(this,
-                            R.drawable.ic_launcher,
-                            "Kun et pictogram kan vælges som ikon til kategorien.",
-                            "Det øverste i listen er valgt.",
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                }
-                            });
-                    diag.show();
+                    return;
                 }
+                Bundle extras = data.getExtras();
 
-                newCategoryIcon = pictoHelp.getPictogramById(checkoutIds[0]);
+                if(data.hasExtra("checkoutIds")){
+                    int[] checkoutIds = extras.getIntArray("checkoutIds");
+
+                    // Add pictograms to selectedCategory if no sub-category is selected
+                    if(selectedSubCategory == null){
+                        checkAndAddPictograms(checkoutIds,selectedCategory);
+                    }
+                    else{
+                        checkAndAddPictograms(checkoutIds,selectedSubCategory);
+                    }
+                    pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
+                }
+            }
+            else
+            {
+                isIcon = false;
+                if(data==null)
+                {
+                    return;
+                }
+                Bundle extras = data.getExtras();
+
+                if(data.hasExtra("checkoutIds")){
+                    int[] checkoutIds = extras.getIntArray("checkoutIds");
+
+                    if(checkoutIds.length>1)
+                    {
+                        GDialogAlert diag = new GDialogAlert(this,
+                                R.drawable.ic_launcher,
+                                "Kun et pictogram kan vælges som ikon til kategorien.",
+                                "Det øverste i listen er valgt.",
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                });
+                        diag.show();
+                    }
+
+                    newCategoryIcon = pictoHelp.getPictogramById(checkoutIds[0]);
+                }
             }
         }
 	}
