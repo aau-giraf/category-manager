@@ -47,7 +47,7 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
-    private boolean DEBUG = false;
+    private boolean DEBUG = true;
 
 	private Profile child;
 	private Profile guardian;
@@ -96,8 +96,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         {
             extras = new Bundle();
 
-            extras.putLong("currentChildID", proHelp.getChildren().get(0).getId());
+            extras.putInt("currentChildID", proHelp.getChildren().get(0).getId());
             extras.putInt("currentGuardianID", proHelp.getGuardians().get(0).getId());
+
+            TextView debugText = (TextView) this.findViewById(R.id.DebugText);
+            debugText.setVisibility(View.VISIBLE);
         }
 
         // "Ugyldige login informationer"
