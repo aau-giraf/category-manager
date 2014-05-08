@@ -48,7 +48,7 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
-    private boolean DEBUG = true;
+    private boolean DEBUG = false;
 
 	private Profile child;
 	private Profile guardian;
@@ -106,23 +106,15 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
         // "Ugyldige login informationer"
 		if(extras == null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.dialog_title);
-            builder.setMessage(R.string.errorLogin);
-            builder.setNegativeButton(R.string.returnItem, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked OK, so save the mSelectedItems results somewhere
-                    // or return them to the component that opened the dialog
-                    finish();
-                }
-
-            });
-
-            // 3. Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            dialog.show();
+            GDialogAlert diag = new GDialogAlert(this,
+                 getString(R.string.dialog_title),
+                 new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finish();
+                    }
+                 });
+            diag.show();
 		}
 		else{
 			getProfiles(extras);
