@@ -38,30 +38,30 @@
             android:layout_margin="4dp"
             android:layout_below="@id/dialog_headline"
             android:hint="Titel" />
+
         <LinearLayout
             android:layout_width="350dp"
             android:paddingTop="10dp"
-            android:id="@+id/coloriconLayout"
+            android:id="@+id/colorIconLayout"
             android:layout_height="wrap_content"
             android:layout_below="@id/username"
             android:layout_centerHorizontal="true">
             <dk.aau.cs.giraf.gui.GButton
-                android:layout_marginRight="4dp"
+                android:layout_marginRight="2dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginLeft="4dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="16dp"
                 android:id="@+id/colorButton"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="Farve"
                 android:onClick="setNewCategoryColor"/>
-
             <dk.aau.cs.giraf.gui.GButton
-                android:layout_marginRight="4dp"
+                android:layout_marginRight="2dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginLeft="4dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="16dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:id="@+id/iconButton"
@@ -70,13 +70,11 @@
                 android:onClick="setNewCategoryIcon"/>
         </LinearLayout>
 
-
-
         <LinearLayout
             android:layout_width="350dp"
             android:paddingTop="10dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/coloriconLayout"
+            android:layout_below="@id/colorIconLayout"
             android:layout_centerHorizontal="true">
             <dk.aau.cs.giraf.gui.GVerifyButton
                 android:layout_marginRight="2dp"
