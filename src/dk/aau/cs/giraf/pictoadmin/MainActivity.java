@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -696,33 +697,24 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==2 || requestCode==3)
+        if(data==null)
         {
-            if(data==null)
-            {
-                return;
-            }
-            Bundle extras = data.getExtras();
+            return;
+        }
+        Bundle extras = data.getExtras();
 
-            if(data.hasExtra("checkoutIds")){
-                int[] checkoutIds = extras.getIntArray("checkoutIds");
+        if(data.hasExtra("checkoutIds"))
+        {
+            int[] checkoutIds = extras.getIntArray("checkoutIds");
+            if(requestCode==2 || requestCode==3)
+            {
                 Pictogram pictoHolder = new Pictogram();
                 if(checkoutIds.length>=1)
                 {
                     pictoHolder = pictoHelp.getPictogramById(checkoutIds[0]);
                     if(checkoutIds.length>1)
                     {
-                        GDialogAlert diag = new GDialogAlert(this,
-                                R.drawable.ic_launcher,
-                                "Kun et pictogram kan vælges som ikon til kategorien.",
-                                "Det øverste i listen er valgt.",
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-
-                                    }
-                                });
-                        diag.show();
+                        iconAlertDialog(this);
                     }
                 }
                 if(requestCode == 2)//Category
@@ -739,22 +731,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
                     catHelp.modifyCategory(selectedSubCategory);
                 }
-
             }
-        }
-        else
-        {
-            if(isIcon!=true)
+            else
             {
-                if(data==null)
+                if(isIcon!=true)
                 {
-                    return;
-                }
-                Bundle extras = data.getExtras();
-
-                if(data.hasExtra("checkoutIds")){
-                    int[] checkoutIds = extras.getIntArray("checkoutIds");
-
                     // Add pictograms to selectedCategory if no sub-category is selected
                     if(selectedSubCategory == null){
                         checkAndAddPictograms(checkoutIds,selectedCategory);
@@ -764,39 +745,34 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     }
                     pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
                 }
-            }
-            else
-            {
-                isIcon = false;
-                if(data==null)
+                else
                 {
-                    return;
-                }
-                Bundle extras = data.getExtras();
-
-                if(data.hasExtra("checkoutIds")){
-                    int[] checkoutIds = extras.getIntArray("checkoutIds");
-
+                    isIcon = false;
                     if(checkoutIds.length>1)
                     {
-                        GDialogAlert diag = new GDialogAlert(this,
-                                R.drawable.ic_launcher,
-                                "Kun et pictogram kan vælges som ikon til kategorien.",
-                                "Det øverste i listen er valgt.",
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-
-                                    }
-                                });
-                        diag.show();
+                        iconAlertDialog(this);
                     }
-
                     newCategoryIcon = pictoHelp.getPictogramById(checkoutIds[0]);
                 }
             }
         }
 	}
+
+    private void iconAlertDialog(Context context)
+    {
+        GDialogAlert diag = new GDialogAlert(context,
+                R.drawable.ic_launcher,
+                "Kun et pictogram kan vælges som ikon til kategorien.",
+                "Det øverste i listen er valgt.",
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+        diag.show();
+    }
+
 
     private void checkAndAddPictograms(int[] checkoutIds, Category category) {
         boolean legal;
