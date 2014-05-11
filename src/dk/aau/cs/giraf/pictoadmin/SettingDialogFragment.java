@@ -31,6 +31,7 @@ public class SettingDialogFragment extends DialogFragment{
     private View view;
     private Pictogram newCategoryIcon; // Hold the value set when creating a new category or sub-category
     private PictogramController pictoHelp;
+    private MessageDialogFragment message;
 
     public SettingDialogFragment(MainActivity activity, Category cat, int position, boolean isCategory, View view) {
         this.startActivity = activity;
@@ -87,7 +88,8 @@ public class SettingDialogFragment extends DialogFragment{
                                     getActivity().startActivityForResult(request, 3); //Sends the info to OnActivityResult in MainActivity. Subcategory
                                 }
                             } catch (Exception e) {
-
+                                message = new MessageDialogFragment(R.string.search_missing, getActivity());
+                                message.show(getFragmentManager(), "notInstalled");
                            }
                         }
                         if (which == 3) {
