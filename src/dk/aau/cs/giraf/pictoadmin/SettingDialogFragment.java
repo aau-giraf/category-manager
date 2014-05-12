@@ -132,7 +132,7 @@ public class SettingDialogFragment extends DialogFragment{
                     Profile copyToChild = profileController.getProfileById((int) id);
 
                     if (copyToChild.getId() == child.getId()) {
-                        GToast toast = new GToast(view.getContext(), "Det er ikke muligt at kopiere en kategori til den samme borger", 5);
+                        GToast toast = new GToast(view.getContext(), getString(R.string.cannot_copy_same_citizen), 5);
                         toast.show();
                         profileSelector.dismiss();
                         return;
@@ -140,7 +140,7 @@ public class SettingDialogFragment extends DialogFragment{
 
                     for (Category c : categoryController.getCategoriesByProfileId(copyToChild.getId())) {
                         if (c.getName().equals(category.getName())) {
-                            GToast toast = new GToast(view.getContext(), copyToChild.getName() + " har allerede en kategori med samme navn", 5);
+                            GToast toast = new GToast(view.getContext(), copyToChild.getName() + getString(R.string.already_has_category), 5);
                             toast.show();
                             profileSelector.dismiss();
                             return;
@@ -177,7 +177,7 @@ public class SettingDialogFragment extends DialogFragment{
                         pictosCopied++;
                     }
 
-                    GToast toast = new GToast(view.getContext(), "Underkategorier kopieret: " + subCatsCopied + ", pictogrammer kopieret: " + pictosCopied, 3);
+                    GToast toast = new GToast(view.getContext(), getString(R.string.subcat_copied) + subCatsCopied + getString(R.string.pictograms_copied) + pictosCopied, 3);
                     toast.show();
 
                     profileSelector.dismiss();
@@ -189,7 +189,7 @@ public class SettingDialogFragment extends DialogFragment{
         // Sub category: copy to another category
         else {
             GDialogAlert diag = new GDialogAlert(startActivity,
-                    "Det er ikke implementeret at kunne kopiere underkategorier",
+                    getString(R.string.not_implemented),
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View view1) {

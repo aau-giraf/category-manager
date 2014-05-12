@@ -62,7 +62,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	private GList subcategoryGrid;
 	private GGridView pictogramGrid;
 
-	private boolean somethingChanged = false; // If something is deleted, is has to be noted
     private boolean isIcon = false;
 	private int selectedLocation; // Stores the location of the last pressed item in any gridview
 	private int newCategoryColor; // Hold the value set when creating a new category or sub-category
@@ -334,8 +333,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             categoryList.add(cat); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
 
             catlibhelp.addCategoryToProfile(child, cat);
-//            categoryList.get(categoryList.size()-1).setChanged(true);
-            somethingChanged = true;
             PictoAdminCategoryAdapter pc = new PictoAdminCategoryAdapter(categoryList, this);
 
             categoryGrid.setAdapter(pc);
@@ -417,25 +414,18 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 }
                 else {
                     subcategoryList.remove(pos);
-//                    selectedCategory.setChanged(true);
                 }
                 pictograms.removeAll(pictograms);
                 selectedSubCategory = null;
-                somethingChanged = true;
                 break;
             case DELETEPICTOGRAM:
                 if(selectedSubCategory == null){
-//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
-
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
                 }
                 else{
-//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
                 }
-//                selectedCategory.setChanged(true);
                 selectedPictogram = null;
-                somethingChanged = true;
                 break;
         }
 		if(isCategory){
