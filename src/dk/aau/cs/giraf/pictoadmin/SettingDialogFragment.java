@@ -1,10 +1,18 @@
 package dk.aau.cs.giraf.pictoadmin;
 
+import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GColorPicker;
 import dk.aau.cs.giraf.gui.GDialogAlert;
+import dk.aau.cs.giraf.gui.GProfileSelector;
+import dk.aau.cs.giraf.gui.GToast;
+import dk.aau.cs.giraf.oasis.lib.controllers.CategoryController;
+import dk.aau.cs.giraf.oasis.lib.controllers.PictogramCategoryController;
 import dk.aau.cs.giraf.oasis.lib.controllers.PictogramController;
+import dk.aau.cs.giraf.oasis.lib.controllers.ProfileController;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
+import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
+import dk.aau.cs.giraf.oasis.lib.models.Profile;
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
 import android.annotation.SuppressLint;
@@ -17,6 +25,9 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+
+import java.util.List;
 
 /**
  * @author SW605f13 Parrot-group
@@ -32,13 +43,17 @@ public class SettingDialogFragment extends DialogFragment{
     private Pictogram newCategoryIcon; // Hold the value set when creating a new category or sub-category
     private PictogramController pictoHelp;
     private MessageDialogFragment message;
+    private Profile guardian;
+    private Profile child;
 
-    public SettingDialogFragment(MainActivity activity, Category cat, int position, boolean isCategory, View view) {
+    public SettingDialogFragment(MainActivity activity, Category cat, int position, boolean isCategory, View view, Profile guardian, Profile child) {
         this.startActivity = activity;
         this.category = cat;
         this.pos = position;
         this.isCategory = isCategory;
         this.view = view;
+        this.guardian = guardian;
+        this.child = child;
     }
 
     public interface SettingDialogListener {
@@ -90,26 +105,83 @@ public class SettingDialogFragment extends DialogFragment{
                             } catch (Exception e) {
                                 message = new MessageDialogFragment(R.string.search_missing, getActivity());
                                 message.show(getFragmentManager(), "notInstalled");
-                           }
+                            }
                         }
                         if (which == 3) {
                             // It's a category - copy to another child
                             if (isCategory) {
-                                GDialogAlert diag = new GDialogAlert(startActivity,
-                                        "Det er endnu ikke implementeret at kunne kopiere kategorier.",
-                                        new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view1) {
+                                final GProfileSelector profileSelector = new GProfileSelector(view.getContext(), guardian, null);
 
+                                profileSelector.setOnListItemClick(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        ProfileController profileController = new ProfileController(view.getContext());
+                                        CategoryController categoryController = new CategoryController(view.getContext());
+                                        PictogramController pictogramController = new PictogramController(view.getContext());
+                                        PictogramCategoryController pictogramCategoryController = new PictogramCategoryController(view.getContext());
+                                        CatLibHelper catLibHelper = new CatLibHelper(view.getContext());
+
+                                        Profile copyToChild = profileController.getProfileById((int) id);
+
+                                        if (copyToChild.getId() == child.getId()) {
+                                            GToast toast = new GToast(view.getContext(), "Det er ikke muligt at kopiere en kategori til den samme borger", 5);
+                                            toast.show();
+                                            profileSelector.dismiss();
+                                            return;
+                                        }
+
+                                        for (Category c : categoryController.getCategoriesByProfileId(copyToChild.getId())) {
+                                            if (c.getName().equals(category.getName())) {
+                                                GToast toast = new GToast(view.getContext(), copyToChild.getName() + " har allerede en kategori med samme navn", 5);
+                                                toast.show();
+                                                profileSelector.dismiss();
+                                                return;
                                             }
-                                        });
-                                diag.show();
+                                        }
+
+                                        int subCatsCopied = 0;
+                                        int pictosCopied = 0;
+
+                                        // Add a new category to the child
+                                        Category newCat = new Category(category.getName(), category.getColour(), category.getImage());
+                                        categoryController.insertCategory(newCat);
+                                        catLibHelper.addCategoryToProfile(copyToChild, newCat);
+
+                                        // Copy all subcategories from the original category to the new category on the other child
+                                        for (Category subCat : categoryController.getSubcategoriesByCategory(category)) {
+                                            Category newSub = new Category(subCat.getName(), subCat.getColour(), subCat.getImage(), newCat.getId());
+                                            categoryController.insertCategory(newSub);
+                                            subCatsCopied++;
+
+
+                                            // Copy picograms on subcategories
+                                            for (Pictogram picto : pictogramController.getPictogramsByCategory(subCat)) {
+                                                PictogramCategory piccat = new PictogramCategory(picto.getId(), newSub.getId());
+                                                pictogramCategoryController.insertPictogramCategory(piccat);
+                                                pictosCopied++;
+                                            }
+                                        }
+
+                                        // Copy all pictograms from the original category to the new category on the other child
+                                        for (Pictogram picto : pictogramController.getPictogramsByCategory(category)) {
+                                            PictogramCategory piccat = new PictogramCategory(picto.getId(), newCat.getId());
+                                            pictogramCategoryController.insertPictogramCategory(piccat);
+                                            pictosCopied++;
+                                        }
+
+                                        GToast toast = new GToast(view.getContext(), "Underkategorier kopieret: " + subCatsCopied + ", pictogrammer kopieret: " + pictosCopied, 3);
+                                        toast.show();
+
+                                        profileSelector.dismiss();
+                                    }
+                                });
+                                profileSelector.show();
                             }
 
                             // Sub category: copy to another category
                             else {
                                 GDialogAlert diag = new GDialogAlert(startActivity,
-                                        "Det er endnu ikke implementeret at kunne kopiere underkategorier",
+                                        "Det er ikke implementeret at kunne kopiere underkategorier",
                                         new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view1) {
