@@ -706,7 +706,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         if(data.hasExtra("checkoutIds"))
         {
             int[] checkoutIds = extras.getIntArray("checkoutIds");
-            if(requestCode==2 || requestCode==3)
+            if(requestCode==2 || requestCode==3)//Comes from SettingDialogFragment. 2 = Category, 3 = Subcategory.
             {
                 Pictogram pictoHolder = new Pictogram();
                 if(checkoutIds.length>=1)
