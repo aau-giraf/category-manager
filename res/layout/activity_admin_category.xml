@@ -21,57 +21,49 @@
             <LinearLayout
                 android:id="@+id/inner_description_bar"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="100dp"
                 >
-
-                <!--<dk.aau.cs.giraf.gui.GButton-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="fill_parent"-->
-                    <!--android:layout_margin="5dp"-->
-                    <!--android:text="@string/change_profile"-->
-                    <!--android:onClick="onChangeProfileButtonPress"/>-->
-
                 <dk.aau.cs.giraf.gui.GButtonProfileSelect
                     android:id="@+id/change_profile"
                     android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"/>
+                    android:layout_height="fill_parent"
+                    android:layout_margin="5dp"/>
 
-                <TextView
+                <dk.aau.cs.giraf.gui.GTextView
                     android:id="@+id/DescriptionText"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical"
                     android:text="@string/currentChild"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_alignParentLeft="true"/>
+                    android:textSize="25dp"
+                    android:layout_margin="5dp"
+                    android:gravity="center_vertical"/>
 
-                <TextView
+                <dk.aau.cs.giraf.gui.GTextView
                     android:id="@+id/currentChildName"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_marginLeft="5dp"
-                    android:layout_alignParentLeft="true"/>
-            </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:textSize="25dp"
+                    android:gravity="center_vertical"/>
 
-            <TextView
-                android:id="@+id/DebugText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="DEBUGGING"
-                android:textColor="#FF0000"
-                android:visibility="invisible"
-                />
+                <TextView
+                    android:id="@+id/DebugText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="DEBUGGING"
+                    android:gravity="center_vertical"
+                    android:textSize="30dp"
+                    android:textColor="#FF0000"/>
+            </LinearLayout>
 
             <dk.aau.cs.giraf.gui.GCancelButton
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text=""
-                android:layout_marginTop="10dp"
                 android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:text=""
                 android:onClick="onCloseButtonPress"/>
+
         </RelativeLayout>
 
 

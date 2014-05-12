@@ -159,16 +159,24 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
         setPictogramGridListeners(pictogramGrid);
 
+        setupChangeProfileButton();
+
+        setupChildText();
+    }
+
+    private void setupChildText() {
+        TextView currentChild = (TextView) findViewById(R.id.currentChildName);
+        currentChild.setText(child.getName());
+    }
+
+    private void setupChangeProfileButton() {
         GButtonProfileSelect profSelBut = (GButtonProfileSelect)findViewById(R.id.change_profile);
-        profSelBut.setup(guardian, child, new GButtonProfileSelect.onCloseListener() {
+        profSelBut.setup(guardian, null, new GButtonProfileSelect.onCloseListener() {
             @Override
             public void onClose(Profile guardianProfile, Profile currentProfile) {
 
             }
         });
-
-        TextView currentChild = (TextView) findViewById(R.id.currentChildName);
-        currentChild.setText(child.getName());
     }
 
     private void setCategoryGridAdapter(GList categoryGrid) {
