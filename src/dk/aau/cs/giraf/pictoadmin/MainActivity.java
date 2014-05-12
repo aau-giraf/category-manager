@@ -66,10 +66,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	private int     newCategoryColor; // Hold the value set when creating a new category or sub-category
     private Pictogram   newCategoryIcon; // Hold the value set when creating a new category or sub-category
 
-	private CategoryController catHelp;
-	private ProfileController proHelp;
-    private PictogramController pictoHelp;
-    private CatLibHelper catlibhelp;
+	private CategoryController catHelp = new CategoryController(this);
+	private ProfileController proHelp = new ProfileController(this);
+    private PictogramController pictoHelp = new PictogramController(this);
+    private CatLibHelper catlibhelp = new CatLibHelper(this);
 
 	private MessageDialogFragment message;
 
@@ -82,36 +82,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_category);
 
-        catlibhelp = new CatLibHelper(this);
-		catHelp =  new CategoryController(this);
-		proHelp =  new ProfileController(this);
-        pictoHelp = new PictogramController(this);
-
 		Bundle extras = getIntent().getExtras();
-
-        // for easier debugging
-        if(DEBUG && extras == null)
-        {
-            extras = new Bundle();
-
-            extras.putInt("currentChildID", proHelp.getChildren().get(0).getId());
-            extras.putInt("currentGuardianID", proHelp.getGuardians().get(0).getId());
-
-            TextView debugText = (TextView) this.findViewById(R.id.DebugText);
-            debugText.setVisibility(View.VISIBLE);
-        }
+        extras = setupDebug(extras);
 
         // "Ugyldige login informationer"
 		if(extras == null){
-            GDialogAlert diag = new GDialogAlert(this,
-                 getString(R.string.dialog_title),
-                 new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        finish();
-                    }
-                 });
-            diag.show();
+            invalidLoginExit();
 		}
 		else{
 			getProfiles(extras);
@@ -136,6 +112,32 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         // Start logging this activity
         EasyTracker.getInstance(this).activityStart(this);  // Add this method.
 	}
+
+    private void invalidLoginExit() {
+        GDialogAlert diag = new GDialogAlert(this,
+             getString(R.string.dialog_title),
+             new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+             });
+        diag.show();
+    }
+
+    private Bundle setupDebug(Bundle extras) {
+        if(DEBUG && extras == null)
+        {
+            extras = new Bundle();
+
+            extras.putInt("currentChildID", proHelp.getChildren().get(0).getId());
+            extras.putInt("currentGuardianID", proHelp.getGuardians().get(0).getId());
+
+            TextView debugText = (TextView) this.findViewById(R.id.DebugText);
+            debugText.setVisibility(View.VISIBLE);
+        }
+        return extras;
+    }
 
     private void loadChildProfile() {
         categoryList = catlibhelp.getCategoriesFromProfile(child);
@@ -171,10 +173,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
     private void setupChangeProfileButton() {
         GButtonProfileSelect profSelBut = (GButtonProfileSelect)findViewById(R.id.change_profile);
-        profSelBut.setup(guardian, null, new GButtonProfileSelect.onCloseListener() {
+        profSelBut.setup(guardian, child, new GButtonProfileSelect.onCloseListener() {
             @Override
             public void onClose(Profile guardianProfile, Profile currentProfile) {
-
+                child = currentProfile;
+                setupChildText();
+                setCategoryGridAdapter(categoryGrid);
             }
         });
     }
