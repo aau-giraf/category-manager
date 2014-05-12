@@ -50,7 +50,7 @@
                 android:layout_marginRight="2dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginLeft="4dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="4dp"
                 android:id="@+id/colorButton"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -58,10 +58,10 @@
                 android:text="Farve"
                 android:onClick="setNewCategoryColor"/>
             <dk.aau.cs.giraf.gui.GButton
-                android:layout_marginRight="2dp"
+                android:layout_marginRight="4dp"
                 android:layout_marginTop="4dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginBottom="4dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:id="@+id/iconButton"
@@ -98,7 +98,5 @@
                 android:text="@string/cancel"/>
 
         </LinearLayout>
-
-
     </RelativeLayout>
 </RelativeLayout>

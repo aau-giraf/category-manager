@@ -5,24 +5,22 @@ import java.util.List;
 
 import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GButton;
+import dk.aau.cs.giraf.gui.GButtonProfileSelect;
 import dk.aau.cs.giraf.gui.GColorPicker;
 import dk.aau.cs.giraf.gui.GDialog;
+import dk.aau.cs.giraf.gui.GDialogAlert;
 import dk.aau.cs.giraf.gui.GDialogMessage;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
-import dk.aau.cs.giraf.gui.GPictogramAdapter;
 import dk.aau.cs.giraf.oasis.lib.controllers.PictogramController;
-import yuku.ambilwarna.AmbilWarnaDialog;
-import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.ComponentName;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,8 +35,6 @@ import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 import dk.aau.cs.giraf.oasis.lib.controllers.CategoryController;
 
-import dk.aau.cs.giraf.pictogram.PictoFactory;
-
 import com.google.analytics.tracking.android.EasyTracker;
 
 /**
@@ -47,35 +43,39 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
-    private boolean DEBUG = false;
+    private boolean IS_DEBUG() {
+        return true;
+    }
 
 	private Profile child;
 	private Profile guardian;
 
-	private Category selectedCategory    = null;
+	private Category selectedCategory = null;
 	private Category selectedSubCategory = null;
-	private Pictogram selectedPictogram   = null;
+	private Pictogram selectedPictogram = null;
 
-	private List<Category> categoryList    = new ArrayList<Category>();
+	private List<Category> categoryList = new ArrayList<Category>();
 	private List<Category> subcategoryList = new ArrayList<Category>();
-	private List<Pictogram> 	  pictograms	  = new ArrayList<Pictogram>();
+	private List<Pictogram> pictograms = new ArrayList<Pictogram>();
 
 	private GList categoryGrid;
 	private GList subcategoryGrid;
 	private GGridView pictogramGrid;
 
 	private boolean somethingChanged = false; // If something is deleted, is has to be noted
-	private int     selectedLocation; // Stores the location of the last pressed item in any gridview
-	private int     newCategoryColor; // Hold the value set when creating a new category or sub-category
+    private boolean isIcon = false;
+	private int selectedLocation; // Stores the location of the last pressed item in any gridview
+	private int newCategoryColor; // Hold the value set when creating a new category or sub-category
+    private Pictogram newCategoryIcon; // Hold the value set when creating a new category or sub-category
 
-	private CategoryController catHelp;
-	private ProfileController proHelp;
-    private PictogramController pictoHelp;
-    private CatLibHelper catlibhelp;
+	private CategoryController categoryController = new CategoryController(this);
+	private ProfileController profileController = new ProfileController(this);
+    private PictogramController pictogramController = new PictogramController(this);
+    private CatLibHelper catlibhelp = new CatLibHelper(this);
 
 	private MessageDialogFragment message;
 
-    public enum Setting{TITLE, COLOR, ICON, DELETE, DELETEPICTOGRAM};
+    public enum Setting{TITLE, COLOR, ICON, DELETE, DELETEPICTOGRAM}
 
     private static final String TAG = "CAT";
 
@@ -84,121 +84,184 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_category);
 
-        catlibhelp = new CatLibHelper(this);
-		catHelp =  new CategoryController(this);
-		proHelp =  new ProfileController(this);
-        pictoHelp = new PictogramController(this);
-
 		Bundle extras = getIntent().getExtras();
-
-        // for easier debugging
-        if(DEBUG && extras == null)
-        {
-            extras = new Bundle();
-
-            extras.putLong("currentChildID", proHelp.getChildren().get(0).getId());
-            extras.putInt("currentGuardianID", proHelp.getGuardians().get(0).getId());
-        }
+        extras = setupDebug(extras);
 
         // "Ugyldige login informationer"
 		if(extras == null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.dialog_title);
-            builder.setMessage(R.string.errorLogin);
-            builder.setNegativeButton(R.string.returnItem, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked OK, so save the mSelectedItems results somewhere
-                    // or return them to the component that opened the dialog
-                    finish();
-                }
-
-            });
-
-            // 3. Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            dialog.show();
+            invalidLoginExit();
 		}
 		else{
 			getProfiles(extras);
-//            child = new Profile("BARNLIG BARN HER", 92832193, null, "hej@mig",  Profile.Roles.CHILD, "hjemme", null, 11, 1, 1);
-//            child = proHelp.getChildren().get(1);
 
-//            guardian = proHelp.getGuardians().get(1);
-           // child = proHelp.getProfileById(extras.getInt("currentChildID"));
-           // guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
-//			categoryList = catHelp.getCategoriesByProfileId(child.getId());
+            // Will be used when the new profile selector is implemented launcher
+            if (child.getId() == -1) {
+                GDialogAlert diag = new GDialogAlert(this,
+                        getString(R.string.select_citizen),
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                finish();
+                            }
+                        });
+                diag.show();
+            }
 
-
-
-            categoryList = catlibhelp.getCategoriesFromProfile(child);
-			if(categoryList == null)
-			{
-				categoryList = new ArrayList<Category>();
-			}
-
-			// Setup category gridview
-			categoryGrid = (GList) findViewById(R.id.category_listview);
-			if(categoryList != null){
-				categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
-			}
-			categoryGrid.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					updateSelected(v, position, 1);
-					updateButtonVisibility(v);
-
-				}
-			});
-			categoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
-				@Override
-				public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
-																				categoryList.get(position),
-																				position, true, v);
-					settingDialog.show(getFragmentManager(), "chooseSettings");
-					return false;
-				}
-			});
-
-			// Setup sub-category gridview
-			subcategoryGrid = (GList) findViewById(R.id.subcategory_listview);
-			subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					updateSelected(v, position, 0);
-					updateButtonVisibility(v);
-				}
-			});
-			subcategoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
-                    SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
-                            subcategoryList.get(position),
-                            position, false, v);
-                    settingDialog.show(getFragmentManager(), "chooseSettings");
-                    return false;
-                }
-            });
-
-			// Setup pictogram gridview
-			pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
-			pictogramGrid.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					updateSelected(v, position, 2);
-					updateButtonVisibility(v);
-				}
-			});
-
-			TextView currentChild = (TextView) findViewById(R.id.currentChildName);
-			currentChild.setText(child.getName());
+            loadChildProfile();
+            setupGUI();
 		}
 
         // Start logging this activity
         EasyTracker.getInstance(this).activityStart(this);  // Add this method.
 	}
+
+    private void invalidLoginExit() {
+        GDialogAlert diag = new GDialogAlert(this,
+             getString(R.string.dialog_title),
+             new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+             });
+        diag.show();
+    }
+
+    private Bundle setupDebug(Bundle extras) {
+        if(IS_DEBUG() && extras == null)
+        {
+            extras = new Bundle();
+
+            extras.putInt("currentChildID", profileController.getChildren().get(0).getId());
+            extras.putInt("currentGuardianID", profileController.getGuardians().get(0).getId());
+
+            TextView debugText = (TextView) this.findViewById(R.id.DebugText);
+            debugText.setVisibility(View.VISIBLE);
+        }
+        return extras;
+    }
+
+    private void loadChildProfile() {
+        categoryList = catlibhelp.getCategoriesFromProfile(child);
+        if(categoryList == null)
+        {
+            categoryList = new ArrayList<Category>();
+        }
+    }
+
+    private void setupGUI() {
+        // Setup category gridview
+        categoryGrid = (GList) findViewById(R.id.category_listview);
+        setCategoryGridAdapter();
+        setCategoryGridListeners();
+
+        // Setup sub-category gridview
+        subcategoryGrid = (GList) findViewById(R.id.subcategory_listview);
+        setSubCategoryGridListeners();
+
+        // Setup pictogram gridview
+        pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
+        setPictogramGridListeners();
+
+        setupChangeProfileButton();
+
+        setupChildText();
+    }
+
+    private void setupChildText() {
+        TextView currentChild = (TextView) findViewById(R.id.currentChildName);
+        currentChild.setText(child.getName());
+    }
+
+    private void setupChangeProfileButton() {
+        GButtonProfileSelect profSelBut = (GButtonProfileSelect)findViewById(R.id.change_profile);
+        profSelBut.setup(guardian, child, new GButtonProfileSelect.onCloseListener() {
+            @Override
+            public void onClose(Profile guardianProfile, Profile currentProfile) {
+                child = currentProfile;
+
+                if (child == null) {
+                    GDialogAlert diag = new GDialogAlert(getApplicationContext(),
+                            "Vælg vensligt en borger.",
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    finish();
+                                }
+                            });
+                    diag.show();
+                }
+
+                loadChildProfile();
+
+                subcategoryList = new ArrayList<Category>();
+                pictograms = new ArrayList<Pictogram>();
+                subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, findViewById(R.id.category_listview).getContext()));
+                pictogramGrid.setAdapter(new PictoAdapter(pictograms, findViewById(R.id.category_listview).getContext()));
+
+                setupChildText();
+                setCategoryGridAdapter();
+            }
+        });
+    }
+
+    private void setCategoryGridAdapter() {
+        if(categoryList != null){
+            categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+        }
+    }
+
+    private void setCategoryGridListeners() {
+        categoryGrid.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                updateSelected(v, position, 1);
+                updateButtonVisibility(v);
+
+            }
+        });
+
+        categoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
+                        categoryList.get(position),
+                        position, true, v);
+                settingDialog.show(getFragmentManager(), "chooseSettings");
+                return false;
+            }
+        });
+    }
+
+    private void setSubCategoryGridListeners() {
+        subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                updateSelected(v, position, 0);
+                updateButtonVisibility(v);
+            }
+        });
+        subcategoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
+                        subcategoryList.get(position),
+                        position, false, v);
+                settingDialog.show(getFragmentManager(), "chooseSettings");
+                return false;
+            }
+        });
+    }
+
+    private void setPictogramGridListeners() {
+        pictogramGrid.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                updateSelected(v, position, 2);
+                updateButtonVisibility(v);
+            }
+        });
+    }
 
     @Override
     protected void onStop() {
@@ -219,26 +282,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if(subcategoryList != null){
-			for(Category sc : subcategoryList){
-//				if(sc.isChanged()){
-//					sc.getSuperCategory().setChanged(true);
-//				}
-			}
-		}
-		if(categoryList != null){
-			for(Category c : categoryList){
-//				if(c.isChanged()){
-//					Log.v("klim", "ready to save");
-//					somethingChanged = true;
-//					catHelp.saveCategory(c, child.getId());
-//				}
-			}
-		}
-
-		if(somethingChanged){
-//			catHelp.saveChangesToXML();
-		}
 	}
 
 	/*
@@ -258,6 +301,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             message = new MessageDialogFragment(R.string.category_color_missing, this);
             message.show(getFragmentManager(), "categoryColorMissing");
             return;
+        }
+
+        if(newCategoryIcon == null)
+        {
+            newCategoryIcon = new Pictogram();
         }
 
         // Check if a related category ("main category" or subcategory) with same name exists
@@ -281,7 +329,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 categoryList = new ArrayList<Category>();
             }
 
-            Category cat = new Category(title, newCategoryColor, null, 0);
+            Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), 0);
 
             categoryList.add(cat); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
 
@@ -292,22 +340,17 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
             categoryGrid.setAdapter(pc);
         } else { // Create subcategory
-            Category cat = new Category(title, newCategoryColor, categoryList.get(0).getImage(), selectedCategory.getId());
+            Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), selectedCategory.getId());
             subcategoryList.add(cat);
             catlibhelp.giveCategorySuperCategory(selectedCategory, cat);
             subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
         }
 
-
-
-        List<Category> cattes = catlibhelp.getCategoriesFromProfile(child);
-        int x = cattes.size();
-
         dialog.dismiss();
         findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 
 		newCategoryColor = 0;
-
+        newCategoryIcon = null;
 	}
 
 	@Override
@@ -337,6 +380,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         diag.SetCurrColor(0xFF000000);
         diag.show();
 	}
+
+    public void setNewCategoryIcon(View view)
+    {
+        isIcon = true;
+        createPictogram(view); //Opens PictoSearch
+    }
 
 	/*
 	 * The following methods handle updating of categories and sub-categories. This occurs when long-clicking either
@@ -376,12 +425,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 break;
             case DELETEPICTOGRAM:
                 if(selectedSubCategory == null){
-//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
 
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
                 }
                 else{
-//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
                 }
 //                selectedCategory.setChanged(true);
@@ -389,7 +438,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 somethingChanged = true;
                 break;
         }
-
 		if(isCategory){
 			categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
 		}
@@ -467,41 +515,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	 */
 	private void getProfiles(Bundle extras) {
 		if(extras.containsKey("currentChildID")) {
-			child = proHelp.getProfileById(extras.getInt("currentChildID"));
+			child = profileController.getProfileById(extras.getInt("currentChildID"));
 		}
 		if(extras.containsKey("currentGuardianID")){
-			guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
+			guardian = profileController.getProfileById(extras.getInt("currentGuardianID"));
 		}
-
-        int x = 1;
 	}
-
-	/*
-	 * DONE: The following methods handle menu pressing
-	 */
-	public void saveChanges(MenuItem item) {
-		for(Category sc : subcategoryList){
-//			if(sc.isChanged()){
-//				sc.getSuperCategory().setChanged(true);
-//				sc.setChanged(false);
-//			}
-		}
-
-		for(Category c : categoryList){
-//			if(c.isChanged()){
-//				somethingChanged = true;
-//				catHelp.saveCategory(c, child.getId());
-//				c.setChanged(false);
-//			}
-		}
-
-		if(somethingChanged){
-//			catHelp.saveChangesToXML();
-		}
-
-		somethingChanged = false;
-	}
-
 
 	/*
 	 * DONE: The following method update the visibility of buttons. This depends on what is selected. This limits
@@ -667,12 +686,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             @Override
             public void onClick(View v){
                 if(selectedSubCategory == null){
-//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
 
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
                 }
                 else{
-//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
                 }
                 pictograms.remove(selectedLocation);
@@ -704,26 +723,83 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+
         if(data==null)
         {
             return;
         }
         Bundle extras = data.getExtras();
 
-        if(data.hasExtra("checkoutIds")){
+        if(data.hasExtra("checkoutIds"))
+        {
             int[] checkoutIds = extras.getIntArray("checkoutIds");
-
-            // Add pictograms to selectedCategory if no sub-category is selected
-            if(selectedSubCategory == null){
-                checkAndAddPictograms(checkoutIds,selectedCategory);
+            if(requestCode==2 || requestCode==3)//Comes from SettingDialogFragment. 2 = Category, 3 = Subcategory.
+            {
+                Pictogram pictoHolder = new Pictogram();
+                if(checkoutIds.length>=1)
+                {
+                    pictoHolder = pictogramController.getPictogramById(checkoutIds[0]);
+                    if(checkoutIds.length>1)
+                    {
+                        iconAlertDialog(this);
+                    }
+                }
+                if(requestCode == 2)//Category
+                {
+                    selectedCategory.setImage(pictoHolder.getImage());
+                    updateIcon(selectedCategory, selectedLocation, true);
+                    categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+                    categoryController.modifyCategory(selectedCategory);
+                }
+                else//Subcategory
+                {
+                    selectedSubCategory.setImage(pictoHolder.getImage());
+                    updateIcon(selectedSubCategory, selectedLocation, false);
+                    subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+                    categoryController.modifyCategory(selectedSubCategory);
+                }
             }
-            else{
-                checkAndAddPictograms(checkoutIds,selectedSubCategory);
+            else
+            {
+                if(isIcon!=true)
+                {
+                    // Add pictograms to selectedCategory if no sub-category is selected
+                    if(selectedSubCategory == null){
+                        checkAndAddPictograms(checkoutIds,selectedCategory);
+                    }
+                    else{
+                        checkAndAddPictograms(checkoutIds,selectedSubCategory);
+                    }
+                    pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
+                }
+                else
+                {
+                    isIcon = false;
+                    if(checkoutIds.length>1)
+                    {
+                        iconAlertDialog(this);
+                    }
+                    newCategoryIcon = pictogramController.getPictogramById(checkoutIds[0]);
+                }
             }
-            pictogramGrid.setAdapter(new PictoAdapter(pictograms, this));
         }
-
 	}
+
+    private void iconAlertDialog(Context context)
+    {
+        GDialogAlert diag = new GDialogAlert(context,
+                R.drawable.ic_launcher,
+                "Kun et pictogram kan vælges som ikon til kategorien.",
+                "Det øverste i listen er valgt.",
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+        diag.show();
+    }
+
 
     private void checkAndAddPictograms(int[] checkoutIds, Category category) {
         boolean legal;
@@ -737,15 +813,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 }
             }
             if(legal){
-                catlibhelp.addPictogramToCategory(pictoHelp.getPictogramById(id), category);
-//                category.setChanged(true);
-                pictograms =pictoHelp.getPictogramsByCategory(category);
+                catlibhelp.addPictogramToCategory(pictogramController.getPictogramById(id), category);
+                pictograms = pictogramController.getPictogramsByCategory(category);
             }
         }
     }
 
-    public void onCloseButtonPress(View view)
-    {
+    public void onCloseButtonPress(View view) {
         finish();
     }
 }

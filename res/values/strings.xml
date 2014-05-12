@@ -4,6 +4,7 @@
         <item>Titel</item>
         <item>Farve</item>
         <item>Icon</item>
+        <item>Kopier</item>
     </string-array>
 	
 	<string name="app_name">Kategoriværktøjet</string>
@@ -42,6 +43,7 @@
     <string name="title_change">Ændre titel</string>
     <string name="close">Luk</string>
     <string name="save_changes">Gem ændringer</string>
-
+    <string name="change_profile">Skift profil</string>
+    <string name="select_citizen">Vælg venligst en borger</string>
 
 </resources>
