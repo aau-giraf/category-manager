@@ -220,13 +220,25 @@
             </LinearLayout>
         </LinearLayout>
 
-
-        <TextView
-            android:id="@+id/tip_error_message"
+        <RelativeLayout
+            android:id="@+id/infotext"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pressInfo"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:layout_height="wrap_content">
+            <dk.aau.cs.giraf.gui.GTextView
+                android:id="@+id/tip_error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pressInfo"
+                android:layout_alignParentLeft="true"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <dk.aau.cs.giraf.gui.GTextView
+                android:id="@+id/tip_save_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Ændringer gemmes automatisk"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </RelativeLayout>
 
     </LinearLayout>
     <RelativeLayout
