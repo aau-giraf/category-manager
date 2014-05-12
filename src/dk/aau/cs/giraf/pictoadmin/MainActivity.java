@@ -5,26 +5,22 @@ import java.util.List;
 
 import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GButton;
+import dk.aau.cs.giraf.gui.GButtonProfileSelect;
 import dk.aau.cs.giraf.gui.GColorPicker;
 import dk.aau.cs.giraf.gui.GDialog;
 import dk.aau.cs.giraf.gui.GDialogAlert;
 import dk.aau.cs.giraf.gui.GDialogMessage;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
-import dk.aau.cs.giraf.gui.GPictogramAdapter;
 import dk.aau.cs.giraf.oasis.lib.controllers.PictogramController;
-import yuku.ambilwarna.AmbilWarnaDialog;
-import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +34,6 @@ import dk.aau.cs.giraf.oasis.lib.models.Profile;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 import dk.aau.cs.giraf.oasis.lib.controllers.CategoryController;
-
-import dk.aau.cs.giraf.pictogram.PictoFactory;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -135,73 +129,105 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 diag.show();
             }
 
-            categoryList = catlibhelp.getCategoriesFromProfile(child);
-			if(categoryList == null)
-			{
-				categoryList = new ArrayList<Category>();
-			}
-
-			// Setup category gridview
-			categoryGrid = (GList) findViewById(R.id.category_listview);
-			if(categoryList != null){
-				categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
-			}
-			categoryGrid.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					updateSelected(v, position, 1);
-					updateButtonVisibility(v);
-
-				}
-			});
-			categoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
-				@Override
-				public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
-																				categoryList.get(position),
-																				position, true, v);
-					settingDialog.show(getFragmentManager(), "chooseSettings");
-					return false;
-				}
-			});
-
-			// Setup sub-category gridview
-			subcategoryGrid = (GList) findViewById(R.id.subcategory_listview);
-			subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					updateSelected(v, position, 0);
-					updateButtonVisibility(v);
-				}
-			});
-			subcategoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
-                    SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
-                            subcategoryList.get(position),
-                            position, false, v);
-                    settingDialog.show(getFragmentManager(), "chooseSettings");
-                    return false;
-                }
-            });
-
-			// Setup pictogram gridview
-			pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
-			pictogramGrid.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-					updateSelected(v, position, 2);
-					updateButtonVisibility(v);
-				}
-			});
-
-			TextView currentChild = (TextView) findViewById(R.id.currentChildName);
-			currentChild.setText(child.getName());
+            loadChildProfile();
+            setupGUI();
 		}
 
         // Start logging this activity
         EasyTracker.getInstance(this).activityStart(this);  // Add this method.
 	}
+
+    private void loadChildProfile() {
+        categoryList = catlibhelp.getCategoriesFromProfile(child);
+        if(categoryList == null)
+        {
+            categoryList = new ArrayList<Category>();
+        }
+    }
+
+    private void setupGUI() {
+        // Setup category gridview
+        categoryGrid = (GList) findViewById(R.id.category_listview);
+        setCategoryGridAdapter(categoryGrid);
+        setCategoryGridListeners(categoryGrid);
+
+        // Setup sub-category gridview
+        subcategoryGrid = (GList) findViewById(R.id.subcategory_listview);
+        setSubCategoryGridListeners(subcategoryGrid);
+
+        // Setup pictogram gridview
+        pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
+        setPictogramGridListeners(pictogramGrid);
+
+        GButtonProfileSelect profSelBut = (GButtonProfileSelect)findViewById(R.id.change_profile);
+        profSelBut.setup(guardian, child, new GButtonProfileSelect.onCloseListener() {
+            @Override
+            public void onClose(Profile guardianProfile, Profile currentProfile) {
+
+            }
+        });
+
+        TextView currentChild = (TextView) findViewById(R.id.currentChildName);
+        currentChild.setText(child.getName());
+    }
+
+    private void setCategoryGridAdapter(GList categoryGrid) {
+        if(categoryList != null){
+            categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+        }
+    }
+
+    private void setCategoryGridListeners(GList categoryGrid) {
+        categoryGrid.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                updateSelected(v, position, 1);
+                updateButtonVisibility(v);
+
+            }
+        });
+
+        categoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
+                        categoryList.get(position),
+                        position, true, v);
+                settingDialog.show(getFragmentManager(), "chooseSettings");
+                return false;
+            }
+        });
+    }
+
+    private void setSubCategoryGridListeners(GList subcategoryGrid) {
+        subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                updateSelected(v, position, 0);
+                updateButtonVisibility(v);
+            }
+        });
+        subcategoryGrid.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                SettingDialogFragment settingDialog = new SettingDialogFragment(MainActivity.this,
+                        subcategoryList.get(position),
+                        position, false, v);
+                settingDialog.show(getFragmentManager(), "chooseSettings");
+                return false;
+            }
+        });
+    }
+
+    private void setPictogramGridListeners(GGridView pictogramGrid) {
+        pictogramGrid.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                updateSelected(v, position, 2);
+                updateButtonVisibility(v);
+            }
+        });
+    }
 
     @Override
     protected void onStop() {
