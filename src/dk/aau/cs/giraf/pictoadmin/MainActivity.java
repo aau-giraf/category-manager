@@ -43,18 +43,20 @@ import com.google.analytics.tracking.android.EasyTracker;
  */
 @SuppressLint("DefaultLocale")
 public class MainActivity extends Activity implements CreateCategoryListener{
-    private boolean DEBUG = true;
+    private boolean IS_DEBUG() {
+        return true;
+    }
 
 	private Profile child;
 	private Profile guardian;
 
-	private Category selectedCategory    = null;
+	private Category selectedCategory = null;
 	private Category selectedSubCategory = null;
-	private Pictogram selectedPictogram   = null;
+	private Pictogram selectedPictogram = null;
 
-	private List<Category> categoryList    = new ArrayList<Category>();
+	private List<Category> categoryList = new ArrayList<Category>();
 	private List<Category> subcategoryList = new ArrayList<Category>();
-	private List<Pictogram> 	  pictograms	  = new ArrayList<Pictogram>();
+	private List<Pictogram> pictograms = new ArrayList<Pictogram>();
 
 	private GList categoryGrid;
 	private GList subcategoryGrid;
@@ -62,18 +64,18 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
 	private boolean somethingChanged = false; // If something is deleted, is has to be noted
     private boolean isIcon = false;
-	private int     selectedLocation; // Stores the location of the last pressed item in any gridview
-	private int     newCategoryColor; // Hold the value set when creating a new category or sub-category
-    private Pictogram   newCategoryIcon; // Hold the value set when creating a new category or sub-category
+	private int selectedLocation; // Stores the location of the last pressed item in any gridview
+	private int newCategoryColor; // Hold the value set when creating a new category or sub-category
+    private Pictogram newCategoryIcon; // Hold the value set when creating a new category or sub-category
 
-	private CategoryController catHelp = new CategoryController(this);
-	private ProfileController proHelp = new ProfileController(this);
-    private PictogramController pictoHelp = new PictogramController(this);
+	private CategoryController categoryController = new CategoryController(this);
+	private ProfileController profileController = new ProfileController(this);
+    private PictogramController pictogramController = new PictogramController(this);
     private CatLibHelper catlibhelp = new CatLibHelper(this);
 
 	private MessageDialogFragment message;
 
-    public enum Setting{TITLE, COLOR, ICON, DELETE, DELETEPICTOGRAM};
+    public enum Setting{TITLE, COLOR, ICON, DELETE, DELETEPICTOGRAM}
 
     private static final String TAG = "CAT";
 
@@ -126,12 +128,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     }
 
     private Bundle setupDebug(Bundle extras) {
-        if(DEBUG && extras == null)
+        if(IS_DEBUG() && extras == null)
         {
             extras = new Bundle();
 
-            extras.putInt("currentChildID", proHelp.getChildren().get(0).getId());
-            extras.putInt("currentGuardianID", proHelp.getGuardians().get(0).getId());
+            extras.putInt("currentChildID", profileController.getChildren().get(0).getId());
+            extras.putInt("currentGuardianID", profileController.getGuardians().get(0).getId());
 
             TextView debugText = (TextView) this.findViewById(R.id.DebugText);
             debugText.setVisibility(View.VISIBLE);
@@ -344,11 +346,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
         }
 
-
-
-        List<Category> cattes = catlibhelp.getCategoriesFromProfile(child);
-        int x = cattes.size();
-
         dialog.dismiss();
         findViewById(R.id.back_dim_layout).setVisibility(View.GONE);
 
@@ -428,12 +425,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 break;
             case DELETEPICTOGRAM:
                 if(selectedSubCategory == null){
-//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
 
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
                 }
                 else{
-//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
                 }
 //                selectedCategory.setChanged(true);
@@ -518,41 +515,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	 */
 	private void getProfiles(Bundle extras) {
 		if(extras.containsKey("currentChildID")) {
-			child = proHelp.getProfileById(extras.getInt("currentChildID"));
+			child = profileController.getProfileById(extras.getInt("currentChildID"));
 		}
 		if(extras.containsKey("currentGuardianID")){
-			guardian = proHelp.getProfileById(extras.getInt("currentGuardianID"));
+			guardian = profileController.getProfileById(extras.getInt("currentGuardianID"));
 		}
-
-        int x = 1;
 	}
-
-	/*
-	 * DONE: The following methods handle menu pressing
-	 */
-	public void saveChanges(MenuItem item) {
-		for(Category sc : subcategoryList){
-//			if(sc.isChanged()){
-//				sc.getSuperCategory().setChanged(true);
-//				sc.setChanged(false);
-//			}
-		}
-
-		for(Category c : categoryList){
-//			if(c.isChanged()){
-//				somethingChanged = true;
-//				catHelp.saveCategory(c, child.getId());
-//				c.setChanged(false);
-//			}
-		}
-
-		if(somethingChanged){
-//			catHelp.saveChangesToXML();
-		}
-
-		somethingChanged = false;
-	}
-
 
 	/*
 	 * DONE: The following method update the visibility of buttons. This depends on what is selected. This limits
@@ -717,12 +685,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             @Override
             public void onClick(View v){
                 if(selectedSubCategory == null){
-//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedCategory); // IMPORTANT: selectedCategory.removePictogram(selectedLocation);
 
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
                 }
                 else{
-//                    catlibhelp.deletePictogramFromCategory(pictoHelp.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
+//                    catlibhelp.deletePictogramFromCategory(pictogramController.getPictogramById(selectedLocation), selectedSubCategory);// IMPORTANT: selectedSubCategory.removePictogram(selectedLocation);
                     catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
                 }
                 pictograms.remove(selectedLocation);
@@ -769,7 +737,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 Pictogram pictoHolder = new Pictogram();
                 if(checkoutIds.length>=1)
                 {
-                    pictoHolder = pictoHelp.getPictogramById(checkoutIds[0]);
+                    pictoHolder = pictogramController.getPictogramById(checkoutIds[0]);
                     if(checkoutIds.length>1)
                     {
                         iconAlertDialog(this);
@@ -780,14 +748,14 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     selectedCategory.setImage(pictoHolder.getImage());
                     updateIcon(selectedCategory, selectedLocation, true);
                     categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
-                    catHelp.modifyCategory(selectedCategory);
+                    categoryController.modifyCategory(selectedCategory);
                 }
                 else//Subcategory
                 {
                     selectedSubCategory.setImage(pictoHolder.getImage());
                     updateIcon(selectedSubCategory, selectedLocation, false);
                     subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
-                    catHelp.modifyCategory(selectedSubCategory);
+                    categoryController.modifyCategory(selectedSubCategory);
                 }
             }
             else
@@ -810,7 +778,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     {
                         iconAlertDialog(this);
                     }
-                    newCategoryIcon = pictoHelp.getPictogramById(checkoutIds[0]);
+                    newCategoryIcon = pictogramController.getPictogramById(checkoutIds[0]);
                 }
             }
         }
@@ -844,19 +812,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 }
             }
             if(legal){
-                catlibhelp.addPictogramToCategory(pictoHelp.getPictogramById(id), category);
-//                category.setChanged(true);
-                pictograms =pictoHelp.getPictogramsByCategory(category);
+                catlibhelp.addPictogramToCategory(pictogramController.getPictogramById(id), category);
+                pictograms = pictogramController.getPictogramsByCategory(category);
             }
         }
     }
 
-    public void onCloseButtonPress(View view)
-    {
+    public void onCloseButtonPress(View view) {
         finish();
-    }
-
-    public void onChangeProfileButtonPress(View view) {
-        // Change profile
     }
 }
