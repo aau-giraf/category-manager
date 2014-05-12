@@ -40,8 +40,6 @@ public class SettingDialogFragment extends DialogFragment{
     private int pos;
     private boolean isCategory;
     private View view;
-    private Pictogram newCategoryIcon; // Hold the value set when creating a new category or sub-category
-    private PictogramController pictoHelp;
     private MessageDialogFragment message;
     private Profile guardian;
     private Profile child;
@@ -61,15 +59,12 @@ public class SettingDialogFragment extends DialogFragment{
         public void onDialogSettingNegativeClick(DialogFragment dialog);
     }
 
-    SettingDialogListener listenerSetting;
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.edit_category)
                 .setItems(R.array.dialog_options, new OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //Change title
@@ -91,7 +86,6 @@ public class SettingDialogFragment extends DialogFragment{
                         }
                         //Change icon
                         if (which == 2) {
-
                             Intent request = new Intent();
 
                             try {
@@ -108,88 +102,7 @@ public class SettingDialogFragment extends DialogFragment{
                             }
                         }
                         if (which == 3) {
-                            // It's a category - copy to another child
-                            if (isCategory) {
-                                final GProfileSelector profileSelector = new GProfileSelector(view.getContext(), guardian, null);
-
-                                profileSelector.setOnListItemClick(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        ProfileController profileController = new ProfileController(view.getContext());
-                                        CategoryController categoryController = new CategoryController(view.getContext());
-                                        PictogramController pictogramController = new PictogramController(view.getContext());
-                                        PictogramCategoryController pictogramCategoryController = new PictogramCategoryController(view.getContext());
-                                        CatLibHelper catLibHelper = new CatLibHelper(view.getContext());
-
-                                        Profile copyToChild = profileController.getProfileById((int) id);
-
-                                        if (copyToChild.getId() == child.getId()) {
-                                            GToast toast = new GToast(view.getContext(), "Det er ikke muligt at kopiere en kategori til den samme borger", 5);
-                                            toast.show();
-                                            profileSelector.dismiss();
-                                            return;
-                                        }
-
-                                        for (Category c : categoryController.getCategoriesByProfileId(copyToChild.getId())) {
-                                            if (c.getName().equals(category.getName())) {
-                                                GToast toast = new GToast(view.getContext(), copyToChild.getName() + " har allerede en kategori med samme navn", 5);
-                                                toast.show();
-                                                profileSelector.dismiss();
-                                                return;
-                                            }
-                                        }
-
-                                        int subCatsCopied = 0;
-                                        int pictosCopied = 0;
-
-                                        // Add a new category to the child
-                                        Category newCat = new Category(category.getName(), category.getColour(), category.getImage());
-                                        categoryController.insertCategory(newCat);
-                                        catLibHelper.addCategoryToProfile(copyToChild, newCat);
-
-                                        // Copy all subcategories from the original category to the new category on the other child
-                                        for (Category subCat : categoryController.getSubcategoriesByCategory(category)) {
-                                            Category newSub = new Category(subCat.getName(), subCat.getColour(), subCat.getImage(), newCat.getId());
-                                            categoryController.insertCategory(newSub);
-                                            subCatsCopied++;
-
-
-                                            // Copy picograms on subcategories
-                                            for (Pictogram picto : pictogramController.getPictogramsByCategory(subCat)) {
-                                                PictogramCategory piccat = new PictogramCategory(picto.getId(), newSub.getId());
-                                                pictogramCategoryController.insertPictogramCategory(piccat);
-                                                pictosCopied++;
-                                            }
-                                        }
-
-                                        // Copy all pictograms from the original category to the new category on the other child
-                                        for (Pictogram picto : pictogramController.getPictogramsByCategory(category)) {
-                                            PictogramCategory piccat = new PictogramCategory(picto.getId(), newCat.getId());
-                                            pictogramCategoryController.insertPictogramCategory(piccat);
-                                            pictosCopied++;
-                                        }
-
-                                        GToast toast = new GToast(view.getContext(), "Underkategorier kopieret: " + subCatsCopied + ", pictogrammer kopieret: " + pictosCopied, 3);
-                                        toast.show();
-
-                                        profileSelector.dismiss();
-                                    }
-                                });
-                                profileSelector.show();
-                            }
-
-                            // Sub category: copy to another category
-                            else {
-                                GDialogAlert diag = new GDialogAlert(startActivity,
-                                        "Det er ikke implementeret at kunne kopiere underkategorier",
-                                        new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view1) {
-
-                                            }
-                                        });
-                                diag.show();
-                            }
+                            CopyCategory();
                         }
                     }
                 })
@@ -200,5 +113,90 @@ public class SettingDialogFragment extends DialogFragment{
                 });
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+
+    private void CopyCategory() {
+        // It's a category - copy to another child
+        if (isCategory) {
+            final GProfileSelector profileSelector = new GProfileSelector(view.getContext(), guardian, null);
+
+            profileSelector.setOnListItemClick(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    ProfileController profileController = new ProfileController(view.getContext());
+                    CategoryController categoryController = new CategoryController(view.getContext());
+                    PictogramController pictogramController = new PictogramController(view.getContext());
+                    PictogramCategoryController pictogramCategoryController = new PictogramCategoryController(view.getContext());
+                    CatLibHelper catLibHelper = new CatLibHelper(view.getContext());
+
+                    Profile copyToChild = profileController.getProfileById((int) id);
+
+                    if (copyToChild.getId() == child.getId()) {
+                        GToast toast = new GToast(view.getContext(), "Det er ikke muligt at kopiere en kategori til den samme borger", 5);
+                        toast.show();
+                        profileSelector.dismiss();
+                        return;
+                    }
+
+                    for (Category c : categoryController.getCategoriesByProfileId(copyToChild.getId())) {
+                        if (c.getName().equals(category.getName())) {
+                            GToast toast = new GToast(view.getContext(), copyToChild.getName() + " har allerede en kategori med samme navn", 5);
+                            toast.show();
+                            profileSelector.dismiss();
+                            return;
+                        }
+                    }
+
+                    int subCatsCopied = 0;
+                    int pictosCopied = 0;
+
+                    // Add a new category to the child
+                    Category newCat = new Category(category.getName(), category.getColour(), category.getImage());
+                    categoryController.insertCategory(newCat);
+                    catLibHelper.addCategoryToProfile(copyToChild, newCat);
+
+                    // Copy all subcategories from the original category to the new category on the other child
+                    for (Category subCat : categoryController.getSubcategoriesByCategory(category)) {
+                        Category newSub = new Category(subCat.getName(), subCat.getColour(), subCat.getImage(), newCat.getId());
+                        categoryController.insertCategory(newSub);
+                        subCatsCopied++;
+
+
+                        // Copy picograms on subcategories
+                        for (Pictogram picto : pictogramController.getPictogramsByCategory(subCat)) {
+                            PictogramCategory piccat = new PictogramCategory(picto.getId(), newSub.getId());
+                            pictogramCategoryController.insertPictogramCategory(piccat);
+                            pictosCopied++;
+                        }
+                    }
+
+                    // Copy all pictograms from the original category to the new category on the other child
+                    for (Pictogram picto : pictogramController.getPictogramsByCategory(category)) {
+                        PictogramCategory piccat = new PictogramCategory(picto.getId(), newCat.getId());
+                        pictogramCategoryController.insertPictogramCategory(piccat);
+                        pictosCopied++;
+                    }
+
+                    GToast toast = new GToast(view.getContext(), "Underkategorier kopieret: " + subCatsCopied + ", pictogrammer kopieret: " + pictosCopied, 3);
+                    toast.show();
+
+                    profileSelector.dismiss();
+                }
+            });
+            profileSelector.show();
+        }
+
+        // Sub category: copy to another category
+        else {
+            GDialogAlert diag = new GDialogAlert(startActivity,
+                    "Det er ikke implementeret at kunne kopiere underkategorier",
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view1) {
+
+                        }
+                    });
+            diag.show();
+        }
     }
 }
