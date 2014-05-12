@@ -51,4 +51,6 @@
     <string name="not_implemented">Denne funktionalitet er ikke implementeret</string>
     <string name="subcat_copied">Underkategorier kopieret: </string>
     <string name="pictograms_copied">, pictogrammer kopieret: </string>
+    <string name="pictosearch_unavaiable">Kunne ikke tilgå pictosearch</string>
+    <string name="ask_installed">Er det installeret?</string>
 </resources>
