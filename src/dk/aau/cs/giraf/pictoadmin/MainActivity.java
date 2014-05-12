@@ -150,16 +150,16 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     private void setupGUI() {
         // Setup category gridview
         categoryGrid = (GList) findViewById(R.id.category_listview);
-        setCategoryGridAdapter(categoryGrid);
-        setCategoryGridListeners(categoryGrid);
+        setCategoryGridAdapter();
+        setCategoryGridListeners();
 
         // Setup sub-category gridview
         subcategoryGrid = (GList) findViewById(R.id.subcategory_listview);
-        setSubCategoryGridListeners(subcategoryGrid);
+        setSubCategoryGridListeners();
 
         // Setup pictogram gridview
         pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
-        setPictogramGridListeners(pictogramGrid);
+        setPictogramGridListeners();
 
         setupChangeProfileButton();
 
@@ -177,19 +177,26 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             @Override
             public void onClose(Profile guardianProfile, Profile currentProfile) {
                 child = currentProfile;
+                loadChildProfile();
+
+                subcategoryList = new ArrayList<Category>();
+                pictograms = new ArrayList<Pictogram>();
+                subcategoryGrid.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, findViewById(R.id.category_listview).getContext()));
+                pictogramGrid.setAdapter(new PictoAdapter(pictograms, findViewById(R.id.category_listview).getContext()));
+
                 setupChildText();
-                setCategoryGridAdapter(categoryGrid);
+                setCategoryGridAdapter();
             }
         });
     }
 
-    private void setCategoryGridAdapter(GList categoryGrid) {
+    private void setCategoryGridAdapter() {
         if(categoryList != null){
             categoryGrid.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
         }
     }
 
-    private void setCategoryGridListeners(GList categoryGrid) {
+    private void setCategoryGridListeners() {
         categoryGrid.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
@@ -211,7 +218,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         });
     }
 
-    private void setSubCategoryGridListeners(GList subcategoryGrid) {
+    private void setSubCategoryGridListeners() {
         subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
@@ -231,7 +238,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         });
     }
 
-    private void setPictogramGridListeners(GGridView pictogramGrid) {
+    private void setPictogramGridListeners() {
         pictogramGrid.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
