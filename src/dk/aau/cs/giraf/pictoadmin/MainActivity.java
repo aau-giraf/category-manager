@@ -177,6 +177,19 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             @Override
             public void onClose(Profile guardianProfile, Profile currentProfile) {
                 child = currentProfile;
+
+                if (child == null) {
+                    GDialogAlert diag = new GDialogAlert(getApplicationContext(),
+                            "Vælg vensligt en borger.",
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    finish();
+                                }
+                            });
+                    diag.show();
+                }
+
                 loadChildProfile();
 
                 subcategoryList = new ArrayList<Category>();
