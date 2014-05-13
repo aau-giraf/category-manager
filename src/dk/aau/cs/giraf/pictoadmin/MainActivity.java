@@ -93,20 +93,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		}
 		else{
 			getProfiles(extras);
-
-            // Will be used when the new profile selector is implemented launcher
-            if (child.getId() == -1) {
-                GDialogAlert diag = new GDialogAlert(this,
-                        getString(R.string.select_citizen),
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                finish();
-                            }
-                        });
-                diag.show();
-            }
-
+            VerifyChildSelectedOnLaunch();
             loadChildProfile();
             setupGUI();
 		}
@@ -114,6 +101,21 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         // Start logging this activity
         EasyTracker.getInstance(this).activityStart(this);  // Add this method.
 	}
+
+    private void VerifyChildSelectedOnLaunch() {
+        // Will be used when the new profile selector is implemented launcher
+        if (child.getId() == -1) {
+            GDialogAlert diag = new GDialogAlert(this,
+                    getString(R.string.select_citizen),
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            finish();
+                        }
+                    });
+            diag.show();
+        }
+    }
 
     private void invalidLoginExit() {
         GDialogAlert diag = new GDialogAlert(this,
