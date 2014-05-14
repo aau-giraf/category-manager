@@ -791,7 +791,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     {
                         iconAlertDialog(this);
                     }
-                    newCategoryIcon = pictogramController.getPictogramById(checkoutIds[0]);
+
+                    if(checkoutIds.length!=0)
+                    {
+                        newCategoryIcon = pictogramController.getPictogramById(checkoutIds[0]);
+                    }
                 }
             }
         }
