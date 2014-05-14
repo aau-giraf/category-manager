@@ -21,9 +21,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -85,7 +83,9 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         setContentView(R.layout.activity_admin_category);
 
 		Bundle extras = getIntent().getExtras();
-        extras = setupDebug(extras);
+        if(IS_DEBUG() && extras == null) {
+            extras = setupDebug(extras);
+        }
 
         // "Ugyldige login informationer"
 		if(extras == null){
@@ -130,16 +130,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     }
 
     private Bundle setupDebug(Bundle extras) {
-        if(IS_DEBUG() && extras == null)
-        {
-            extras = new Bundle();
+        extras = new Bundle();
 
-            extras.putInt("currentChildID", profileController.getChildren().get(0).getId());
-            extras.putInt("currentGuardianID", profileController.getGuardians().get(0).getId());
+        extras.putInt("currentChildID", profileController.getChildren().get(0).getId());
+        extras.putInt("currentGuardianID", profileController.getGuardians().get(0).getId());
 
-            TextView debugText = (TextView) this.findViewById(R.id.DebugText);
-            debugText.setVisibility(View.VISIBLE);
-        }
+        TextView debugText = (TextView) this.findViewById(R.id.DebugText);
+        debugText.setVisibility(View.VISIBLE);
         return extras;
     }
 
@@ -175,26 +172,35 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         currentChild.setText(child.getName());
     }
 
+    private void showChooseChitizenDialog() {
+        GDialogAlert diag = new GDialogAlert(this,
+                "Vælg venligst en borger.",
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+        diag.show();
+    }
+
     private void setupChangeProfileButton() {
         GButtonProfileSelect profSelBut = (GButtonProfileSelect)findViewById(R.id.change_profile);
-        profSelBut.setup(guardian, child, new GButtonProfileSelect.onCloseListener() {
+        profSelBut.setup(guardian, null, new GButtonProfileSelect.onCloseListener() {
             @Override
             public void onClose(Profile guardianProfile, Profile currentProfile) {
-                child = currentProfile;
-
-                if (child == null) {
-                    GDialogAlert diag = new GDialogAlert(getApplicationContext(),
-                            "Vælg vensligt en borger.",
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    finish();
-                                }
-                            });
-                    diag.show();
+                if (currentProfile == null) {
+                    showChooseChitizenDialog();
+                    return;
                 }
 
+                if (currentProfile.getId() == child.getId()) {
+                    return;
+                }
+
+                child = currentProfile;
                 loadChildProfile();
+                setupChangeProfileButton();
 
                 subcategoryList = new ArrayList<Category>();
                 pictograms = new ArrayList<Pictogram>();
@@ -822,4 +828,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     public void onCloseButtonPress(View view) {
         finish();
     }
+
+
 }
