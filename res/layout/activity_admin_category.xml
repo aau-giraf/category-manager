@@ -52,6 +52,7 @@
                     android:text="DEBUGGING"
                     android:gravity="center_vertical"
                     android:textSize="30dp"
+                    android:visibility="invisible"
                     android:textColor="#FF0000"/>
             </LinearLayout>
 
