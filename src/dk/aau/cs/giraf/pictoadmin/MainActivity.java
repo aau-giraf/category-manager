@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -35,6 +36,8 @@ import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 import dk.aau.cs.giraf.oasis.lib.controllers.CategoryController;
 
 import com.google.analytics.tracking.android.EasyTracker;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 /**
  * @author SW605f13 Parrot-group
@@ -223,6 +226,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         categoryGrid.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.pop));
                 updateSelected(v, position, 1);
                 updateButtonVisibility(v);
 
@@ -245,6 +249,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         subcategoryGrid.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.pop));
                 updateSelected(v, position, 0);
                 updateButtonVisibility(v);
             }
@@ -265,6 +270,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         pictogramGrid.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+                v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.pop));
                 updateSelected(v, position, 2);
                 updateButtonVisibility(v);
             }
