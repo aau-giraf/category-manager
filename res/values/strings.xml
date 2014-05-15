@@ -50,7 +50,10 @@
     <string name="already_has_category"> har allerede en kategori med samme navn</string>
     <string name="not_implemented">Denne funktionalitet er ikke implementeret</string>
     <string name="subcat_copied">Underkategorier kopieret: </string>
-    <string name="pictograms_copied">, pictogrammer kopieret: </string>
+    <string name="pictograms_copied">Pictogrammer kopieret: </string>
     <string name="pictosearch_unavaiable">Kunne ikke tilgå pictosearch</string>
     <string name="ask_installed">Er det installeret?</string>
+    <string name="error">Fejl</string>
+    <string name="category_copied">Kategorien er kopieret</string>
+
 </resources>
