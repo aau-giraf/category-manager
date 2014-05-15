@@ -1,5 +1,6 @@
 include ':Ambilwarna'
 include ':pictogram-lib'
+include ':metadata'
 include ':OasisLib'
 include ':CategoryLib'
 include ':giraf-component'

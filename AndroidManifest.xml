@@ -30,12 +30,6 @@
 				<category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity
-            android:name="dk.aau.cs.giraf.pictoadmin.HelpMenu"
-            android:label="@string/title_activity_help_menu" >
-        </activity>
-    
     </application>
     
 

@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gbackgroundlight"
-    style="@style/CategoryDialogCrate"
-    >
+    style="@style/CategoryDialogCrate">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,8 +21,8 @@
             <LinearLayout
                 android:id="@+id/inner_description_bar"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                >
+                android:layout_height="100dp">
+
                 <dk.aau.cs.giraf.gui.GButtonProfileSelect
                     android:id="@+id/change_profile"
                     android:layout_width="wrap_content"
@@ -52,6 +52,7 @@
                     android:text="DEBUGGING"
                     android:gravity="center_vertical"
                     android:textSize="30dp"
+                    android:visibility="invisible"
                     android:textColor="#FF0000"/>
             </LinearLayout>
 
@@ -63,10 +64,7 @@
                 android:layout_margin="5dp"
                 android:text=""
                 android:onClick="onCloseButtonPress"/>
-
         </RelativeLayout>
-
-
 
         <LinearLayout
             android:id="@+id/main_category_admin_layout"
@@ -81,7 +79,6 @@
                 android:layout_weight="1"
                 android:layout_marginRight="5dp"
                 android:orientation="vertical" >
-
 
                 <TextView
                         android:id="@+id/category_text"
@@ -119,7 +116,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:listSelector="@drawable/glistitem"/>
-
             </LinearLayout>
 
             <LinearLayout
@@ -128,7 +124,6 @@
                 android:layout_weight="1"
                 android:layout_marginRight="5dp"
                 android:orientation="vertical" >
-
 
                 <TextView
                     android:id="@+id/subcategory_text"
@@ -167,8 +162,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:listSelector="@drawable/glistitem"/>
-
-
             </LinearLayout>
 
             <LinearLayout
@@ -208,7 +201,6 @@
                         android:contentDescription="@string/picture"
                         android:visibility="gone"
                         android:onClick="askDeletePictogram" />
-
                 </LinearLayout>
 
                 <dk.aau.cs.giraf.gui.GGridView
@@ -220,20 +212,30 @@
             </LinearLayout>
         </LinearLayout>
 
-
-        <TextView
-            android:id="@+id/tip_error_message"
+        <RelativeLayout
+            android:id="@+id/infotext"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pressInfo"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
+            android:layout_height="wrap_content">
+            <dk.aau.cs.giraf.gui.GTextView
+                android:id="@+id/tip_error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pressInfo"
+                android:layout_alignParentLeft="true"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <dk.aau.cs.giraf.gui.GTextView
+                android:id="@+id/tip_save_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/auto_save"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </RelativeLayout>
     </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent_color2"
         android:id="@+id/back_dim_layout"
-        android:visibility="gone"
-        />
+        android:visibility="gone"/>
 </RelativeLayout>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="dialog_options">
-        <item>Titel</item>
-        <item>Farve</item>
-        <item>Icon</item>
-        <item>Kopier</item>
+        <item>Skift titel</item>
+        <item>Skift farve</item>
+        <item>Skift ikon</item>
+        <item>Kopier kategori</item>
     </string-array>
 	
 	<string name="app_name">Kategoriværktøjet</string>
@@ -45,5 +45,15 @@
     <string name="save_changes">Gem ændringer</string>
     <string name="change_profile">Skift profil</string>
     <string name="select_citizen">Vælg venligst en borger</string>
+    <string name="auto_save">Ændringer gemmes automatisk</string>
+    <string name="cannot_copy_same_citizen">Det er ikke muligt at kopiere til den samme borger</string>
+    <string name="already_has_category"> har allerede en kategori med samme navn</string>
+    <string name="not_implemented">Denne funktionalitet er ikke implementeret</string>
+    <string name="subcat_copied">Underkategorier kopieret: </string>
+    <string name="pictograms_copied">Pictogrammer kopieret: </string>
+    <string name="pictosearch_unavaiable">Kunne ikke tilgå pictosearch</string>
+    <string name="ask_installed">Er det installeret?</string>
+    <string name="error">Fejl</string>
+    <string name="category_copied">Kategorien er kopieret</string>
 
 </resources>

@@ -53,8 +53,7 @@ public class PictoAdapter extends BaseAdapter {
 	
 	//create an image view for each pictogram in the list.
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) 
-	{
+	public View getView(int position, View convertView, ViewGroup parent) {
 		Pictogram pctNew = pictograms.get(position);
 		
 		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
