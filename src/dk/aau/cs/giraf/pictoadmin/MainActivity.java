@@ -122,6 +122,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                      selector.cancel();
                  }
              });
+            try {
+                selector.backgroundCancelsDialog(false);
+            } catch (Exception e) {
+                finish();
+            }
             selector.show();
         } else {
             loadChildAndSetupGUI();
