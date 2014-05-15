@@ -14,3 +14,6 @@
 [submodule "giraf-component"]
 	path = giraf-component
 	url = http://cs-cust06-int.cs.aau.dk/git-ro/giraf-component.git
+[submodule "meta-database"]
+	path = meta-database
+	url = http://cs-cust06-int.cs.aau.dk/git-ro/meta-database.git
