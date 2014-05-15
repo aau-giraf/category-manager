@@ -787,21 +787,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         deleteDialog.show();
 	}
 
-	/*
-	 * The following method handle how we access pictoCreator
-	 */
-	public void gotoPictoCreator(View view) {
-		Intent croc = new Intent();
-
-		try {
-			croc.setComponent(new ComponentName("dk.aau.cs.giraf.pictocreator", "dk.aau.cs.giraf.pictocreator.MainActivity"));
-			startActivity(croc);
-		}
-		catch (Exception e) {
-            alertDialog(this, getString(R.string.error), getString(R.string.croc_missing));
-		}
-	}
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
