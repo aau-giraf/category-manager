@@ -12,6 +12,8 @@ import dk.aau.cs.giraf.gui.GDialogAlert;
 import dk.aau.cs.giraf.gui.GDialogMessage;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
+import dk.aau.cs.giraf.gui.GProfileSelector;
+import dk.aau.cs.giraf.gui.GToast;
 import dk.aau.cs.giraf.oasis.lib.controllers.PictogramController;
 
 import android.annotation.SuppressLint;
@@ -97,8 +99,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		else{
 			getProfiles(extras);
             VerifyChildSelectedOnLaunch();
-            loadChildProfile();
-            setupGUI();
 		}
 
         // Start logging this activity
@@ -106,17 +106,20 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	}
 
     private void VerifyChildSelectedOnLaunch() {
-        // Will be used when the new profile selector is implemented launcher
-        if (child.getId() == -1) {
-            GDialogAlert diag = new GDialogAlert(this,
-                    getString(R.string.select_citizen),
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            finish();
-                        }
-                    });
-            diag.show();
+        if (child == null) {
+            final   GProfileSelector selector = new GProfileSelector(this, guardian, null);
+             selector.setOnListItemClick(new AdapterView.OnItemClickListener() {
+                 @Override
+                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                     child = profileController.getProfileById((int) l);
+                     loadChildProfile();
+                     setupChangeProfileButton();
+                     setupGUI();
+                     setupChildText();
+                     selector.cancel();
+                 }
+             });
+            selector.show();
         }
     }
 
@@ -135,7 +138,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     private Bundle setupDebug(Bundle extras) {
         extras = new Bundle();
 
-        extras.putInt("currentChildID", profileController.getChildren().get(0).getId());
+//        extras.putInt("currentChildID", profileController.getChildren().get(0).getId());
         extras.putInt("currentGuardianID", profileController.getGuardians().get(0).getId());
 
         TextView debugText = (TextView) this.findViewById(R.id.DebugText);
@@ -164,10 +167,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         // Setup pictogram gridview
         pictogramGrid = (GGridView) findViewById(R.id.pictogram_gridview);
         setPictogramGridListeners();
-
-        setupChangeProfileButton();
-
-        setupChildText();
     }
 
     private void setupChildText() {
