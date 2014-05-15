@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="dialog_options">
-        <item>Titel</item>
-        <item>Farve</item>
-        <item>Icon</item>
-        <item>Kopier</item>
+        <item>Skift titel</item>
+        <item>Skift farve</item>
+        <item>Skidt ikon</item>
+        <item>Kopier kategori</item>
     </string-array>
 	
 	<string name="app_name">Kategoriværktøjet</string>
