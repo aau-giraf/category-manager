@@ -398,7 +398,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
             Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), 0);
 
-            categoryList.add(cat); // IMPORTANT: hvor null PictoFactory.getPictogram(this, 1))
+            categoryList.add(cat);
 
             catlibhelp.addCategoryToProfile(child, cat);
             PictoAdminCategoryAdapter pc = new PictoAdminCategoryAdapter(categoryList, this);
