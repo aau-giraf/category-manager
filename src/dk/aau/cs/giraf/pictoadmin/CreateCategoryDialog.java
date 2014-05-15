@@ -22,6 +22,7 @@ public class CreateCategoryDialog extends DialogFragment {
 
     private final int category;
     private boolean isSubCategory = false;
+    CreateCategoryListener listener;
 
     public CreateCategoryDialog(int category) {
         this.category = category;
@@ -30,11 +31,6 @@ public class CreateCategoryDialog extends DialogFragment {
         this.category = category;
         isSubCategory = sub;
     }
-
-
-    CreateCategoryListener listener;
-
-
 
     @Override
     public void onAttach(Activity activity) {
