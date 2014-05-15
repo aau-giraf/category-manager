@@ -132,16 +132,16 @@ public class SettingDialogFragment extends DialogFragment{
                     Profile copyToChild = profileController.getProfileById((int) id);
 
                     if (copyToChild.getId() == child.getId()) {
-                        GToast toast = new GToast(view.getContext(), getString(R.string.cannot_copy_same_citizen), 5);
-                        toast.show();
+                      //  GToast toast = new GToast(view.getContext(), getString(R.string.cannot_copy_same_citizen), 5);
+                      //  toast.show();
                         profileSelector.cancel();
                         return;
                     }
 
                     for (Category c : categoryController.getCategoriesByProfileId(copyToChild.getId())) {
                         if (c.getName().equals(category.getName())) {
-                            GToast toast = new GToast(view.getContext(), copyToChild.getName() + getString(R.string.already_has_category), 5);
-                            toast.show();
+                      //      GToast toast = new GToast(view.getContext(), copyToChild.getName() + getString(R.string.already_has_category), 5);
+                        //    toast.show();
                             profileSelector.cancel();
                             return;
                         }
@@ -177,8 +177,8 @@ public class SettingDialogFragment extends DialogFragment{
                         pictosCopied++;
                     }
 
-                    GToast toast = new GToast(view.getContext(), getString(R.string.subcat_copied) + subCatsCopied + getString(R.string.pictograms_copied) + pictosCopied, 3);
-                    toast.show();
+                 // GToast toast = new GToast(view.getContext(), getString(R.string.subcat_copied) + subCatsCopied + getString(R.string.pictograms_copied) + pictosCopied, 3);
+                  //  toast.show();
 
                     profileSelector.cancel();
                 }
