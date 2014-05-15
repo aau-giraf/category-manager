@@ -112,7 +112,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
      * Used at launch.
      */
     private void selectAndLoadChild() {
-        if (child == null) {
+        if (child == null || child.getId() == -1) {
             final GProfileSelector selector = new GProfileSelector(this, guardian, null);
              selector.setOnListItemClick(new AdapterView.OnItemClickListener() {
                  @Override
@@ -586,12 +586,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
      * @param extras
      */
 	private void getProfiles(Bundle extras) {
-		if(extras.containsKey("currentChildID")) {
-			child = profileController.getProfileById(extras.getInt("currentChildID"));
-		}
-		if(extras.containsKey("currentGuardianID")){
-			guardian = profileController.getProfileById(extras.getInt("currentGuardianID"));
-		}
+        int childId = extras.getInt("currentChildID");
+        if (childId != -1) {
+            child = profileController.getProfileById(childId);
+        }
+
+        guardian = profileController.getProfileById(extras.getInt("currentGuardianID"));
 	}
 
     /**
