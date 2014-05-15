@@ -856,8 +856,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         }
 	}
 
-    private void alertDialog(Context context, String headline, String message)
-    {
+    private void alertDialog(Context context, String headline, String message){
         GDialogAlert diag = new GDialogAlert(context,
                 R.drawable.ic_launcher,
                 headline,
@@ -870,7 +869,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 });
         diag.show();
     }
-
 
     private void checkAndAddPictograms(int[] checkoutIds, Category category) {
         boolean legal;
