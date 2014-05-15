@@ -112,15 +112,21 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                  @Override
                  public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                      child = profileController.getProfileById((int) l);
-                     loadChildProfile();
-                     setupChangeProfileButton();
-                     setupGUI();
-                     setupChildText();
+                     loadChildAndSetupGUI();
                      selector.cancel();
                  }
              });
             selector.show();
+        } else {
+            loadChildAndSetupGUI();
         }
+    }
+
+    private void loadChildAndSetupGUI() {
+        loadChildProfile();
+        setupChangeProfileButton();
+        setupGUI();
+        setupChildText();
     }
 
     private void invalidLoginExit() {
@@ -138,7 +144,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     private Bundle setupDebug(Bundle extras) {
         extras = new Bundle();
 
-//        extras.putInt("currentChildID", profileController.getChildren().get(0).getId());
+        extras.putInt("currentChildID", profileController.getChildren().get(0).getId());
         extras.putInt("currentGuardianID", profileController.getGuardians().get(0).getId());
 
         TextView debugText = (TextView) this.findViewById(R.id.DebugText);
