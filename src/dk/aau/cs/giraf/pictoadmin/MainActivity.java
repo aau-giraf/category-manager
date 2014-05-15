@@ -80,8 +80,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     private PictogramController pictogramController = new PictogramController(this);
     private CatLibHelper catlibhelp = new CatLibHelper(this);
 
-	private MessageDialogFragment message;
-
     public enum Setting{TITLE, COLOR, ICON, DELETE, DELETEPICTOGRAM}
 
     private static final String TAG = "CAT";
@@ -363,15 +361,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	public void onCatCreateDialogPositiveClick(DialogFragment dialog, String title, boolean isCategory) {
         // Ensure that a title has been set
         if (title.isEmpty()) {
-            message = new MessageDialogFragment(R.string.title_missing,this);
-            message.show(getFragmentManager(), "missingTitle");
+            alertDialog(this, getString(R.string.error), getString(R.string.title_missing));
             return;
         }
 
         // Ensure that a color has been selected
         if (newCategoryColor == 0) {
-            message = new MessageDialogFragment(R.string.category_color_missing, this);
-            message.show(getFragmentManager(), "categoryColorMissing");
+            alertDialog(this, getString(R.string.error), getString(R.string.category_color_missing));
             return;
         }
 
@@ -391,8 +387,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         }
 
         if (categoryWithNameExists) {
-            message = new MessageDialogFragment(R.string.title_used,this);
-            message.show(getFragmentManager(), "usedTitle");
+            alertDialog(this, getString(R.string.error), getString(R.string.title_used,this));
             return;
         }
 
@@ -515,8 +510,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         String catName = changedCategory.getName();
         for(Category c : list) {
             if(c.getName().equals(catName)) {
-                message = new MessageDialogFragment(R.string.name_used,this);
-                message.show(getFragmentManager(), "invalidName");
+                alertDialog(this, getString(R.string.error), getString(R.string.name_used));
                 return;
             }
         }
@@ -538,8 +532,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         if (!catToEdit.getName().equals(copyPropsFromThis.getName())) {
             for (Category cat : list) {
                 if (cat.getName().equals(copyPropsFromThis.getName())) { // Remember string equality in java is reference equality. We spent way too much time confused before remembering.
-                    message = new MessageDialogFragment(R.string.name_used, this);
-                    message.show(getFragmentManager(), "invalidName");
+                    alertDialog(this, getString(R.string.error), getString(R.string.name_used));
                     return;
                 }
             }
@@ -805,8 +798,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			startActivity(croc);
 		}
 		catch (Exception e) {
-			message = new MessageDialogFragment(R.string.croc_missing,this);
-			message.show(getFragmentManager(), "notInstalled");
+            alertDialog(this, getString(R.string.error), getString(R.string.croc_missing));
 		}
 	}
 
@@ -831,7 +823,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     pictoHolder = pictogramController.getPictogramById(checkoutIds[0]);
                     if(checkoutIds.length>1)
                     {
-                        iconAlertDialog(this);
+                        alertDialog(this, "Kun et pictogram kan vælges som ikon til kategorien.", "Det øverste i listen er valgt.");
                     }
                 }
                 if(requestCode == 2)//Category
@@ -867,7 +859,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     isIcon = false;
                     if(checkoutIds.length>1)
                     {
-                        iconAlertDialog(this);
+                        alertDialog(this, "Kun et pictogram kan vælges som ikon til kategorien.", "Det øverste i listen er valgt.");
                     }
 
                     if(checkoutIds.length!=0)
@@ -879,12 +871,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         }
 	}
 
-    private void iconAlertDialog(Context context)
+    private void alertDialog(Context context, String headline, String message)
     {
         GDialogAlert diag = new GDialogAlert(context,
                 R.drawable.ic_launcher,
-                "Kun et pictogram kan vælges som ikon til kategorien.",
-                "Det øverste i listen er valgt.",
+                headline,
+                message,
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

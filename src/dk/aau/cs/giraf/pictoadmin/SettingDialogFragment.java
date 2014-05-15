@@ -35,7 +35,6 @@ public class SettingDialogFragment extends DialogFragment{
     private int pos;
     private boolean isCategory;
     private View view;
-    private MessageDialogFragment message;
     private Profile guardian;
     private Profile child;
 
@@ -91,8 +90,8 @@ public class SettingDialogFragment extends DialogFragment{
                                     getActivity().startActivityForResult(request, 3); //Sends the info to OnActivityResult in MainActivity. Subcategory
                                 }
                             } catch (Exception e) {
-                                message = new MessageDialogFragment(R.string.search_missing, getActivity());
-                                message.show(getFragmentManager(), "notInstalled");
+
+                                alertDialog(startActivity.getString(R.string.error), startActivity.getString(R.string.search_missing));
                             }
                         }
                         if (which == 3) {
