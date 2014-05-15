@@ -4,7 +4,6 @@ import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GColorPicker;
 import dk.aau.cs.giraf.gui.GDialogAlert;
 import dk.aau.cs.giraf.gui.GProfileSelector;
-import dk.aau.cs.giraf.gui.GToast;
 import dk.aau.cs.giraf.oasis.lib.controllers.CategoryController;
 import dk.aau.cs.giraf.oasis.lib.controllers.PictogramCategoryController;
 import dk.aau.cs.giraf.oasis.lib.controllers.PictogramController;
@@ -13,8 +12,6 @@ import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
-import yuku.ambilwarna.AmbilWarnaDialog;
-import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,8 +23,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-
-import java.util.List;
 
 /**
  * @author SW605f13 Parrot-group
@@ -87,7 +82,6 @@ public class SettingDialogFragment extends DialogFragment{
                         //Change icon
                         if (which == 2) {
                             Intent request = new Intent();
-
                             try {
                                 request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
                                 request.putExtra("purpose", "CAT");
@@ -132,16 +126,14 @@ public class SettingDialogFragment extends DialogFragment{
                     Profile copyToChild = profileController.getProfileById((int) id);
 
                     if (copyToChild.getId() == child.getId()) {
-                        GToast toast = new GToast(view.getContext(), getString(R.string.cannot_copy_same_citizen), 5);
-                        toast.show();
+                        alertDialog(startActivity.getString(R.string.error), startActivity.getString(R.string.cannot_copy_same_citizen));
                         profileSelector.cancel();
                         return;
                     }
 
                     for (Category c : categoryController.getCategoriesByProfileId(copyToChild.getId())) {
                         if (c.getName().equals(category.getName())) {
-                            GToast toast = new GToast(view.getContext(), copyToChild.getName() + getString(R.string.already_has_category), 5);
-                            toast.show();
+                            alertDialog(startActivity.getString(R.string.error), copyToChild.getName() + " " + startActivity.getString(R.string.already_has_category));
                             profileSelector.cancel();
                             return;
                         }
@@ -177,9 +169,7 @@ public class SettingDialogFragment extends DialogFragment{
                         pictosCopied++;
                     }
 
-                    GToast toast = new GToast(view.getContext(), getString(R.string.subcat_copied) + subCatsCopied + getString(R.string.pictograms_copied) + pictosCopied, 3);
-                    toast.show();
-
+                    alertDialog(startActivity.getString(R.string.category_copied), startActivity.getString(R.string.subcat_copied) + " " + subCatsCopied + "\n" + startActivity.getString(R.string.pictograms_copied) + " " + pictosCopied);
                     profileSelector.cancel();
                 }
             });
@@ -188,15 +178,20 @@ public class SettingDialogFragment extends DialogFragment{
 
         // Sub category: copy to another category
         else {
-            GDialogAlert diag = new GDialogAlert(startActivity,
-                    getString(R.string.not_implemented),
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view1) {
-
-                        }
-                    });
-            diag.show();
+            alertDialog(startActivity.getString(R.string.error), getString(R.string.not_implemented));
         }
+    }
+
+    public void alertDialog(String headline, String message){
+        GDialogAlert diag = new GDialogAlert(startActivity,
+                headline,
+                message,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view1) {
+
+                    }
+                });
+        diag.show();
     }
 }
