@@ -134,7 +134,7 @@ public class SettingDialogFragment extends DialogFragment{
                     if (copyToChild.getId() == child.getId()) {
                         GToast toast = new GToast(view.getContext(), getString(R.string.cannot_copy_same_citizen), 5);
                         toast.show();
-                        profileSelector.dismiss();
+                        profileSelector.cancel();
                         return;
                     }
 
@@ -142,7 +142,7 @@ public class SettingDialogFragment extends DialogFragment{
                         if (c.getName().equals(category.getName())) {
                             GToast toast = new GToast(view.getContext(), copyToChild.getName() + getString(R.string.already_has_category), 5);
                             toast.show();
-                            profileSelector.dismiss();
+                            profileSelector.cancel();
                             return;
                         }
                     }
@@ -180,7 +180,7 @@ public class SettingDialogFragment extends DialogFragment{
                     GToast toast = new GToast(view.getContext(), getString(R.string.subcat_copied) + subCatsCopied + getString(R.string.pictograms_copied) + pictosCopied, 3);
                     toast.show();
 
-                    profileSelector.dismiss();
+                    profileSelector.cancel();
                 }
             });
             profileSelector.show();
