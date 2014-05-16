@@ -282,9 +282,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         categoryGList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-                v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.pop));
-                updateSelected(v, position, 1);
-                updateButtonVisibility(v);
+                setupOnClickActions(v, position, 1);
 
             }
         });
@@ -296,6 +294,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         categoryList.get(position),
                         position, true, v, guardian, child);
                 settingDialog.show(getFragmentManager(), "chooseSettings");
+                setupOnClickActions(v, position, 1);
                 return false;
             }
         });
@@ -308,9 +307,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         subCategoryGList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-                v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.pop));
-                updateSelected(v, position, 0);
-                updateButtonVisibility(v);
+                setupOnClickActions(v, position, 0);
             }
         });
 
@@ -321,6 +318,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         subcategoryList.get(position),
                         position, false, v, guardian, child);
                 settingDialog.show(getFragmentManager(), "chooseSettings");
+                setupOnClickActions(v, position, 0);
                 return false;
             }
         });
@@ -333,11 +331,15 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         pictogramGGridView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-                v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.pop));
-                updateSelected(v, position, 2);
-                updateButtonVisibility(v);
+                setupOnClickActions(v, position, 2);
             }
         });
+    }
+
+    private void setupOnClickActions(View v, int position, int id){
+        v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.pop));
+        updateSelected(v, position, id);
+        updateButtonVisibility(v);
     }
 
     @Override
