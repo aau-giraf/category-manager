@@ -113,7 +113,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
      */
     private void selectAndLoadChild() {
         if (child == null || child.getId() == -1) {
-            final GProfileSelector selector = new GProfileSelector(this, guardian, null);
+            final GProfileSelector selector = new GProfileSelector(this, guardian, null, false);
              selector.setOnListItemClick(new AdapterView.OnItemClickListener() {
                  @Override
                  public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
