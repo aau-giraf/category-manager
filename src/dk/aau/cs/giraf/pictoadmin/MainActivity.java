@@ -886,7 +886,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             int[] checkoutIds = extras.getIntArray("checkoutIds");
 
             switch (requestCode){
-                case 1:
+                case 1: //Add pictogram to category or subcategory
                     if(selectedSubCategory == null){
                         checkAndAddPictograms(checkoutIds,selectedCategory);
                     }
@@ -896,19 +896,18 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     pictogramAdapter.notifyDataSetChanged();
                     break;
 
-                case 2:
-                    if(checkoutIds.length>1)
-                    {
-                        alertDialog(this, "Kun et pictogram kan vælges som ikon til kategorien.", "Det øverste i listen er valgt.");
-                    }
-
-                    if(checkoutIds.length!=0)
+                case 2: //Add icon to category or subcategory, that has just been created
+                    if(checkoutIds.length>=1)
                     {
                         newCategoryIcon = helper.pictogramHelper.getPictogramById(checkoutIds[0]);
+                        if(checkoutIds.length>1)
+                        {
+                            alertDialog(this, "Kun et pictogram kan vælges som ikon til kategorien.", "Det øverste i listen er valgt.");
+                        }
                     }
                     break;
 
-                case 3:
+                case 3: //Change icon on existing category
                     if(checkoutIds.length>=1)
                     {
                         pictoHolder = helper.pictogramHelper.getPictogramById(checkoutIds[0]);
@@ -924,7 +923,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     helper.categoryHelper.modifyCategory(selectedCategory);
                     break;
 
-                case 4:
+                case 4: //Change icon on existing subcategory
                     if(checkoutIds.length>=1)
                     {
                         pictoHolder = helper.pictogramHelper.getPictogramById(checkoutIds[0]);
