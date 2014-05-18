@@ -77,7 +77,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     private PictoAdminCategoryAdapter subCategoryAdapter;
     private PictoAdapter pictogramAdapter;
 
-    private boolean isIcon = false;
 	private int selectedLocation; // Stores the location of the last pressed item in any gridview
 	private int newCategoryColor; // Hold the value set when creating a new category or sub-category
     private Pictogram newCategoryIcon; // Hold the value set when creating a new category or sub-category
@@ -487,8 +486,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	}
 
     public void setNewCategoryIcon(View view) {
-        isIcon = true;
-        createPictogram(view); //Opens PictoSearch
+        openPictoSearch(2); //Opens PictoSearch
     }
 
     /**
@@ -813,8 +811,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         deleteDialog.show();
 	}
 
+    public void createPictogram(View view) {
+        openPictoSearch(1);
+    }
+
 	// Goes to pictogram search function
-	public void createPictogram(View view) {
+	public void openPictoSearch(int requestcode) {
 		Intent request = new Intent();
 
 		try{
@@ -823,7 +825,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             //request.putExtra("currentChildID", child.getId());
 			//request.putExtra("currentGuardianID", guardian.getId());
 
-			startActivityForResult(request, RESULT_FIRST_USER);
+			startActivityForResult(request, requestcode);
 		}
 		catch (Exception e) {
 
@@ -867,10 +869,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         deleteDialog.show();
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+
+        Pictogram pictoHolder = new Pictogram();
         if(data==null)
         {
             return;
@@ -880,54 +884,19 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         if(data.hasExtra("checkoutIds"))
         {
             int[] checkoutIds = extras.getIntArray("checkoutIds");
-            if(requestCode==2 || requestCode==3)//Comes from SettingDialogFragment. 2 = Category, 3 = Subcategory.
-            {
-                Pictogram pictoHolder = new Pictogram();
-                if(checkoutIds.length>=1)
-                {
-//                    pictoHolder = pictogramController.getPictogramById(checkoutIds[0]);
-                    pictoHolder = helper.pictogramHelper.getPictogramById(checkoutIds[0]);
-                    if(checkoutIds.length>1)
-                    {
-                        alertDialog(this, "Kun et pictogram kan vælges som ikon til kategorien.", "Det øverste i listen er valgt.");
-                    }
-                }
-                if(requestCode == 2)//Category
-                {
-                    selectedCategory.setImage(pictoHolder.getImage());
-                    updateIcon(selectedCategory, selectedLocation, true);
-//                    categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
-                    categoryAdapter.notifyDataSetChanged();
-//                    categoryController.modifyCategory(selectedCategory);
-                    helper.categoryHelper.modifyCategory(selectedCategory);
-                }
-                else//Subcategory
-                {
-                    selectedSubCategory.setImage(pictoHolder.getImage());
-                    updateIcon(selectedSubCategory, selectedLocation, false);
-//                    subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
-                    subCategoryAdapter.notifyDataSetChanged();
-//                    categoryController.modifyCategory(selectedSubCategory);
-                    helper.categoryHelper.modifyCategory(selectedSubCategory);
-                }
-            }
-            else
-            {
-                if(isIcon!=true)
-                {
-                    // Add pictogramList to selectedCategory if no sub-category is selected
+
+            switch (requestCode){
+                case 1:
                     if(selectedSubCategory == null){
                         checkAndAddPictograms(checkoutIds,selectedCategory);
                     }
                     else{
                         checkAndAddPictograms(checkoutIds,selectedSubCategory);
                     }
-//                    pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, this));
                     pictogramAdapter.notifyDataSetChanged();
-                }
-                else
-                {
-                    isIcon = false;
+                    break;
+
+                case 2:
                     if(checkoutIds.length>1)
                     {
                         alertDialog(this, "Kun et pictogram kan vælges som ikon til kategorien.", "Det øverste i listen er valgt.");
@@ -935,13 +904,46 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
                     if(checkoutIds.length!=0)
                     {
-//                        newCategoryIcon = pictogramController.getPictogramById(checkoutIds[0]);
                         newCategoryIcon = helper.pictogramHelper.getPictogramById(checkoutIds[0]);
                     }
-                }
+                    break;
+
+                case 3:
+                    if(checkoutIds.length>=1)
+                    {
+                        pictoHolder = helper.pictogramHelper.getPictogramById(checkoutIds[0]);
+                        if(checkoutIds.length>1)
+                        {
+                            alertDialog(this, "Kun et pictogram kan vælges som ikon til kategorien.", "Det øverste i listen er valgt.");
+                        }
+                    }
+
+                    selectedCategory.setImage(pictoHolder.getImage());
+                    updateIcon(selectedCategory, selectedLocation, true);
+                    categoryAdapter.notifyDataSetChanged();
+                    helper.categoryHelper.modifyCategory(selectedCategory);
+                    break;
+
+                case 4:
+                    if(checkoutIds.length>=1)
+                    {
+                        pictoHolder = helper.pictogramHelper.getPictogramById(checkoutIds[0]);
+                        if(checkoutIds.length>1)
+                        {
+                            alertDialog(this, "Kun et pictogram kan vælges som ikon til kategorien.", "Det øverste i listen er valgt.");
+                        }
+                    }
+
+                    selectedSubCategory.setImage(pictoHolder.getImage());
+                    updateIcon(selectedSubCategory, selectedLocation, false);
+                    subCategoryAdapter.notifyDataSetChanged();
+                    helper.categoryHelper.modifyCategory(selectedSubCategory);
+                    break;
             }
+
         }
-	}
+
+    }
 
     private void alertDialog(Context context, String headline, String message){
         GDialogAlert diag = new GDialogAlert(context,
