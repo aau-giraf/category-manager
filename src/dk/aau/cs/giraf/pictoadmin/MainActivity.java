@@ -70,6 +70,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	private GList subCategoryGList;
 	private GGridView pictogramGGridView;
 
+    private PictoAdminCategoryAdapter categoryAdapter;
+    private PictoAdminCategoryAdapter subCategoryAdapter;
+    private PictoAdapter pictogramAdapter;
+
     private boolean isIcon = false;
 	private int selectedLocation; // Stores the location of the last pressed item in any gridview
 	private int newCategoryColor; // Hold the value set when creating a new category or sub-category
@@ -194,17 +198,24 @@ public class MainActivity extends Activity implements CreateCategoryListener{
      * Setup the category, subcategory, and pictogramList in the GUI
      */
     private void setupGUI() {
+        categoryAdapter = new PictoAdminCategoryAdapter(categoryList, this);
+        subCategoryAdapter = new PictoAdminCategoryAdapter(subcategoryList, this);
+        pictogramAdapter = new PictoAdapter(pictogramList, this);
+
         // Setup category list
         categoryGList = (GList) findViewById(R.id.category_listview);
-        setCategoryGListAdapter();
+        categoryGList.setAdapter(categoryAdapter);
+//        setupCategoryGListAdapter();
         setCategoryGListListeners();
 
         // Setup sub-category list
         subCategoryGList = (GList) findViewById(R.id.subcategory_listview);
+        subCategoryGList.setAdapter(subCategoryAdapter);
         setSubCategoryGListListeners();
 
         // Setup pictogram grid
         pictogramGGridView = (GGridView) findViewById(R.id.pictogram_gridview);
+        pictogramGGridView.setAdapter(pictogramAdapter);
         setPictogramGridViewListeners();
     }
 
@@ -257,11 +268,20 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
                 subcategoryList = new ArrayList<Category>();
                 pictogramList = new ArrayList<Pictogram>();
-                subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, findViewById(R.id.category_listview).getContext()));
-                pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, findViewById(R.id.category_listview).getContext()));
+//                subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, findViewById(R.id.category_listview).getContext()));
+//                pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, findViewById(R.id.category_listview).getContext()));
+                categoryAdapter = new PictoAdminCategoryAdapter(categoryList, getApplicationContext());
+                subCategoryAdapter = new PictoAdminCategoryAdapter(subcategoryList, getApplicationContext());
+                pictogramAdapter = new PictoAdapter(pictogramList, getApplicationContext());
+                categoryGList.setAdapter(categoryAdapter);
+                subCategoryGList.setAdapter(subCategoryAdapter);
+                pictogramGGridView.setAdapter(pictogramAdapter);
+//                categoryAdapter.notifyDataSetChanged();
+//                subCategoryAdapter.notifyDataSetChanged();
+//                pictogramAdapter.notifyDataSetChanged();
 
                 setupChildText();
-                setCategoryGListAdapter();
+//                setupCategoryGListAdapter();
             }
         });
     }
@@ -269,11 +289,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     /**
      * Set the adapter for the category GList.
      */
-    private void setCategoryGListAdapter() {
-        if(categoryList != null){
-            categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
-        }
-    }
+//    private void setupCategoryGListAdapter() {
+////        if(categoryList != null){
+////            categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+////        }
+//        categoryAdapter = new PictoAdminCategoryAdapter(categoryList,this);
+//        categoryGList.setAdapter(categoryAdapter);
+//    }
 
     /**
      * Set listeners on the categoryGList.
@@ -404,18 +426,18 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             }
 
             Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), 0);
-
             categoryList.add(cat);
-
             catlibhelp.addCategoryToProfile(child, cat);
-            PictoAdminCategoryAdapter pc = new PictoAdminCategoryAdapter(categoryList, this);
 
-            categoryGList.setAdapter(pc);
+//            PictoAdminCategoryAdapter pc = new PictoAdminCategoryAdapter(categoryList, this);
+//            categoryGList.setAdapter(pc);
+            categoryAdapter.notifyDataSetChanged();
         } else { // Create subcategory
             Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), selectedCategory.getId());
             subcategoryList.add(cat);
             catlibhelp.giveCategorySuperCategory(selectedCategory, cat);
-            subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+//            subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+            subCategoryAdapter.notifyDataSetChanged();
         }
 
         dialog.dismiss();
@@ -505,11 +527,14 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 break;
         }
 		if(isCategory){
-			categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+//			categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+            categoryAdapter.notifyDataSetChanged();
 		}
 
-		subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
-		pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, this));
+//		subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+//		pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, this));
+        subCategoryAdapter.notifyDataSetChanged();
+        pictogramAdapter.notifyDataSetChanged();
 		updateButtonVisibility(null);
 	}
 
@@ -556,9 +581,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
         // Update the GUI.
         if (isCategory) {
-            categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+//            categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+            categoryAdapter.notifyDataSetChanged();
         } else {
-            subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+//            subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+            subCategoryAdapter.notifyDataSetChanged();
         }
     }
 
@@ -653,8 +680,17 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             subcategoryList = catlibhelp.getSubCategoriesFromCategory(selectedCategory);
             pictogramList = catlibhelp.getPictogramsFromCategory(selectedCategory);
 
-			subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
-			pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, view.getContext()));
+            subCategoryAdapter = new PictoAdminCategoryAdapter(subcategoryList, this);
+            pictogramAdapter = new PictoAdapter(pictogramList, this);
+            subCategoryGList.setAdapter(subCategoryAdapter);
+            pictogramGGridView.setAdapter(pictogramAdapter);
+
+//			subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
+//			pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, view.getContext()));
+
+            // For some reason does not work.
+//            subCategoryAdapter.notifyDataSetChanged();
+//            pictogramAdapter.notifyDataSetChanged();
 		}
         //id 0 is the list of subcategories
 		else if(id == 0) {
@@ -662,10 +698,14 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			selectedPictogram   = null;
 
 			pictogramList = catlibhelp.getPictogramsFromCategory(subcategoryList.get(position));
-            pictogramList = catlibhelp.getPictogramsFromCategory(subcategoryList.get(position));
+            pictogramAdapter = new PictoAdapter(pictogramList, this);
+            pictogramGGridView.setAdapter(pictogramAdapter);
 
-			pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, view.getContext()));
-		}
+//			pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, view.getContext()));
+
+            // For some reason does not work
+//            pictogramAdapter.notifyDataSetChanged();
+        }
 
 	}
 
@@ -699,9 +739,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         pictogramList.clear();
 
                         // Upadte the GUI
-                        categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, view.getContext()));
-                        subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
-                        pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, view.getContext()));
+//                        categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, view.getContext()));
+//                        subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
+//                        pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, view.getContext()));
+                        categoryAdapter.notifyDataSetChanged();
+                        subCategoryAdapter.notifyDataSetChanged();
+                        pictogramAdapter.notifyDataSetChanged();
                         updateButtonVisibility(null);
                     }
                 });
@@ -736,8 +779,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                         pictogramList.clear();
 
                         // Update the GUI
-                        subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
-                        pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, view.getContext()));
+//                        subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, view.getContext()));
+//                        pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, view.getContext()));
+                        subCategoryAdapter.notifyDataSetChanged();
+                        pictogramAdapter.notifyDataSetChanged();
                         updateButtonVisibility(null);
                     }
                 });
@@ -789,7 +834,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 // Update the GUI
                 pictogramList.remove(selectedLocation);
                 selectedPictogram = null;
-                pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, v.getContext()));
+//                pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, v.getContext()));
+                pictogramAdapter.notifyDataSetChanged();
             }
         });
         deleteDialog.show();
@@ -823,14 +869,16 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 {
                     selectedCategory.setImage(pictoHolder.getImage());
                     updateIcon(selectedCategory, selectedLocation, true);
-                    categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+//                    categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
+                    categoryAdapter.notifyDataSetChanged();
                     categoryController.modifyCategory(selectedCategory);
                 }
                 else//Subcategory
                 {
                     selectedSubCategory.setImage(pictoHolder.getImage());
                     updateIcon(selectedSubCategory, selectedLocation, false);
-                    subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+//                    subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+                    subCategoryAdapter.notifyDataSetChanged();
                     categoryController.modifyCategory(selectedSubCategory);
                 }
             }
@@ -845,7 +893,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     else{
                         checkAndAddPictograms(checkoutIds,selectedSubCategory);
                     }
-                    pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, this));
+//                    pictogramGGridView.setAdapter(new PictoAdapter(pictogramList, this));
+                    pictogramAdapter.notifyDataSetChanged();
                 }
                 else
                 {
