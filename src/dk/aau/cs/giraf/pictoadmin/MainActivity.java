@@ -386,11 +386,6 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		return true;
 	}
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
 	/*
 	 * The following methods handle the creation of new categories and sub-categories
 	 */
