@@ -13,6 +13,7 @@ import dk.aau.cs.giraf.gui.GDialogMessage;
 import dk.aau.cs.giraf.gui.GGridView;
 import dk.aau.cs.giraf.gui.GList;
 import dk.aau.cs.giraf.gui.GProfileSelector;
+import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.controllers.PictogramController;
 
 import android.annotation.SuppressLint;
@@ -30,10 +31,12 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.TextView;
 
 import dk.aau.cs.giraf.oasis.lib.controllers.ProfileController;
+import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 import dk.aau.cs.giraf.oasis.lib.controllers.CategoryController;
+import dk.aau.cs.giraf.oasis.lib.models.ProfileCategory;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -79,10 +82,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	private int newCategoryColor; // Hold the value set when creating a new category or sub-category
     private Pictogram newCategoryIcon; // Hold the value set when creating a new category or sub-category
 
-	private CategoryController categoryController = new CategoryController(this);
-	private ProfileController profileController = new ProfileController(this);
-    private PictogramController pictogramController = new PictogramController(this);
-    private CatLibHelper catlibhelp = new CatLibHelper(this);
+//	private CategoryController categoryController = new CategoryController(this);
+//	private ProfileController profileController = new ProfileController(this);
+//    private PictogramController pictogramController = new PictogramController(this);
+//    private CatLibHelper catlibhelp = new CatLibHelper(this);
+    private Helper helper = new Helper(this);
 
     public enum Setting{TITLE, COLOR, ICON, DELETE, DELETEPICTOGRAM}
 
@@ -121,7 +125,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
              selector.setOnListItemClick(new AdapterView.OnItemClickListener() {
                  @Override
                  public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                     child = profileController.getProfileById((int) l);
+//                     child = profileController.getProfileById((int) l);
+                     child = helper.profilesHelper.getProfileById((int) l);
                      loadChildAndSetupGUI();
                      selector.cancel();
                  }
@@ -169,8 +174,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
     private Bundle setupDebug() {
         Bundle extras = new Bundle();
 
-        Profile guard = profileController.getGuardians().get(0);
-        Profile kid = profileController.getChildrenByGuardian(guard).get(0);
+//        Profile guard = profileController.getGuardians().get(0);
+//        Profile kid = profileController.getChildrenByGuardian(guard).get(0);
+        Profile guard = helper.profilesHelper.getGuardians().get(0);
+        Profile kid = helper.profilesHelper.getChildrenByGuardian(guard).get(0);
 
         extras.putInt("currentChildID", kid.getId());
         extras.putInt("currentGuardianID", guard.getId());
@@ -187,7 +194,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
      * Load the categories associated with the active child.
      */
     private void loadCategoriesFromChild() {
-        categoryList = catlibhelp.getCategoriesFromProfile(child);
+//        categoryList = catlibhelp.getCategoriesFromProfile(child);
+        categoryList = helper.categoryHelper.getCategoriesByProfileId(child.getId());
         if(categoryList == null)
         {
             categoryList = new ArrayList<Category>();
@@ -427,7 +435,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
             Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), 0);
             categoryList.add(cat);
-            catlibhelp.addCategoryToProfile(child, cat);
+//            catlibhelp.addCategoryToProfile(child, cat);
+            if (!helper.categoryHelper.getCategories().contains(cat)) {
+                helper.categoryHelper.insertCategory(cat);
+            }
+            helper.profileCategoryController.insertProfileCategory(new ProfileCategory(child.getId(), cat.getId()));
 
 //            PictoAdminCategoryAdapter pc = new PictoAdminCategoryAdapter(categoryList, this);
 //            categoryGList.setAdapter(pc);
@@ -435,8 +447,13 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         } else { // Create subcategory
             Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), selectedCategory.getId());
             subcategoryList.add(cat);
-            catlibhelp.giveCategorySuperCategory(selectedCategory, cat);
+//            catlibhelp.giveCategorySuperCategory(selectedCategory, cat);
+            if (!helper.categoryHelper.getCategoriesByProfileId(child.getId()).contains(cat)) {
+                helper.categoryHelper.insertCategory(cat);
+            }
+
 //            subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
+
             subCategoryAdapter.notifyDataSetChanged();
         }
 
@@ -506,7 +523,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             case DELETE:
                 if(isCategory){
                     subcategoryList.removeAll(subcategoryList);
-                    catlibhelp.deleteCategory(selectedCategory);
+//                    catlibhelp.deleteCategory(selectedCategory);
+                    helper.categoryHelper.removeCategory(selectedCategory);
                     categoryList.remove(pos);
                     selectedCategory = null;
                 }
@@ -518,10 +536,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 break;
             case DELETEPICTOGRAM:
                 if(selectedSubCategory == null){
-                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+//                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+                    helper.pictogramCategoryHelper.removePictogramCategory(selectedCategory.getId(), selectedPictogram.getId());
                 }
                 else{
-                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
+//                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
+                    helper.pictogramCategoryHelper.removePictogramCategory(selectedSubCategory.getId(), selectedPictogram.getId());
                 }
                 selectedPictogram = null;
                 break;
@@ -616,11 +636,15 @@ public class MainActivity extends Activity implements CreateCategoryListener{
      */
 	private void getProfiles(Bundle extras) {
         int childId = extras.getInt("currentChildID");
+        int guardianId = extras.getInt("currentGuardianID");
+
         if (childId != -1) {
-            child = profileController.getProfileById(childId);
+//            child = profileController.getProfileById(childId);
+            helper.profilesHelper.getProfileById(childId);
         }
 
-        guardian = profileController.getProfileById(extras.getInt("currentGuardianID"));
+//        guardian = profileController.getProfileById(extras.getInt("currentGuardianID"));
+        guardian = helper.profilesHelper.getProfileById(guardianId);
 	}
 
     /**
@@ -677,8 +701,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			selectedSubCategory = null;
 			selectedPictogram   = null;
 
-            subcategoryList = catlibhelp.getSubCategoriesFromCategory(selectedCategory);
-            pictogramList = catlibhelp.getPictogramsFromCategory(selectedCategory);
+//            subcategoryList = catlibhelp.getSubCategoriesFromCategory(selectedCategory);
+//            pictogramList = catlibhelp.getPictogramsFromCategory(selectedCategory);
+            subcategoryList = helper.categoryHelper.getSubcategoriesByCategory(selectedCategory);
+            pictogramList = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
 
             subCategoryAdapter = new PictoAdminCategoryAdapter(subcategoryList, this);
             pictogramAdapter = new PictoAdapter(pictogramList, this);
@@ -697,7 +723,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 			selectedSubCategory = subcategoryList.get(position);
 			selectedPictogram   = null;
 
-			pictogramList = catlibhelp.getPictogramsFromCategory(subcategoryList.get(position));
+//			pictogramList = catlibhelp.getPictogramsFromCategory(subcategoryList.get(position));
+            pictogramList = helper.pictogramHelper.getPictogramsByCategory(subcategoryList.get(position));
             pictogramAdapter = new PictoAdapter(pictogramList, this);
             pictogramGGridView.setAdapter(pictogramAdapter);
 
@@ -730,7 +757,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     @Override
                     public void onClick(View view) {
                         // Delete the category.
-                        catlibhelp.deleteCategory(selectedCategory);
+//                        catlibhelp.deleteCategory(selectedCategory);
+                        helper.categoryHelper.removeCategory(selectedCategory);
                         categoryList.remove(selectedLocation);
 
                         selectedCategory = null;
@@ -772,7 +800,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     @Override
                     public void onClick(View view){
                         // Delete the subcategory
-                        catlibhelp.deleteCategory(selectedSubCategory);
+//                        catlibhelp.deleteCategory(selectedSubCategory);
+                        helper.categoryHelper.removeCategory(selectedSubCategory);
                         subcategoryList.remove(selectedLocation);
 
                         selectedSubCategory = null;
@@ -825,10 +854,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             public void onClick(View v){
                 if (selectedSubCategory == null) {
                     // Remove the pictogram from the selected category
-                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+//                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedCategory);
+                    helper.pictogramCategoryHelper.removePictogramCategory(selectedCategory.getId(), selectedPictogram.getId());
                 } else {
                     // Remoe the pictogram from the selected subcategory.
-                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
+//                    catlibhelp.deletePictogramFromCategory(selectedPictogram, selectedSubCategory);
+                    helper.pictogramCategoryHelper.removePictogramCategory(selectedSubCategory.getId(), selectedPictogram.getId());
                 }
 
                 // Update the GUI
@@ -859,7 +890,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 Pictogram pictoHolder = new Pictogram();
                 if(checkoutIds.length>=1)
                 {
-                    pictoHolder = pictogramController.getPictogramById(checkoutIds[0]);
+//                    pictoHolder = pictogramController.getPictogramById(checkoutIds[0]);
+                    pictoHolder = helper.pictogramHelper.getPictogramById(checkoutIds[0]);
                     if(checkoutIds.length>1)
                     {
                         alertDialog(this, "Kun et pictogram kan vælges som ikon til kategorien.", "Det øverste i listen er valgt.");
@@ -871,7 +903,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     updateIcon(selectedCategory, selectedLocation, true);
 //                    categoryGList.setAdapter(new PictoAdminCategoryAdapter(categoryList, this));
                     categoryAdapter.notifyDataSetChanged();
-                    categoryController.modifyCategory(selectedCategory);
+//                    categoryController.modifyCategory(selectedCategory);
+                    helper.categoryHelper.modifyCategory(selectedCategory);
                 }
                 else//Subcategory
                 {
@@ -879,7 +912,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     updateIcon(selectedSubCategory, selectedLocation, false);
 //                    subCategoryGList.setAdapter(new PictoAdminCategoryAdapter(subcategoryList, this));
                     subCategoryAdapter.notifyDataSetChanged();
-                    categoryController.modifyCategory(selectedSubCategory);
+//                    categoryController.modifyCategory(selectedSubCategory);
+                    helper.categoryHelper.modifyCategory(selectedSubCategory);
                 }
             }
             else
@@ -906,7 +940,8 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 
                     if(checkoutIds.length!=0)
                     {
-                        newCategoryIcon = pictogramController.getPictogramById(checkoutIds[0]);
+//                        newCategoryIcon = pictogramController.getPictogramById(checkoutIds[0]);
+                        newCategoryIcon = helper.pictogramHelper.getPictogramById(checkoutIds[0]);
                     }
                 }
             }
@@ -939,8 +974,12 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                 }
             }
             if(legal){
-                catlibhelp.addPictogramToCategory(pictogramController.getPictogramById(id), category);
-                pictogramList = pictogramController.getPictogramsByCategory(category);
+//                catlibhelp.addPictogramToCategory(pictogramController.getPictogramById(id), category);
+//                pictogramList = pictogramController.getPictogramsByCategory(category);
+
+                PictogramCategory piccat = new PictogramCategory(helper.pictogramHelper.getPictogramById(id).getId(), category.getId());
+                helper.pictogramCategoryHelper.insertPictogramCategory(piccat);
+                pictogramList = helper.pictogramHelper.getPictogramsByCategory(category);
             }
         }
     }
