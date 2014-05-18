@@ -128,7 +128,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 //                     child = profileController.getProfileById((int) l);
                      child = helper.profilesHelper.getProfileById((int) l);
                      loadChildAndSetupGUI();
-                     selector.cancel();
+                     selector.dismiss();
                  }
              });
             try {

@@ -126,14 +126,14 @@ public class SettingDialogFragment extends DialogFragment{
 
                     if (copyToChild.getId() == child.getId()) {
                         alertDialog(startActivity.getString(R.string.error), startActivity.getString(R.string.cannot_copy_same_citizen));
-                        profileSelector.cancel();
+                        profileSelector.dismiss();
                         return;
                     }
 
                     for (Category c : categoryController.getCategoriesByProfileId(copyToChild.getId())) {
                         if (c.getName().equals(category.getName())) {
                             alertDialog(startActivity.getString(R.string.error), copyToChild.getName() + " " + startActivity.getString(R.string.already_has_category));
-                            profileSelector.cancel();
+                            profileSelector.dismiss();
                             return;
                         }
                     }
@@ -169,7 +169,7 @@ public class SettingDialogFragment extends DialogFragment{
                     }
 
                     alertDialog(startActivity.getString(R.string.category_copied), startActivity.getString(R.string.subcat_copied) + " " + subCatsCopied + "\n" + startActivity.getString(R.string.pictograms_copied) + " " + pictosCopied);
-                    profileSelector.cancel();
+                    profileSelector.dismiss();
                 }
             });
             profileSelector.show();
