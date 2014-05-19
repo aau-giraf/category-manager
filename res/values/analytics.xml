@@ -13,5 +13,5 @@
     <bool name="ga_reportUncaughtExceptions">true</bool>
 
     <!--Enable debug mode - Useful when doing debugging and testing new implementation - true = do not send / false = send data -->
-    <bool name="ga_dryRun">true</bool>
+    <bool name="ga_dryRun">false</bool>
 </resources>
