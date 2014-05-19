@@ -893,7 +893,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
                     else{
                         checkAndAddPictograms(checkoutIds,selectedSubCategory);
                     }
-                    pictogramAdapter.notifyDataSetChanged();
+                    // Does not work
+//                    pictogramAdapter.notifyDataSetChanged();
+                    pictogramAdapter = new PictoAdapter(pictogramList, this);
+                    pictogramGGridView.setAdapter(pictogramAdapter);
                     break;
 
                 case 2: //Add icon to category or subcategory, that has just been created
