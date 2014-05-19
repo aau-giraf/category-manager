@@ -53,7 +53,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
      * @return True if debug mode enabled, false otherwise.
      */
     private boolean IS_DEBUG() {
-        return true;
+        return false;
     }
 
     // Active child and guardian.
@@ -412,7 +412,10 @@ public class MainActivity extends Activity implements CreateCategoryListener{
             }
             helper.profileCategoryController.insertProfileCategory(new ProfileCategory(child.getId(), cat.getId()));
 
-            categoryAdapter.notifyDataSetChanged();
+            categoryAdapter = new PictoAdminCategoryAdapter(categoryList, this);
+            categoryGList.setAdapter(categoryAdapter);
+
+//            categoryAdapter.notifyDataSetChanged();
         } else { // Create subcategory
             Category cat = new Category(title, newCategoryColor, newCategoryIcon.getImage(), selectedCategory.getId());
             subcategoryList.add(cat);
