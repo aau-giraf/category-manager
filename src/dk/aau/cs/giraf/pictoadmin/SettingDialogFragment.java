@@ -68,7 +68,7 @@ public class SettingDialogFragment extends DialogFragment{
                         }
                         //Change color
                         if (which == 1) {
-                            GColorPicker diag = new GColorPicker(view.getContext(), new GColorPicker.OnOkListener() {
+                            GColorPicker diag = new GColorPicker(MainActivity.getContext(), new GColorPicker.OnOkListener() {
                                 @Override
                                 public void OnOkClick(GColorPicker diag, int color) {
                                     Category newCat = new Category(category.getName(), color, category.getImage(), category.getSuperCategoryId());
@@ -111,7 +111,7 @@ public class SettingDialogFragment extends DialogFragment{
     private void CopyCategory() {
         // It's a category - copy to another child
         if (isCategory) {
-            final GProfileSelector profileSelector = new GProfileSelector(view.getContext(), guardian, null);
+            final GProfileSelector profileSelector = new GProfileSelector(MainActivity.getContext(), guardian, null);
 
             profileSelector.setOnListItemClick(new AdapterView.OnItemClickListener() {
                 @Override

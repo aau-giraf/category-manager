@@ -56,6 +56,11 @@ public class MainActivity extends Activity implements CreateCategoryListener{
         return false;
     }
 
+    private static Context context;
+    public static Context getContext () {
+        return context;
+    }
+
     // Active child and guardian.
 	private Profile child = null;
 	private Profile guardian = null;
@@ -91,6 +96,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         setContentView(R.layout.activity_admin_category);
 
 		Bundle extras = getIntent().getExtras();
