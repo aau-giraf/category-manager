@@ -1,12 +1,6 @@
-[submodule "pictogram-lib"]
-	path = pictogram-lib
-	url = http://cs-cust06-int.cs.aau.dk/git-ro/pictogram-lib.git
 [submodule "CategoryLib"]
 	path = CategoryLib
 	url = http://cs-cust06-int.cs.aau.dk/git-ro/category-lib.git
 [submodule "Ambilwarna"]
 	path = Ambilwarna
 	url = http://cs-cust06-int.cs.aau.dk/git-ro/ambilwarna
-[submodule "giraf-component"]
-	path = giraf-component
-	url = http://cs-cust06-int.cs.aau.dk/git-ro/giraf-component.git
