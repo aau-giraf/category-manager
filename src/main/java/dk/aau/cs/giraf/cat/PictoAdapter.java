@@ -1,7 +1,6 @@
-package dk.aau.cs.giraf.pictoadmin;
+package dk.aau.cs.giraf.cat;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;

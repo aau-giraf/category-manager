@@ -1,6 +1,5 @@
-package dk.aau.cs.giraf.pictoadmin;
+package dk.aau.cs.giraf.cat;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -17,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import dk.aau.cs.giraf.oasis.lib.models.Category;
-import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
 /**
  * @author SW605f13 Parrot-group
