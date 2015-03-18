@@ -6,8 +6,6 @@ include ':GIRAF_Components'
 project(':GIRAF_Components').projectDir = new File('CategoryLib/pictogram-lib/GIRAF_Components')
 include ':OasisLib'
 project(':OasisLib').projectDir = new File('CategoryLib/pictogram-lib/GIRAF_Components/OasisLib')
-include ':metadata'
-project(':metadata').projectDir = new File('CategoryLib/pictogram-lib/GIRAF_Components/OasisLib/metadata')
 include ':local-db'
 project(':local-db').projectDir = new File('CategoryLib/pictogram-lib/GIRAF_Components/OasisLib/local-db')
 include ':metadata_local'
