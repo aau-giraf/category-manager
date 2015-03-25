@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="dk.aau.cs.giraf.cat.CategoryActivity"
+    android:orientation="horizontal">
+
+    <!-- Border of the pictogram -->
+    <RelativeLayout
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/sidebar_background">
+
+        <!-- Background of the pictogram -->
+        <ListView
+            android:id="@+id/category_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:verticalScrollbarPosition="left"/>
+
+        <!-- Text to display if there are no pictograms -->
+        <TextView
+            android:id="@+id/empty_list_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Der er ingen kategorier"
+            android:visibility="gone"
+            android:gravity="center" />
+
+    </RelativeLayout>
+
+    <!-- Layout to contain different fragments depending on what the user is currently doing.
+         For instance when viewing the content of a category. -->
+    <FrameLayout
+        android:id="@+id/categorytool_framelayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+</LinearLayout>

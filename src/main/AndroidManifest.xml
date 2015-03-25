@@ -21,7 +21,7 @@
         tools:replace="icon">
 
         <activity
-            android:name="dk.aau.cs.giraf.cat.MainActivity"
+            android:name="dk.aau.cs.giraf.cat.CategoryActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape">
 
