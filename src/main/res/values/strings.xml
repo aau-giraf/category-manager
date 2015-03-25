@@ -56,5 +56,11 @@
     <string name="ask_installed">Er det installeret?</string>
     <string name="error">Fejl</string>
     <string name="category_copied">Kategorien er kopieret</string>
+    <string name="category_create_button">Opret Kategori</string>
+    <string name="create_category_edittext_hint">Titel</string>
+    <string name="no_categories_text">Der er ingen kategorier</string>
+    <string name="no_categories_selected_text">Ingen kategorier valgt</string>
+    <string name="create_new_category">Opret ny kategori</string>
+    <string name="administrate_citizen">Administrer borgere</string>
 
 </resources>
