@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="dialog_options">
         <item>Skift titel</item>
         <item>Skift farve</item>
         <item>Skift ikon</item>
         <item>Kopier kategori</item>
     </string-array>
-	
-	<string name="app_name">Kategoriværktøjet</string>
+
+    <string name="app_name">Kategoriværktøjet</string>
     <string name="currentChild">Aktiv borger: </string>
     <string name="categories">Kategorier</string>
     <string name="subcategories">Underkategorier</string>
