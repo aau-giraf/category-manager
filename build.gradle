@@ -1,13 +1,18 @@
-apply plugin: 'android'
-
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+          url uri('gradleLibs/')
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.0.+'
+        classpath 'dk.giraf:deployPlugin:1.0'
     }
 }
+
+apply plugin: 'android'
+apply plugin: 'dk.giraf.deploy'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
