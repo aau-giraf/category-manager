@@ -62,5 +62,6 @@
     <string name="no_categories_selected_text">Ingen kategorier valgt</string>
     <string name="create_new_category">Opret ny kategori</string>
     <string name="administrate_citizen">Administrer borgere</string>
+    <string name="no_pictograms_text">Der er ikke nogen piktogrammer i denne kategori</string>
 
 </resources>
