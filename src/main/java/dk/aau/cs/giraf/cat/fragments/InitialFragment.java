@@ -42,7 +42,9 @@ public class InitialFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
+        final Bundle arguments = getArguments();
+
+        if (arguments != null) {
             // Add arguments here if needed. Do it this way:
             // mParam1 = getArguments().getString(ARG_PARAM1);
         }
