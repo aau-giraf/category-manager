@@ -15,11 +15,11 @@ import dk.aau.cs.giraf.oasis.lib.models.Category;
 /**
  * Created on 24/03/15.
  */
-public class PictogramCategoryAdapter extends BaseAdapter {
+public class CategoryAdapter extends BaseAdapter {
     private List<Category> categoryList;
     private final LayoutInflater inflater;
 
-    public PictogramCategoryAdapter(List<Category> categoryList, Context context) {
+    public CategoryAdapter(List<Category> categoryList, Context context) {
         super();
 
         this.categoryList = categoryList;
