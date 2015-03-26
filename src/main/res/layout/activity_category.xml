@@ -5,20 +5,17 @@
     tools:context="dk.aau.cs.giraf.cat.CategoryActivity"
     android:orientation="horizontal">
 
-    <!-- Border of the pictogram -->
     <RelativeLayout
         android:layout_width="200dp"
         android:layout_height="match_parent"
         android:background="@drawable/sidebar_background">
 
-        <!-- Background of the pictogram -->
         <ListView
             android:id="@+id/category_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:verticalScrollbarPosition="left"/>
+            android:verticalScrollbarPosition="left" />
 
-        <!-- Text to display if there are no pictograms -->
         <TextView
             android:id="@+id/empty_list_item"
             android:layout_width="match_parent"
