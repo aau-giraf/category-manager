@@ -57,7 +57,9 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
             categoryContainer.setEmptyView(findViewById(R.id.empty_list_item));
         }
 
-    };
+    }
+
+    ;
 
     /**
      * Will return the current profile. If the application is launched from a child profile,
