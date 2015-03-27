@@ -44,7 +44,6 @@
                 android:id="@+id/copyToUserButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 app:icon="@drawable/icon_copy"
                 android:layout_marginRight="@dimen/contextual_bottom_bar_spacing"/>
 
@@ -52,8 +51,8 @@
                 android:id="@+id/categorySettingsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@id/copyToUserButton"
-                app:icon="@drawable/icon_settings" />
+                app:icon="@drawable/icon_settings"
+                android:onClick="onSettingsButtonClicked"/>
 
         </LinearLayout>
 
@@ -68,7 +67,6 @@
                 android:id="@+id/addPictogramButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 app:icon="@drawable/icon_delete"
                 android:layout_marginRight="@dimen/contextual_bottom_bar_spacing"/>
 
@@ -76,7 +74,6 @@
                 android:id="@+id/deleteCategoryButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/addPictogramButton"
                 app:icon="@drawable/icon_add" />
 
         </LinearLayout>

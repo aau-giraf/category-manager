@@ -16,13 +16,17 @@ import dk.aau.cs.giraf.oasis.lib.models.Category;
  * Created on 24/03/15.
  */
 public class CategoryAdapter extends BaseAdapter {
+    private final Context context;
     private List<Category> categoryList;
+    private Category selectedCategory;
     private final LayoutInflater inflater;
 
-    public CategoryAdapter(List<Category> categoryList, Context context) {
+    public CategoryAdapter(Context context, List<Category> categoryList, Category selectedCategory) {
         super();
 
+        this.context = context;
         this.categoryList = categoryList;
+        this.selectedCategory = selectedCategory;
 
         // Save the layout inflater. Will be used in {@link getView()}
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -57,6 +61,12 @@ public class CategoryAdapter extends BaseAdapter {
         // Set the icon of the category in the inflated view
         ((ImageView) view.findViewById(R.id.category_icon)).setImageBitmap(category.getImage());
 
+        // Check if the view is selected
+        if (selectedCategory != null && category.getId() == selectedCategory.getId()) {
+            // Set the background-color for the selected item
+            view.setBackgroundColor(context.getResources().getColor(R.color.giraf_page_indicator_active));
+        }
+
         return view;
     }
 
@@ -70,5 +80,15 @@ public class CategoryAdapter extends BaseAdapter {
 
         // Flag the current data as invalid. After this the view will be re-rendered
         this.notifyDataSetInvalidated();
+    }
+
+    public Category getCategoryFromId(long id) {
+        for (Category category : categoryList) {
+            if (category.getId() == id) {
+                return category;
+            }
+        }
+
+        return null;
     }
 }

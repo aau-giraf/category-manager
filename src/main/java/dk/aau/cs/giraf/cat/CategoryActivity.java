@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -17,6 +16,7 @@ import java.util.List;
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
+import dk.aau.cs.giraf.gui.GirafInflateableDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
@@ -26,6 +26,9 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     // Identifiers used to start activities for results
     public final int CREATE_CATEGORY_REQUEST = 1;
+
+    // Identifiers used to create fragments
+    private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
 
     // Helper that will be used to fetch profiles
     private final Helper helper = new Helper(this);
@@ -37,7 +40,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     // View to contain categories
     private ListView categoryContainer;
 
-    private Pair<View, Long> selectedCategory = null;
+    private CategoryAdapter categoryAdapter;
+    private Category selectedCategory = null;
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -46,47 +50,34 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Check if there is a previously selected view
         if (selectedCategory != null) {
-            // Deselect
-            selectedCategory.first.setSelected(false);
-
-            // Remove background-color
-            selectedCategory.first.setBackgroundColor(0x00000000);
-
             // Set the content of the frame layout to the default fragment
             getSupportFragmentManager().popBackStack();
 
-            // Check if the view pressed is the currently selected view
-            if (selectedCategory.second == id) {
-                // Set the selected category to null (So that no category is "previously selected")
+            // Check if the same category was selected twice (deselected)
+            if (selectedCategory.getId() == id) {
                 selectedCategory = null;
 
-                // The pressed category was deselected. Nothing more to do now
+                // Reload the category list
+                new LoadCategoriesTask().execute();
                 return;
             }
         }
 
+        // Set the selected category
+        selectedCategory = categoryAdapter.getCategoryFromId(id);
+
+        // Reload the category list
+        new LoadCategoriesTask().execute();
+
         // "Open" the fragment in the frame layout
         pushContent(CategoryDetailFragment.newInstance(id), R.id.categorytool_framelayout);
-
-        // Set the selected flag for the clicked item
-        view.setSelected(true);
-        selectedCategory = new Pair(view, id);
-
-        // Set the background-color for the selected item
-        view.setBackgroundColor(getResources().getColor(R.color.giraf_page_indicator_active));
     }
 
     @Override
     public void onBackPressed() {
-        // Check if there is a category selected
-        if(selectedCategory != null) {
-            // Deselect button
-            selectedCategory.first.setSelected(false);
-
-            // Remove background-color
-            selectedCategory.first.setBackgroundColor(0x00000000);
-
-            // Set the selected category to null (So that no category is "previously selected")
+        // Check if there is a previously selected view
+        if (selectedCategory != null) {
+            // Set the selected category to "null"
             selectedCategory = null;
         }
 
@@ -109,7 +100,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
         protected void onPostExecute(final List<Category> result) {
-            final CategoryAdapter categoryAdapter = new CategoryAdapter(result, CategoryActivity.this);
+            categoryAdapter = new CategoryAdapter(CategoryActivity.this, result, selectedCategory);
             categoryContainer.setAdapter(categoryAdapter);
 
             // Set view when list is empty
@@ -117,8 +108,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
     }
-
-    ;
 
     /**
      * Will return the current profile. If the application is launched from a child profile,
@@ -234,6 +223,31 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             intent.putExtra("currentGuardianID", guardianProfile.getId());
             startActivityForResult(intent, CREATE_CATEGORY_REQUEST);
         }
+    }
+
+    /**
+     * Called when a category is selected and the delete button is pressed
+     */
+    public void onDeleteCategoryClicked(final View view) {
+        Toast.makeText(CategoryActivity.this, "Kategorien blev slettet", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Called when a category is selected and the save button is pressed
+     */
+    public void onSaveCategoryClicked(final View view) {
+        Toast.makeText(CategoryActivity.this, "Kategorien blev gemt", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Called when a category is selected and when the settings buttons is pressed
+     */
+    public void onSettingsButtonClicked(View view) {
+        // Create the dialog
+        GirafInflateableDialog dialog = GirafInflateableDialog.newInstance("Indstillinger for Trafik", "Her kan du ændre piktogrammet og titlen for kategorien", R.layout.category_settings_dialog);
+
+        // TODO: Child fragment manager might not work on all android devices (api 15 and lower). Fix this if it becomes a problem.
+        dialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
     }
 
     /**

@@ -52,12 +52,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:text="Slet kategorien"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:onClick="onDeleteCategoryClicked" />
 
             <dk.aau.cs.giraf.gui.GirafButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:text="Gem ændringer" />
+                app:text="Gem ændringer"
+                android:onClick="onSaveCategoryClicked"/>
 
         </LinearLayout>
 
