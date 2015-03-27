@@ -75,6 +75,22 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         view.setBackgroundColor(getResources().getColor(R.color.giraf_page_indicator_active));
     }
 
+    @Override
+    public void onBackPressed() {
+        if(selectedCategory != null) {
+            // Deselect button
+            selectedCategory.setSelected(false);
+
+            // Remove background-color
+            selectedCategory.setBackgroundColor(0x00000000);
+
+            // Set the selected category to null (So that no category is "previously selected")
+            selectedCategory = null;
+        }
+
+        super.onBackPressed();
+    }
+
     private class LoadCategoriesTask extends AsyncTask<Void, Void, List<Category>> {
 
         @Override
