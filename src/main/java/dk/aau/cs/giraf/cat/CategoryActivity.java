@@ -45,9 +45,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // TODO: Remove this
-        Toast.makeText(CategoryActivity.this, "Den er klikket på!", Toast.LENGTH_SHORT).show();
-
         // Check if there is a previously selected view
         if (selectedCategory != null) {
             // Set the content of the frame layout to the default fragment
