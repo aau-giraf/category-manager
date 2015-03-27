@@ -6,7 +6,8 @@
     android:paddingLeft="50dp"
     android:paddingRight="50dp"
     android:paddingTop="20dp"
-    android:paddingBottom="20dp">
+    android:paddingBottom="20dp"
+    android:background="@color/giraf_page_indicator_inactive">
 
     <RelativeLayout
         android:layout_width="wrap_content"

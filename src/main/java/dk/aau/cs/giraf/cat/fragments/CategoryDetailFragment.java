@@ -32,6 +32,8 @@ public class CategoryDetailFragment extends Fragment {
     private ViewGroup categoryDetailLayout;
     private GridView pictogramGrid;
 
+    private LoadPictogramTask loadPictogramTask;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -69,9 +71,8 @@ public class CategoryDetailFragment extends Fragment {
         super.onStart();
 
         // Start loading the pictograms of this category when the fragment is started
-        final LoadPictogramTask task = new LoadPictogramTask();
-        task.execute();
-
+        loadPictogramTask = new LoadPictogramTask();
+        loadPictogramTask.execute();
     }
 
     private class LoadPictogramTask extends AsyncTask<Void, Void, List<Pictogram>> {
@@ -88,15 +89,13 @@ public class CategoryDetailFragment extends Fragment {
         }
 
         @Override
-        protected List<Pictogram> doInBackground(Void... params)
-        {
+        protected List<Pictogram> doInBackground(Void... params) {
             final Bundle arguments = getArguments();
 
-            if (arguments != null)
-            {
+            if (arguments != null) {
                 final long selectedCategoryId = arguments.getLong(CATEGORY_ID_TAG);
 
-                final Category selectedCategory = helper.categoryHelper.getCategoryById((int)selectedCategoryId);
+                final Category selectedCategory = helper.categoryHelper.getCategoryById((int) selectedCategoryId);
 
                 final List<Pictogram> pictogramList = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
 
@@ -107,7 +106,6 @@ public class CategoryDetailFragment extends Fragment {
         }
 
         protected void onPostExecute(final List<Pictogram> result) {
-
             final PictogramAdapter categoryAdapter = new PictogramAdapter(result, CategoryDetailFragment.this.getActivity());
             pictogramGrid.setAdapter(categoryAdapter);
 
@@ -117,4 +115,12 @@ public class CategoryDetailFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (loadPictogramTask != null) {
+            loadPictogramTask.cancel(true);
+        }
+    }
 }
