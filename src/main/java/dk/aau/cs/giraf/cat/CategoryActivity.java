@@ -47,9 +47,6 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
 
             // Set view when list is empty
             categoryContainer.setEmptyView(new ProgressBar(CategoryActivity.this));
-
-            // TODO: Remove this
-            Toast.makeText(CategoryActivity.this, "Den er begyndt!", Toast.LENGTH_LONG).show();
         }
 
         protected void onPostExecute(List<Category> result) {
