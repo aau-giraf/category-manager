@@ -55,9 +55,6 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
 
             // Set view when list is empty
             categoryContainer.setEmptyView(findViewById(R.id.empty_list_item));
-
-            // TODO: Remove this
-            Toast.makeText(CategoryActivity.this, "Den er færdig!", Toast.LENGTH_LONG).show();
         }
 
     };
