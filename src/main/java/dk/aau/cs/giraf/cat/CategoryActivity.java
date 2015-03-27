@@ -86,9 +86,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // Remove background-color
             selectedCategory.first.setBackgroundColor(0x00000000);
 
-            // Set the content of the frame layout to the default fragment
-            getSupportFragmentManager().popBackStack();
-
             // Set the selected category to null (So that no category is "previously selected")
             selectedCategory = null;
         }
