@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,9 +81,6 @@ public class CategoryDetailFragment extends Fragment {
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(new ProgressBar(CategoryDetailFragment.this.getActivity()));
-
-            // TODO: Remove this
-            Toast.makeText(CategoryDetailFragment.this.getActivity(), "Den er begyndt!", Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -113,9 +109,6 @@ public class CategoryDetailFragment extends Fragment {
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(categoryDetailLayout.findViewById(R.id.empty_gridview_text));
-
-            // TODO: Remove this
-            Toast.makeText(CategoryDetailFragment.this.getActivity(), "Den er færdig!", Toast.LENGTH_LONG).show();
         }
 
     }
