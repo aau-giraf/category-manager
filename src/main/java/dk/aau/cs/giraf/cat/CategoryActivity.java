@@ -76,6 +76,9 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         if (selectedCategory != null) {
             // Set the selected category to "null"
             selectedCategory = null;
+
+            // Reload the category list
+            new LoadCategoriesTask().execute();
         }
 
         super.onBackPressed();
