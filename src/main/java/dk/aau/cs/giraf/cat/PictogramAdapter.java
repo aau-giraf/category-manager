@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
@@ -22,7 +23,12 @@ public class PictogramAdapter extends BaseAdapter {
     public PictogramAdapter(List<Pictogram> pictogramList, Context context) {
         super();
 
-        this.pictogramList = pictogramList;
+        if(pictogramList == null) {
+            this.pictogramList = new ArrayList<Pictogram>();
+        }
+        else {
+            this.pictogramList = pictogramList;
+        }
 
         // Save the layout inflater. Will be used in {@link getView()}
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
