@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_centerInParent="true">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true">
+
+        <!-- Help title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Her kan du ændre piktogrammet og titlen for kategorien"
+            android:gravity="center"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginBottom="30dp" />
+
+        <!-- Pictogram selector and text edit box -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp">
+
+            <ImageView
+                android:id="@+id/create_category_pictogram"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="center"
+                android:src="@drawable/add"
+                android:layout_gravity="center"
+                android:layout_marginRight="20dp" />
+
+            <EditText
+                android:id="@+id/create_category_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/create_category_edittext_hint"
+                android:singleLine="true"
+                android:inputType="textPersonName"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+
+        <!-- Button group -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <dk.aau.cs.giraf.gui.GirafButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text="Slet kategorien"
+                android:layout_marginRight="20dp" />
+
+            <dk.aau.cs.giraf.gui.GirafButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text="Gem ændringer" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

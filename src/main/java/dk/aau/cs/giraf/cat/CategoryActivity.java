@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -36,7 +37,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     // View to contain categories
     private ListView categoryContainer;
 
-    private View selectedCategory = null;
+    private Pair<View, Long> selectedCategory = null;
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -46,18 +47,18 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         // Check if there is a previously selected view
         if (selectedCategory != null) {
             // Deselect
-            selectedCategory.setSelected(false);
+            selectedCategory.first.setSelected(false);
 
             // Remove background-color
-            selectedCategory.setBackgroundColor(0x00000000);
+            selectedCategory.first.setBackgroundColor(0x00000000);
+
+            // Set the content of the frame layout to the default fragment
+            getSupportFragmentManager().popBackStack();
 
             // Check if the view pressed is the currently selected view
-            if (selectedCategory.getId() == view.getId()) {
+            if (selectedCategory.second == id) {
                 // Set the selected category to null (So that no category is "previously selected")
                 selectedCategory = null;
-
-                // Set the content of the frame layout to the default fragment
-                getSupportFragmentManager().popBackStack();
 
                 // The pressed category was deselected. Nothing more to do now
                 return;
@@ -69,7 +70,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Set the selected flag for the clicked item
         view.setSelected(true);
-        selectedCategory = view;
+        selectedCategory = new Pair(view, id);
 
         // Set the background-color for the selected item
         view.setBackgroundColor(getResources().getColor(R.color.giraf_page_indicator_active));
@@ -77,12 +78,16 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     @Override
     public void onBackPressed() {
+        // Check if there is a category selected
         if(selectedCategory != null) {
             // Deselect button
-            selectedCategory.setSelected(false);
+            selectedCategory.first.setSelected(false);
 
             // Remove background-color
-            selectedCategory.setBackgroundColor(0x00000000);
+            selectedCategory.first.setBackgroundColor(0x00000000);
+
+            // Set the content of the frame layout to the default fragment
+            getSupportFragmentManager().popBackStack();
 
             // Set the selected category to null (So that no category is "previously selected")
             selectedCategory = null;
