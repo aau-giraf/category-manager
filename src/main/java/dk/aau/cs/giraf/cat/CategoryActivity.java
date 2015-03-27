@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -13,13 +14,14 @@ import android.widget.Toast;
 import java.util.List;
 
 import dk.aau.cs.giraf.activity.GirafActivity;
+import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
 
-public class CategoryActivity extends GirafActivity implements InitialFragment.OnFragmentInteractionListener {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener {
 
     // Identifiers used to start activities for results
     public final int CREATE_CATEGORY_REQUEST = 1;
@@ -33,6 +35,45 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
 
     // View to contain categories
     private ListView categoryContainer;
+
+    private View selectedCategory = null;
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // TODO: Remove this
+        Toast.makeText(CategoryActivity.this, "Den er klikket på!", Toast.LENGTH_SHORT).show();
+
+        // Check if there is a previously selected view
+        if (selectedCategory != null) {
+            // Deselect
+            selectedCategory.setSelected(false);
+
+            // Remove background-color
+            selectedCategory.setBackgroundColor(0x00000000);
+
+            // Check if the view pressed is the currently selected view
+            if (selectedCategory.getId() == view.getId()) {
+                // Set the selected category to null (So that no category is "previously selected")
+                selectedCategory = null;
+
+                // Set the content of the frame layout to the default fragment
+                getSupportFragmentManager().popBackStack();
+
+                // The pressed category was deselected. Nothing more to do now
+                return;
+            }
+        }
+
+        // "Open" the fragment in the frame layout
+        pushContent(CategoryDetailFragment.newInstance(id), R.id.categorytool_framelayout);
+
+        // Set the selected flag for the clicked item
+        view.setSelected(true);
+        selectedCategory = view;
+
+        // Set the background-color for the selected item
+        view.setBackgroundColor(getResources().getColor(R.color.giraf_page_indicator_active));
+    }
 
     private class LoadCategoriesTask extends AsyncTask<Void, Void, List<Category>> {
 
@@ -82,7 +123,7 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
@@ -94,7 +135,11 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
 
         // Test if the activity was started correctly
         if (extras == null) {
-            // TODO: Handle it. The activity was started incorrectly
+            Toast.makeText(CategoryActivity.this, getResources().getString(R.string.app_name) + " skal startes fra GIRAF", Toast.LENGTH_SHORT).show();
+
+            // The activity was not started correctly, now finish it!
+            finish();
+            return;
         } else {
             int childId = extras.getInt("currentChildID");
             int guardianId = extras.getInt("currentGuardianID");
@@ -110,6 +155,7 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
 
         // Find the ListView that will contain the categories
         categoryContainer = (ListView) this.findViewById(R.id.category_container);
+        categoryContainer.setOnItemClickListener(this);
 
         // Load the categories using the LoadCategoriesTask
         LoadCategoriesTask categoryLoader = (LoadCategoriesTask) new LoadCategoriesTask().execute();
@@ -181,8 +227,21 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
         if (requestCode == CREATE_CATEGORY_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
+
+                final Bundle extras = data.getExtras();
+
+                final int id = extras.getInt(CreateCategoryActivity.CATEGORY_CREATED_ID_TAG);
+
                 // Reload all categories for the current profile
-                LoadCategoriesTask categoryLoader = (LoadCategoriesTask) new LoadCategoriesTask().execute();
+                final LoadCategoriesTask categoryLoader = (LoadCategoriesTask) new LoadCategoriesTask() {
+                    @Override
+                    protected void onPostExecute(final List<Category> result) {
+                        super.onPostExecute(result);
+
+                        // Assumes the new category is added to the end of the list
+                        categoryContainer.setSelection(categoryContainer.getAdapter().getCount() - 1);
+                    }
+                }.execute();
             }
         }
     }
