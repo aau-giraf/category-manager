@@ -49,8 +49,8 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
             categoryContainer.setEmptyView(new ProgressBar(CategoryActivity.this));
         }
 
-        protected void onPostExecute(List<Category> result) {
-            PictogramCategoryAdapter categoryAdapter = new PictogramCategoryAdapter(result, CategoryActivity.this);
+        protected void onPostExecute(final List<Category> result) {
+            final CategoryAdapter categoryAdapter = new CategoryAdapter(result, CategoryActivity.this);
             categoryContainer.setAdapter(categoryAdapter);
 
             // Set view when list is empty
