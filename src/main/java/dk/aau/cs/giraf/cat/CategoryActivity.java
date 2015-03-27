@@ -90,7 +90,7 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
         setContent(InitialFragment.newInstance(), R.id.categorytool_framelayout);
 
         // Get the extra information from when the activity was started (contains profile ids etc.)
-        Bundle extras = getIntent().getExtras();
+        final Bundle extras = getIntent().getExtras();
 
         // Test if the activity was started correctly
         if (extras == null) {
@@ -161,12 +161,12 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
      * Will be called when the "create category" button is pressed
      */
     @Override
-    public void onCreateCategoryButtonClicked(View view) {
+    public void onCreateCategoryButtonClicked(final View view) {
         // Check if the current profile is a guardian profile
         if (guardianProfile == null) {
             // TODO: Handle it. Crash app or open select user dialog
         } else {
-            Intent intent = new Intent(this, CreateCategoryActivity.class);
+            final Intent intent = new Intent(this, CreateCategoryActivity.class);
             intent.putExtra("currentGuardianID", guardianProfile.getId());
             startActivityForResult(intent, CREATE_CATEGORY_REQUEST);
         }
@@ -176,7 +176,7 @@ public class CategoryActivity extends GirafActivity implements InitialFragment.O
      * Will be called when an opened activity returns
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         // Check which request we're responding to
         if (requestCode == CREATE_CATEGORY_REQUEST) {
             // Make sure the request was successful
