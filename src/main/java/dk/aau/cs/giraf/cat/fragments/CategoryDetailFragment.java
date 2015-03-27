@@ -20,7 +20,7 @@ import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
 /**
- * Created by feupeu on 25/03/15.
+ * Created on 25/03/15.
  */
 public class CategoryDetailFragment extends Fragment {
 
