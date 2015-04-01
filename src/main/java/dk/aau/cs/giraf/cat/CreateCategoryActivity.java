@@ -65,6 +65,20 @@ public class CreateCategoryActivity extends GirafActivity {
 
                     // Add relation between the created category and the guardian who created the category
                     helper.profileCategoryController.insertProfileCategory(new ProfileCategory(guardianProfile.getId(), createdCategory.getId()));
+
+
+                    // TODO: DELETE WHEN WE HAVE PROPER PICTOGRAMS TO INSERT
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(4, createdCategory.getId()));
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(811, createdCategory.getId()));
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(22, createdCategory.getId()));
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(355, createdCategory.getId()));
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(434, createdCategory.getId()));
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(421, createdCategory.getId()));
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(114, createdCategory.getId()));
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(224, createdCategory.getId()));
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(534, createdCategory.getId()));
+                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(14, createdCategory.getId()));
+
                 }
 
                 // Add the ID to the result. This can later be used to identify what category was created

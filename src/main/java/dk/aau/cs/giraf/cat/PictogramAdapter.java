@@ -55,7 +55,7 @@ public class PictogramAdapter extends BaseAdapter {
         final Pictogram pictogram = pictogramList.get(position);
 
         // Find the view that the pictogram should be inserted into
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.category_list_item, null);
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.pictogram_grid_item, null);
 
         // Set the title of the pictogram in the inflated view
         ((TextView) view.findViewById(R.id.category_title)).setText(pictogram.getName());

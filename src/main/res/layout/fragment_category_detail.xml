@@ -6,27 +6,9 @@
     tools:context="dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment"
     android:orientation="vertical">
 
-    <GridView
-        android:id="@+id/pictogram_gridview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnWidth="200dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
-        android:stretchMode="columnWidth"
-        android:gravity="center" />
-
-    <TextView
-        android:id="@+id/empty_gridview_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/no_pictograms_text"
-        android:visibility="gone"
-        android:gravity="center" />
-
     <!-- Contextual bottom bar -->
     <RelativeLayout
+        android:id="@+id/contextual_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/sidebar_background"
@@ -64,20 +46,40 @@
             android:orientation="horizontal">
 
             <dk.aau.cs.giraf.gui.GirafButton
-                android:id="@+id/addPictogramButton"
+                android:id="@+id/deletePictogramButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:icon="@drawable/icon_delete"
                 android:layout_marginRight="@dimen/contextual_bottom_bar_spacing"/>
 
             <dk.aau.cs.giraf.gui.GirafButton
-                android:id="@+id/deleteCategoryButton"
+                android:id="@+id/addPictogramButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:icon="@drawable/icon_add" />
+                app:icon="@drawable/icon_add"/>
 
         </LinearLayout>
 
     </RelativeLayout>
+
+    <GridView
+        android:id="@+id/pictogram_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="200dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp"
+        android:layout_above="@id/contextual_bottom_bar"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/empty_gridview_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/no_pictograms_text"
+        android:visibility="gone"
+        android:gravity="center" />
 
 </RelativeLayout>
