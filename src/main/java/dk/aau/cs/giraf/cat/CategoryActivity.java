@@ -16,13 +16,14 @@ import java.util.List;
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
+import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflateableDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
 
     // Identifiers used to start activities for results
     public final int CREATE_CATEGORY_REQUEST = 1;
@@ -85,6 +86,12 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     @Override
     public CategoryAdapter.CategoryViewPair getSelectedMutableCategoryViewPair() {
         return selectedCategoryAndViewItem;
+    }
+
+    @Override
+    public void confirmDialog(final int methodID) {
+        final CategoryDetailFragment categoryDetailFragment = (CategoryDetailFragment) getSupportFragmentManager().findFragmentById(R.id.categorytool_framelayout);
+        categoryDetailFragment.confirmDialog(methodID);
     }
 
     private class LoadCategoriesTask extends AsyncTask<Void, Void, List<Category>> {

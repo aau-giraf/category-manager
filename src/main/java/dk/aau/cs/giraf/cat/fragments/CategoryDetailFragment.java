@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -15,6 +16,8 @@ import java.util.List;
 
 import dk.aau.cs.giraf.cat.PictogramAdapter;
 import dk.aau.cs.giraf.cat.R;
+import dk.aau.cs.giraf.gui.GirafButton;
+import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
@@ -22,9 +25,16 @@ import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 /**
  * Created on 25/03/15.
  */
-public class CategoryDetailFragment extends Fragment {
+public class CategoryDetailFragment extends Fragment implements GirafConfirmDialog.Confirmation {
 
+    // Bundle (Argument) Tags
     private static final String CATEGORY_ID_TAG = "CATEGORY_ID_TAG";
+
+    // GirafConfirmDialog.Confirmation Method Ids
+    private static final int CONFIRM_PICTOGRAM_DELETION_METHOD_ID = 31337;
+
+    // Dialog fragment Tags
+    private static final String CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG = "CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG";
 
     // Helper that will be used to fetch profiles
     private Helper helper;
@@ -33,6 +43,9 @@ public class CategoryDetailFragment extends Fragment {
     private GridView pictogramGrid;
 
     private LoadPictogramTask loadPictogramTask;
+
+    private Pictogram selectedPictogram = null;
+    private Category selectedCategory = null;
 
     /**
      * Use this factory method to create a new instance of
@@ -58,10 +71,38 @@ public class CategoryDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         categoryDetailLayout = (ViewGroup) inflater.inflate(R.layout.fragment_category_detail, container, false);
 
         pictogramGrid = (GridView) categoryDetailLayout.findViewById(R.id.pictogram_gridview);
+        pictogramGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                // Save a reference to the currently selected pictogram
+                selectedPictogram  = (Pictogram) pictogramGrid.getAdapter().getItem(position);
+            }
+        });
+
+
+        final GirafButton deletePictogramButton = (GirafButton) categoryDetailLayout.findViewById(R.id.deletePictogramButton);
+        deletePictogramButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                if(selectedPictogram == null)
+                {
+                    Toast.makeText(CategoryDetailFragment.this.getActivity(), "Du skal vælge et pictogram før du kan slette det", Toast.LENGTH_SHORT).show();
+                }
+                else // delete the selected pictogram and reload
+                {
+                    final GirafConfirmDialog confirmDialog = GirafConfirmDialog.newInstance("Fjern Piktogram", "Er du sikker på at du vil fjerne det valgte piktogram: " + selectedPictogram.getName() + " fra kategorien: "+ selectedCategory.getName() +" ?", CONFIRM_PICTOGRAM_DELETION_METHOD_ID);
+                    confirmDialog.show(getActivity().getSupportFragmentManager(), CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG);
+                }
+            }
+        });
 
         return categoryDetailLayout;
     }
@@ -75,11 +116,28 @@ public class CategoryDetailFragment extends Fragment {
         loadPictogramTask.execute();
     }
 
+    @Override
+    public void confirmDialog(int methodID) {
+        switch (methodID)
+        {
+            case CONFIRM_PICTOGRAM_DELETION_METHOD_ID:
+            {
+                helper.pictogramCategoryHelper.removePictogramCategory(selectedCategory.getId(), selectedPictogram.getId());
+
+                loadPictogramTask = new LoadPictogramTask();
+                loadPictogramTask.execute();
+            }
+        }
+    }
+
     private class LoadPictogramTask extends AsyncTask<Void, Void, List<Pictogram>> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            // Reset selected pictogram
+            selectedPictogram = null;
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(new ProgressBar(CategoryDetailFragment.this.getActivity()));
@@ -92,10 +150,11 @@ public class CategoryDetailFragment extends Fragment {
         protected List<Pictogram> doInBackground(Void... params) {
             final Bundle arguments = getArguments();
 
-            if (arguments != null) {
+            if (arguments != null)
+            {
                 final long selectedCategoryId = arguments.getLong(CATEGORY_ID_TAG);
 
-                final Category selectedCategory = helper.categoryHelper.getCategoryById((int) selectedCategoryId);
+                selectedCategory = helper.categoryHelper.getCategoryById((int) selectedCategoryId);
 
                 final List<Pictogram> pictogramList = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
 
