@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.cat;
+package dk.aau.cs.giraf.pictoadmin;
 
 import java.lang.ref.WeakReference;
 
