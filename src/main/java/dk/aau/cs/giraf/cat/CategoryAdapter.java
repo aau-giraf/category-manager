@@ -19,6 +19,14 @@ public class CategoryAdapter extends BaseAdapter {
     private final Context context;
     private List<Category> categoryList;
     private final LayoutInflater inflater;
+    private SelectedCategoryAware selectedCategoryAware;
+
+    /**
+     * Used to save a selected category paired with a specific view (View for when the category is selected)
+     */
+    public interface SelectedCategoryAware {
+        CategoryViewPair getSelectedMutableCategoryViewPair();
+    }
 
     /**
      * Gives the illusion of always pairing a category with a view.
@@ -26,45 +34,41 @@ public class CategoryAdapter extends BaseAdapter {
      * selected category returned by getSelectedMutableCategoryViewPair from an object that
      * implements CategoryAdapter.SelectedCategoryAware
      */
-    public static class CategoryViewPair
-    {
+    public static class CategoryViewPair {
         private final Category category;
         private View view;
 
-        public CategoryViewPair(final Category category, final View view)
-        {
+        public CategoryViewPair(final Category category, final View view) {
             this.category = category;
             this.view = view;
         }
 
-        public Category getCategory()
-        {
+        public Category getCategory() {
             return this.category;
         }
 
-        public View getView()
-        {
+        public View getView() {
             return this.view;
         }
 
         /**
          * This method is only visible inside MutableCategoryViewPair and CategoryAdapter
          * The CategoryAdapter sets the view of this pair once it creates a new view for the associated category
+         *
          * @param view
          */
-        private void setView(final View view)
-        {
+        private void setView(final View view) {
             this.view = view;
         }
     }
 
-    public interface SelectedCategoryAware
-    {
-        CategoryViewPair getSelectedMutableCategoryViewPair();
-    }
-
-    private SelectedCategoryAware selectedCategoryAware;
-
+    /**
+     * Constructor for the CategoryAdapter
+     *
+     * @param context
+     * @param selectedCategoryAware Something that is aware of its selected category
+     * @param categoryList          The list of categories to load
+     */
     public CategoryAdapter(final Context context, final SelectedCategoryAware selectedCategoryAware, final List<Category> categoryList) {
         super();
 
@@ -75,6 +79,26 @@ public class CategoryAdapter extends BaseAdapter {
         // Save the layout inflater. Will be used in {@link getView()}
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+
+    /**
+     * Gets a specific category from the list based on a specific identifier
+     *
+     * @param id the id of the category to find
+     * @return the category corresponding to the id provided
+     */
+    public Category getCategoryFromId(final long id) {
+        for (Category category : categoryList) {
+            if (category.getId() == id) {
+                return category;
+            }
+        }
+
+        return null;
+    }
+
+    /*
+     * Methods required for adapters below
+     */
 
     @Override
     public int getCount() {
@@ -105,8 +129,8 @@ public class CategoryAdapter extends BaseAdapter {
         // Set the icon of the category in the inflated view
         ((ImageView) view.findViewById(R.id.category_icon)).setImageBitmap(category.getImage());
 
-        if(selectedCategoryAware != null) {
-
+        // Check if the user provided a SelectedCategoryAware
+        if (selectedCategoryAware != null) {
             final CategoryViewPair selectedCategoryViewPair = selectedCategoryAware.getSelectedMutableCategoryViewPair();
 
             // Check if the view is selected
@@ -117,15 +141,5 @@ public class CategoryAdapter extends BaseAdapter {
             }
         }
         return view;
-    }
-
-    public Category getCategoryFromId(final long id) {
-        for (Category category : categoryList) {
-            if (category.getId() == id) {
-                return category;
-            }
-        }
-
-        return null;
     }
 }
