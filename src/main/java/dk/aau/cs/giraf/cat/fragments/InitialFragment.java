@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.pictoadmin.fragments;
+package dk.aau.cs.giraf.cat.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import dk.aau.cs.giraf.pictoadmin.R;
+import dk.aau.cs.giraf.cat.R;
 
 /**
  * A simple {@link Fragment} subclass.
