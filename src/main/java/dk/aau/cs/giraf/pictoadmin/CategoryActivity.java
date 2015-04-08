@@ -14,13 +14,14 @@ import android.widget.Toast;
 import java.util.List;
 
 import dk.aau.cs.giraf.activity.GirafActivity;
-import dk.aau.cs.giraf.pictoadmin.fragments.CategoryDetailFragment;
-import dk.aau.cs.giraf.pictoadmin.fragments.InitialFragment;
+import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflateableDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
+import dk.aau.cs.giraf.pictoadmin.fragments.CategoryDetailFragment;
+import dk.aau.cs.giraf.pictoadmin.fragments.InitialFragment;
 
 
 public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
@@ -176,6 +177,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Load the categories using the LoadCategoriesTask
         LoadCategoriesTask categoryLoader = (LoadCategoriesTask) new LoadCategoriesTask().execute();
+
+        // Add the switch user-button to the action bar
+        GirafButton g = new GirafButton(this, "tun");
+
+        addGirafButtonToActionBar(g, GirafActivity.LEFT);
     }
 
     /**

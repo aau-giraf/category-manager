@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="dk.aau.cs.giraf.pictoadmin.fragments.InitialFragment">
+    tools:context="dk.aau.cs.giraf.pictoadmin.fragments.InitialFragmentSpecificUser">
 
     <LinearLayout
         android:orientation="vertical"
@@ -11,17 +11,33 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/app_icon"
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#000000"
+            android:padding="1dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/train" />
+
+            </FrameLayout>
+
+        </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PENIS"
+            android:text="@string/app_name"
             android:layout_gravity="center_horizontal"
             android:textSize="30sp"
             android:layout_marginBottom="20dp" />
@@ -40,27 +56,6 @@
             android:text="@string/no_categories_selected_text"
             android:textSize="20sp"
             android:layout_marginBottom="20dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp">
-
-            <dk.aau.cs.giraf.gui.GirafButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:text="@string/create_new_category"
-                android:layout_marginRight="20dp"
-                android:onClick="onCreateCategoryButtonClicked" />
-
-            <dk.aau.cs.giraf.gui.GirafButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:text="@string/administrate_citizen" />
-
-        </LinearLayout>
 
     </LinearLayout>
 
