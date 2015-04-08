@@ -6,8 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import dk.aau.cs.giraf.pictoadmin.R;
+import dk.aau.cs.giraf.cat.R;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
