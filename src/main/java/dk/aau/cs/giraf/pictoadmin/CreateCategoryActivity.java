@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.cat;
+package dk.aau.cs.giraf.pictoadmin;
 
 import android.content.Intent;
 import android.os.Bundle;

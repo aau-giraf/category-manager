@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.cat.fragments;
+package dk.aau.cs.giraf.pictoadmin.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import dk.aau.cs.giraf.cat.PictogramAdapter;
-import dk.aau.cs.giraf.cat.R;
+import dk.aau.cs.giraf.pictoadmin.PictogramAdapter;
+import dk.aau.cs.giraf.pictoadmin.R;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
