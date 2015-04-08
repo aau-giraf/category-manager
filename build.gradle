@@ -44,6 +44,12 @@ android {
         targetSdkVersion 19
     }
 
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+    }
+    
     //To make the project build in Jenkins
     lintOptions {
         abortOnError false
