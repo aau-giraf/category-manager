@@ -1,6 +1,0 @@
-[submodule "CategoryLib"]
-	path = CategoryLib
-	url = http://cs-cust06-int.cs.aau.dk/git-ro/category-lib.git
-[submodule "Ambilwarna"]
-	path = Ambilwarna
-	url = http://cs-cust06-int.cs.aau.dk/git-ro/ambilwarna
