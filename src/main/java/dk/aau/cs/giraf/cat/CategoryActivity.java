@@ -10,9 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import java.util.List;
-
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
