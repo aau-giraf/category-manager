@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.pictoadmin;
+package dk.aau.cs.giraf.cat;
 
 import dk.aau.cs.giraf.categorylib.CatLibHelper;
 import dk.aau.cs.giraf.gui.GColorPicker;

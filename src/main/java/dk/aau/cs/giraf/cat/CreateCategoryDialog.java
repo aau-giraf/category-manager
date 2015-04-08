@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.pictoadmin;
+package dk.aau.cs.giraf.cat;
 
 import android.app.Activity;
 import android.app.Dialog;
