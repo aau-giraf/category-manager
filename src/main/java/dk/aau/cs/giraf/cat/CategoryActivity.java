@@ -179,17 +179,19 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
                                 // Make sure that the selected profile is a child
                                 if(selectedProfile.getRole() == Profile.Roles.CHILD) {
+                                    // Dismiss the dialog
                                     profileSelectorDialog.dismiss();
 
+                                    // Start a new activity with the selected child
                                     Intent intent = new Intent(CategoryActivity.this, CategoryActivity.class);
                                     intent.putExtra(INTENT_CURRENT_CHILD_ID, selectedProfile.getId());
                                     intent.putExtra(INTENT_CURRENT_GUARDIAN_ID, guardianProfile.getId());
-
                                     startActivity(intent);
                                 }
                             }
                         });
 
+                        // Show the dialog
                         profileSelectorDialog.show();
                     }
                 });
