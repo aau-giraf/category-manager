@@ -16,6 +16,8 @@ import java.util.List;
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
+import dk.aau.cs.giraf.gui.GProfileSelector;
+import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflateableDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
@@ -30,6 +32,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
+    private static final String INTENT_CURRENT_CHILD_ID = "currentChildID";
+    private static final String INTENT_CURRENT_GUARDIAN_ID = "currentGuardianID";
 
     // Helper that will be used to fetch profiles
     private final Helper helper = new Helper(this);
@@ -133,8 +137,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             finish();
             return;
         } else {
-            int childId = extras.getInt("currentChildID");
-            int guardianId = extras.getInt("currentGuardianID");
+            int childId = extras.getInt(INTENT_CURRENT_CHILD_ID);
+            int guardianId = extras.getInt(INTENT_CURRENT_GUARDIAN_ID);
 
             if (childId != -1) {
                 childProfile = helper.profilesHelper.getProfileById(childId);
@@ -151,6 +155,54 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Load the categories using the LoadCategoriesTask
         LoadCategoriesTask categoryLoader = (LoadCategoriesTask) new LoadCategoriesTask().execute();
+
+        // Check if we are aware of the current guardian profile
+        if (guardianProfile != null) {
+
+            // Check if the user currently signed in is a guardian
+            if (getCurrentUser().getRole() != Profile.Roles.CHILD) {
+                // Add the change-user button to the top-bar
+                GirafButton changeUserGirafButton = new GirafButton(this, this.getResources().getDrawable(R.drawable.icon_change_user));
+
+                // Method to use whenever the change user-button is pressed
+                changeUserGirafButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Create the new profile editor. Note that it is important that guardians are not shown in this list.
+                        final GProfileSelector profileSelectorDialog = new GProfileSelector(CategoryActivity.this, guardianProfile, null, false);
+
+                        // Method to use whenever the user has selected a button
+                        profileSelectorDialog.setOnListItemClick(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Profile selectedProfile = helper.profilesHelper.getProfileById((int) id);
+
+                                // Make sure that the selected profile is a child
+                                if(selectedProfile.getRole() == Profile.Roles.CHILD) {
+                                    profileSelectorDialog.dismiss();
+
+                                    Intent intent = new Intent(CategoryActivity.this, CategoryActivity.class);
+                                    intent.putExtra(INTENT_CURRENT_CHILD_ID, selectedProfile.getId());
+                                    intent.putExtra(INTENT_CURRENT_GUARDIAN_ID, guardianProfile.getId());
+
+                                    startActivity(intent);
+                                }
+                            }
+                        });
+
+                        profileSelectorDialog.show();
+                    }
+                });
+
+                addGirafButtonToActionBar(changeUserGirafButton, GirafActivity.LEFT);
+            }
+            // The user is signed in as a child
+            else {
+
+            }
+
+        }
+
     }
 
     /*
