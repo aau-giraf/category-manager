@@ -16,6 +16,7 @@ import java.util.List;
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
+import dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser;
 import dk.aau.cs.giraf.gui.GProfileSelector;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
@@ -25,7 +26,7 @@ import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Department;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 100001;
@@ -124,9 +125,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
-        // Set the content of the frame layout to the default fragment
-        setContent(InitialFragment.newInstance(), R.id.categorytool_framelayout);
-
         // Get the extra information from when the activity was started (contains profile ids etc.)
         final Bundle extras = getIntent().getExtras();
 
@@ -152,15 +150,23 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         Profile currentUserProfile = getCurrentUser();
 
-        // Change the title of the action-bar depending on what type of categories are being modified
+        // Change the title of the action-bar and content of right side depending on what type of categories are being modified
         if(currentUserProfile != null && getCurrentUser().getRole() == Profile.Roles.CHILD) {
+            // Change the title bar text
             setActionBarTitle("Kategorier for " + currentUserProfile.getName());
+
+            // Set the content of the frame layout to the default fragment
+            setContent(InitialFragmentSpecificUser.newInstance(getCurrentUser()), R.id.categorytool_framelayout);
         }
         else {
             // Find the department for the guardian
             Department department = helper.departmentsHelper.getDepartmentById(currentUserProfile.getDepartmentId());
 
+            // Change the title bar text
             setActionBarTitle("Kategorier for " + department.getName());
+
+            // Set the content of the frame layout to the default fragment
+            setContent(InitialFragment.newInstance(), R.id.categorytool_framelayout);
         }
 
         // Find the ListView that will contain the categories
