@@ -22,6 +22,7 @@ import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflateableDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
+import dk.aau.cs.giraf.oasis.lib.models.Department;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
 public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
@@ -147,6 +148,19 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             if (guardianId != -1) {
                 guardianProfile = helper.profilesHelper.getProfileById(guardianId);
             }
+        }
+
+        Profile currentUserProfile = getCurrentUser();
+
+        // Change the title of the action-bar depending on what type of categories are being modified
+        if(currentUserProfile != null && getCurrentUser().getRole() == Profile.Roles.CHILD) {
+            setActionBarTitle("Kategorier for " + currentUserProfile.getName());
+        }
+        else {
+            // Find the department for the guardian
+            Department department = helper.departmentsHelper.getDepartmentById(currentUserProfile.getDepartmentId());
+
+            setActionBarTitle("Kategorier for " + department.getName());
         }
 
         // Find the ListView that will contain the categories
