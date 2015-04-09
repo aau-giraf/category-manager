@@ -27,9 +27,12 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 100001;
     public static final int CONFIRM_PICTOGRAM_DELETION_METHOD_ID = 100002;
+    private static final int GET_SINGLE_PICTOGRAM = 100003;
+    private static final int GET_MULTIPLE_PICTOGRAMS = 100004;
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
+
 
     // Helper that will be used to fetch profiles
     private final Helper helper = new Helper(this);
@@ -279,25 +282,36 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         // Check which request we're responding to
-        if (requestCode == CREATE_CATEGORY_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
+        switch (requestCode) {
+            // When returning from CreatCategoryActivity (internal intent)
+            case CREATE_CATEGORY_REQUEST :
+                // Make sure the request was successful
+                if (resultCode == RESULT_OK) {
 
-                final Bundle extras = data.getExtras();
+                    final Bundle extras = data.getExtras();
 
-                final int id = extras.getInt(CreateCategoryActivity.CATEGORY_CREATED_ID_TAG);
+                    final int id = extras.getInt(CreateCategoryActivity.CATEGORY_CREATED_ID_TAG);
 
-                // Reload all categories for the current profile
-                final LoadCategoriesTask categoryLoader = (LoadCategoriesTask) new LoadCategoriesTask() {
-                    @Override
-                    protected void onPostExecute(final List<Category> result) {
-                        super.onPostExecute(result);
+                    // Reload all categories for the current profile
+                    final LoadCategoriesTask categoryLoader = (LoadCategoriesTask) new LoadCategoriesTask() {
+                        @Override
+                        protected void onPostExecute(final List<Category> result) {
+                            super.onPostExecute(result);
 
-                        // Assumes the new category is added to the end of the list
-                        categoryContainer.setSelection(categoryContainer.getAdapter().getCount() - 1);
-                    }
-                }.execute();
-            }
+                            // Assumes the new category is added to the end of the list
+                            categoryContainer.setSelection(categoryContainer.getAdapter().getCount() - 1);
+                        }
+                    }.execute();
+                }
+                break;
+            // When returning from PictoSearch with single pictogram (external intent)
+            case GET_SINGLE_PICTOGRAM:
+                // TODO - Fetch the pictogram from pictosearch
+                break;
+            // When returning from PictoSearch with multiple pictograms (external intent)
+            case GET_MULTIPLE_PICTOGRAMS:
+                // TODO - Fetch the pictograsm from pictoearch
+                break;
         }
     }
 
