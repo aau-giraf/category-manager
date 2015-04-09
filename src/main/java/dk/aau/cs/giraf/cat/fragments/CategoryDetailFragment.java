@@ -1,5 +1,7 @@
 package dk.aau.cs.giraf.cat.fragments;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,7 @@ import java.util.List;
 import dk.aau.cs.giraf.cat.CategoryActivity;
 import dk.aau.cs.giraf.cat.PictogramAdapter;
 import dk.aau.cs.giraf.cat.R;
+import dk.aau.cs.giraf.gui.GDialogAlert;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;

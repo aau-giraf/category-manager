@@ -56,7 +56,8 @@
                 android:id="@+id/addPictogramButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:icon="@drawable/icon_add"/>
+                app:icon="@drawable/icon_add"
+                android:onClick="onAddButtonClick"/>
 
         </LinearLayout>
 

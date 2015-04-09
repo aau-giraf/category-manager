@@ -1,5 +1,6 @@
 package dk.aau.cs.giraf.cat;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,8 +28,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 100001;
     public static final int CONFIRM_PICTOGRAM_DELETION_METHOD_ID = 100002;
-    private static final int GET_SINGLE_PICTOGRAM = 100003;
-    private static final int GET_MULTIPLE_PICTOGRAMS = 100004;
+    public static final int GET_SINGLE_PICTOGRAM = 100003;
+    public static final int GET_MULTIPLE_PICTOGRAMS = 100004;
+    public static final String PICTO_SEARCH_IDS_TAG = "checkoutIds";
+
+    // TODO - Fix access modifier for constants
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
@@ -230,6 +234,25 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         dialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
     }
 
+    public void onAddButtonClick(View view) {
+        Intent request = new Intent(); // A intent request
+
+        // Try to send the intent
+        try{
+            // Sets properties on the intent
+            request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
+            request.putExtra("purpose", "multi");
+
+            // Sends the intent
+            startActivityForResult(request, GET_MULTIPLE_PICTOGRAMS);
+        }
+        catch (Exception e) {
+
+            Toast.makeText(this,"Could not open PictoSearch", Toast.LENGTH_SHORT).show();
+            // TODO - Open notify dialog instead of toast
+        }
+    }
+
     /*
      * Methods required from interfaces below
      */
@@ -281,8 +304,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         // Check which request we're responding to
         switch (requestCode) {
+
             // When returning from CreatCategoryActivity (internal intent)
             case CREATE_CATEGORY_REQUEST :
                 // Make sure the request was successful
@@ -304,13 +330,32 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                     }.execute();
                 }
                 break;
+
             // When returning from PictoSearch with single pictogram (external intent)
             case GET_SINGLE_PICTOGRAM:
                 // TODO - Fetch the pictogram from pictosearch
                 break;
+
             // When returning from PictoSearch with multiple pictograms (external intent)
             case GET_MULTIPLE_PICTOGRAMS:
-                // TODO - Fetch the pictograsm from pictoearch
+
+                Bundle extras = data.getExtras(); // Get the data from the intent
+
+                // Check if there was returned any pictogram ids
+                if(data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
+                    int[] checkoutIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
+
+                    // Check if the user is a guardian
+                    if(getCurrentUser().getRole() == Profile.Roles.GUARDIAN) {
+                        // TODO - Check if any child is dependent on the guardians category
+                        // TODO - Add pictograms to guardian category
+                        Toast.makeText(this,"Returned successfully from PictoSearch",Toast.LENGTH_SHORT).show();
+                    }
+                    // Check if the user is a child
+                    else if (getCurrentUser().getRole() == Profile.Roles.CHILD) {
+                        // TODO - Add pictograms the childs category
+                    }
+                }
                 break;
         }
     }
