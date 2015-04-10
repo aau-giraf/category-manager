@@ -59,9 +59,6 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(new ProgressBar(CategoryDetailFragment.this.getActivity()));
-
-            // TODO: Remove this
-            Toast.makeText(CategoryDetailFragment.this.getActivity(), "Den er begyndt!", Toast.LENGTH_LONG).show();
         }
 
         @Override
