@@ -40,7 +40,7 @@ public class CreateCategoryActivity extends GirafActivity {
         if (extras == null) {
             Toast.makeText(this, "Det gik ikke 2", Toast.LENGTH_LONG);
         } else {
-            final int guardianId = extras.getInt("currentGuardianID");
+            final int guardianId = extras.getInt(CategoryActivity.INTENT_CURRENT_GUARDIAN_ID);
 
             if (guardianId != -1) {
                 guardianProfile = helper.profilesHelper.getProfileById(guardianId);
