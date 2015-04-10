@@ -17,17 +17,24 @@ import java.util.List;
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
+import dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser;
+import dk.aau.cs.giraf.gui.GProfileSelector;
+import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflateableDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
+import dk.aau.cs.giraf.oasis.lib.models.Department;
+import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
+import dk.aau.cs.giraf.oasis.lib.models.ProfileCategory;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 101;
     public static final int CONFIRM_PICTOGRAM_DELETION_METHOD_ID = 102;
+
     public static final int GET_SINGLE_PICTOGRAM = 103;
     public static final int GET_MULTIPLE_PICTOGRAMS = 104;
     public static final String PICTO_SEARCH_IDS_TAG = "checkoutIds";
@@ -36,6 +43,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
+    private static final String INTENT_CURRENT_CHILD_ID = "currentChildID";
+    private static final String INTENT_CURRENT_GUARDIAN_ID = "currentGuardianID";
 
 
     // Helper that will be used to fetch profiles
@@ -126,9 +135,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
-        // Set the content of the frame layout to the default fragment
-        setContent(InitialFragment.newInstance(), R.id.categorytool_framelayout);
-
         // Get the extra information from when the activity was started (contains profile ids etc.)
         final Bundle extras = getIntent().getExtras();
 
@@ -140,8 +146,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             finish();
             return;
         } else {
-            int childId = extras.getInt("currentChildID");
-            int guardianId = extras.getInt("currentGuardianID");
+            int childId = extras.getInt(INTENT_CURRENT_CHILD_ID);
+            int guardianId = extras.getInt(INTENT_CURRENT_GUARDIAN_ID);
 
             if (childId != -1) {
                 childProfile = helper.profilesHelper.getProfileById(childId);
@@ -152,12 +158,83 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             }
         }
 
+        Profile currentUserProfile = getCurrentUser();
+
+        // Change the title of the action-bar and content of right side depending on what type of categories are being modified
+        if(currentUserProfile != null && getCurrentUser().getRole() == Profile.Roles.CHILD) {
+            // Change the title bar text
+            setActionBarTitle("Kategorier for " + currentUserProfile.getName());
+
+            // Set the content of the frame layout to the default fragment
+            setContent(InitialFragmentSpecificUser.newInstance(getCurrentUser()), R.id.categorytool_framelayout);
+        }
+        else {
+            // Find the department for the guardian
+            Department department = helper.departmentsHelper.getDepartmentById(currentUserProfile.getDepartmentId());
+
+            // Change the title bar text
+            setActionBarTitle("Kategorier for " + department.getName());
+
+            // Set the content of the frame layout to the default fragment
+            setContent(InitialFragment.newInstance(), R.id.categorytool_framelayout);
+        }
+
         // Find the ListView that will contain the categories
         categoryContainer = (ListView) this.findViewById(R.id.category_container);
         categoryContainer.setOnItemClickListener(this);
 
         // Load the categories using the LoadCategoriesTask
         LoadCategoriesTask categoryLoader = (LoadCategoriesTask) new LoadCategoriesTask().execute();
+
+        // Check if we are aware of the current guardian profile
+        if (guardianProfile != null) {
+
+            // Check if the user currently signed in is a guardian
+            if (getCurrentUser().getRole() != Profile.Roles.CHILD) {
+                // Add the change-user button to the top-bar
+                GirafButton changeUserGirafButton = new GirafButton(this, this.getResources().getDrawable(R.drawable.icon_change_user));
+
+                // Method to use whenever the change user-button is pressed
+                changeUserGirafButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Create the new profile editor. Note that it is important that guardians are not shown in this list.
+                        final GProfileSelector profileSelectorDialog = new GProfileSelector(CategoryActivity.this, guardianProfile, null, false);
+
+                        // Method to use whenever the user has selected a button
+                        profileSelectorDialog.setOnListItemClick(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Profile selectedProfile = helper.profilesHelper.getProfileById((int) id);
+
+                                // Make sure that the selected profile is a child
+                                if(selectedProfile.getRole() == Profile.Roles.CHILD) {
+                                    // Dismiss the dialog
+                                    profileSelectorDialog.dismiss();
+
+                                    // Start a new activity with the selected child
+                                    Intent intent = new Intent(CategoryActivity.this, CategoryActivity.class);
+                                    intent.putExtra(INTENT_CURRENT_CHILD_ID, selectedProfile.getId());
+                                    intent.putExtra(INTENT_CURRENT_GUARDIAN_ID, guardianProfile.getId());
+                                    startActivity(intent);
+                                }
+                            }
+                        });
+
+                        // Show the dialog
+                        profileSelectorDialog.show();
+                    }
+                });
+
+                addGirafButtonToActionBar(changeUserGirafButton, GirafActivity.LEFT);
+            }
+            // The user is signed in as a child
+            else {
+
+            }
+
+        }
+
     }
 
     /*
@@ -343,17 +420,13 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
                 // Check if there was returned any pictogram ids
                 if(data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
-                    int[] checkoutIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
+                    int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
 
-                    // Check if the user is a guardian
-                    if(getCurrentUser().getRole() == Profile.Roles.GUARDIAN) {
-                        // TODO - Check if any child is dependent on the guardians category
-                        // TODO - Add pictograms to guardian category
-                        Toast.makeText(this,"Returned successfully from PictoSearch",Toast.LENGTH_SHORT).show();
-                    }
-                    // Check if the user is a child
-                    else if (getCurrentUser().getRole() == Profile.Roles.CHILD) {
-                        // TODO - Add pictograms the childs category
+                    // Foreach pictogramid insert them to the currently selected category
+                    for(int id : pictogramIds) {
+                        helper.pictogramCategoryHelper.insertPictogramCategory(
+                                new PictogramCategory(id, selectedCategoryAndViewItem.getCategory().getId())
+                        );
                     }
                 }
                 break;
