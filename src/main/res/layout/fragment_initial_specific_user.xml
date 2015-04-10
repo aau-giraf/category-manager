@@ -12,7 +12,7 @@
         android:layout_centerInParent="true">
 
         <FrameLayout
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:background="#000000"
             android:padding="1dp"
@@ -20,15 +20,17 @@
             android:layout_marginBottom="20dp">
 
             <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="#ffffff"
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@drawable/train" />
+                    android:id="@+id/profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true" />
 
             </FrameLayout>
 

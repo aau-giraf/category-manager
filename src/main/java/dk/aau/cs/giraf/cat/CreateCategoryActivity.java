@@ -38,7 +38,7 @@ public class CreateCategoryActivity extends GirafActivity {
 
         // Test if the activity was started correctly
         if (extras == null) {
-            Toast.makeText(this, "Det gik ikke 2", Toast.LENGTH_LONG);
+            Toast.makeText(this, "The activity was not started correctly", Toast.LENGTH_LONG);
         } else {
             final int guardianId = extras.getInt("currentGuardianID");
 
@@ -66,19 +66,6 @@ public class CreateCategoryActivity extends GirafActivity {
 
                     // Add relation between the created category and the guardian who created the category
                     helper.profileCategoryController.insertProfileCategory(new ProfileCategory(guardianProfile.getId(), createdCategory.getId()));
-
-
-                    // TODO: DELETE WHEN WE HAVE PROPER PICTOGRAMS TO INSERT
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(4, createdCategory.getId()));
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(811, createdCategory.getId()));
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(22, createdCategory.getId()));
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(355, createdCategory.getId()));
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(434, createdCategory.getId()));
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(421, createdCategory.getId()));
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(114, createdCategory.getId()));
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(224, createdCategory.getId()));
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(534, createdCategory.getId()));
-                    helper.pictogramCategoryHelper.insertPictogramCategory(new PictogramCategory(14, createdCategory.getId()));
 
                 }
 

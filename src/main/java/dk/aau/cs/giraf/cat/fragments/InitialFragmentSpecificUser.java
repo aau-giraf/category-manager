@@ -1,24 +1,29 @@
-package dk.aau.cs.giraf.pictoadmin.fragments;
+package dk.aau.cs.giraf.cat.fragments;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
 import dk.aau.cs.giraf.cat.R;
+import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link dk.aau.cs.giraf.pictoadmin.fragments.InitialFragmentSpecificUser.OnFragmentInteractionListener} interface
+ * {@link dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link dk.aau.cs.giraf.pictoadmin.fragments.InitialFragmentSpecificUser#newInstance} factory method to
+ * Use the {@link dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class InitialFragmentSpecificUser extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private Profile profile;
 
     /**
      * Use this factory method to create a new instance of
@@ -26,10 +31,11 @@ public class InitialFragmentSpecificUser extends Fragment {
      *
      * @return A new instance of fragment InitialFragment.
      */
-    public static InitialFragmentSpecificUser newInstance() {
+    public static InitialFragmentSpecificUser newInstance(Profile profile) {
         InitialFragmentSpecificUser fragment = new InitialFragmentSpecificUser();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        fragment.profile = profile;
         return fragment;
     }
 
@@ -52,7 +58,28 @@ public class InitialFragmentSpecificUser extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_initial_specific_user, container, false);
+        View initialFragmentSpecificUser = inflater.inflate(R.layout.fragment_initial_specific_user, container, false);
+
+        // Check if user is signed in (aka the fragment was created correctly)
+        if(profile != null) {
+            // Find the image associated with the profile
+            Bitmap profileImage = profile.getImage();
+
+            // Find the place to insert the image
+            ImageView profilePicture = (ImageView) initialFragmentSpecificUser.findViewById(R.id.profile_picture);
+
+            // Check if the profile have a profile picture
+            if(profileImage != null) {
+                // Update the profile picture
+                profilePicture.setImageBitmap(profileImage);
+            }
+            else {
+                // Set default image
+                profilePicture.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.icon_default_citizen));
+            }
+        }
+
+        return initialFragmentSpecificUser;
     }
 
     @Override
