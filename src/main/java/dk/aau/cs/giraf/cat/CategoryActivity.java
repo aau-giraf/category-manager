@@ -43,8 +43,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
-    private static final String INTENT_CURRENT_CHILD_ID = "currentChildID";
-    private static final String INTENT_CURRENT_GUARDIAN_ID = "currentGuardianID";
+    static final String INTENT_CURRENT_CHILD_ID = "currentChildID";
+    static final String INTENT_CURRENT_GUARDIAN_ID = "currentGuardianID";
 
 
     // Helper that will be used to fetch profiles
