@@ -26,10 +26,10 @@ import dk.aau.cs.giraf.oasis.lib.models.Profile;
 public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
 
     // Identifiers used to start activities etc. for results
-    public static final int CREATE_CATEGORY_REQUEST = 100001;
-    public static final int CONFIRM_PICTOGRAM_DELETION_METHOD_ID = 100002;
-    public static final int GET_SINGLE_PICTOGRAM = 100003;
-    public static final int GET_MULTIPLE_PICTOGRAMS = 100004;
+    public static final int CREATE_CATEGORY_REQUEST = 101;
+    public static final int CONFIRM_PICTOGRAM_DELETION_METHOD_ID = 102;
+    public static final int GET_SINGLE_PICTOGRAM = 103;
+    public static final int GET_MULTIPLE_PICTOGRAMS = 104;
     public static final String PICTO_SEARCH_IDS_TAG = "checkoutIds";
 
     // TODO - Fix access modifier for constants
