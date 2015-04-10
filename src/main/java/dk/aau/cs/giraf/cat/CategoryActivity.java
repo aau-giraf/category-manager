@@ -27,7 +27,6 @@ import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Department;
 import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
-import dk.aau.cs.giraf.oasis.lib.models.ProfileCategory;
 
 public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
 
@@ -131,7 +130,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     /**
      * Will be called every time the activity starts
      *
-     * @param savedInstanceState
+     * @param savedInstanceState the saved state of the activity
      */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -143,7 +142,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Test if the activity was started correctly
         if (extras == null) {
-            Toast.makeText(CategoryActivity.this, getResources().getString(R.string.app_name) + " skal startes fra GIRAF", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CategoryActivity.this, getResources().getString(R.string.app_name) + getString(R.string.must_start_from_giraf), Toast.LENGTH_SHORT).show();
 
             // The activity was not started correctly, now finish it!
             finish();
@@ -166,7 +165,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         // Change the title of the action-bar and content of right side depending on what type of categories are being modified
         if(currentUserProfile != null && getCurrentUser().getRole() == Profile.Roles.CHILD) {
             // Change the title bar text
-            setActionBarTitle("Kategorier for " + currentUserProfile.getName());
+            setActionBarTitle(getString(R.string.categories_for) + currentUserProfile.getName());
 
             // Set the content of the frame layout to the default fragment
             setContent(InitialFragmentSpecificUser.newInstance(getCurrentUser()), R.id.categorytool_framelayout);
@@ -176,7 +175,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             Department department = helper.departmentsHelper.getDepartmentById(currentUserProfile.getDepartmentId());
 
             // Change the title bar text
-            setActionBarTitle("Kategorier for " + department.getName());
+            setActionBarTitle(getString(R.string.categories_for) + department.getName());
 
             // Set the content of the frame layout to the default fragment
             setContent(InitialFragment.newInstance(), R.id.categorytool_framelayout);
@@ -314,6 +313,10 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         dialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
     }
 
+    /**
+     * When a person clicks the add button to add a pictogram
+     * @param view
+     */
     public void onAddButtonClick(View view) {
         Intent request = new Intent(); // A intent request
 

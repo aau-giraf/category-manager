@@ -64,5 +64,7 @@
     <string name="administrate_citizen">Administrer borgere</string>
     <string name="no_pictograms_text">Der er ikke nogen piktogrammer i denne kategori</string>
     <string name="create_category_no_pictogram_selected">Du skal vælge et piktogram til kategorien</string>
+    <string name="categories_for">"Kategorier for "</string>
+    <string name="must_start_from_giraf">" skal startes fra GIRAF"</string>
 
 </resources>
