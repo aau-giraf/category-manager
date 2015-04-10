@@ -63,5 +63,6 @@
     <string name="create_new_category">Opret ny kategori</string>
     <string name="administrate_citizen">Administrer borgere</string>
     <string name="no_pictograms_text">Der er ikke nogen piktogrammer i denne kategori</string>
+    <string name="create_category_no_pictogram_selected">Du skal vælge et piktogram til kategorien</string>
 
 </resources>

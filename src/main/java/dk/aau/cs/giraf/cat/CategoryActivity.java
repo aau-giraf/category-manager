@@ -37,7 +37,10 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     public static final int GET_SINGLE_PICTOGRAM = 103;
     public static final int GET_MULTIPLE_PICTOGRAMS = 104;
+
     public static final String PICTO_SEARCH_IDS_TAG = "checkoutIds";
+    public static final String PICTO_SEARCH_PURPOSE_TAG = "purpose";
+    public static final String PICTO_SEARCH_MULTI_TAG = "multi";
 
     // TODO - Fix access modifier for constants
 
@@ -318,7 +321,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         try{
             // Sets properties on the intent
             request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
-            request.putExtra("purpose", "multi");
+            request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_MULTI_TAG);
 
             // Sends the intent
             startActivityForResult(request, GET_MULTIPLE_PICTOGRAMS);
