@@ -29,8 +29,8 @@ import dk.aau.cs.giraf.oasis.lib.models.Profile;
 public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
 
     // Identifiers used to start activities etc. for results
-    public static final int CREATE_CATEGORY_REQUEST = 100001;
-    public static final int CONFIRM_PICTOGRAM_DELETION_METHOD_ID = 100002;
+    public static final int CREATE_CATEGORY_REQUEST = 101;
+    public static final int CONFIRM_PICTOGRAM_DELETION_METHOD_ID = 102;
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
