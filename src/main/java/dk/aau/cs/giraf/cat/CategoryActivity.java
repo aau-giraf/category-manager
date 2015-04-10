@@ -420,6 +420,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
                 // Check if there was returned any pictogram ids
                 if(data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
+                    // TODO pictosearch should use longs instead of integers
                     int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
 
                     // Foreach pictogramid insert them to the currently selected category
