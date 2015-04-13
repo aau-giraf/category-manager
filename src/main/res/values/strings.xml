@@ -63,5 +63,8 @@
     <string name="create_new_category">Opret ny kategori</string>
     <string name="administrate_citizen">Administrer borgere</string>
     <string name="no_pictograms_text">Der er ikke nogen piktogrammer i denne kategori</string>
+    <string name="pick_pictogram_before_delete">Du skal vælge et piktogram før du kan slette det</string>
+    <string name="remove_pictogram_dialog_title">Fjern Piktogram</string>
+    <string name="remove_pictogram_dialog_body">Er du sikker på at du vil fjerne \"%1$s\" fra \"%2$s\"?</string>
 
 </resources>

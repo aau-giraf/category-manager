@@ -138,10 +138,16 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
             @Override
             public void onClick(View v) {
                 if (selectedPictogram == null) {
-                    Toast.makeText(CategoryDetailFragment.this.getActivity(), "Du skal vælge et pictogram før du kan slette det", Toast.LENGTH_SHORT).show();
+                    // TODO: Use something different than a toast
+                    Toast.makeText(CategoryDetailFragment.this.getActivity(), getActivity().getResources().getString(R.string.pick_pictogram_before_delete), Toast.LENGTH_SHORT).show();
                 } else // delete the selected pictogram and reload
                 {
-                    final GirafConfirmDialog confirmDialog = GirafConfirmDialog.newInstance("Fjern Piktogram", "Er du sikker på at du vil fjerne det valgte piktogram: " + selectedPictogram.getName() + " fra kategorien: " + selectedCategory.getName() + " ?", CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID);
+                    // Create and show confirmation dialog
+                    final GirafConfirmDialog confirmDialog = GirafConfirmDialog.newInstance(
+                        getActivity().getResources().getString(R.string.remove_pictogram_dialog_title), // Title of the dialog
+                        String.format(getActivity().getResources().getString(R.string.remove_pictogram_dialog_body), selectedPictogram.getName(), selectedCategory.getName()), // Body of the dialog
+                        CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID
+                    );
                     confirmDialog.show(getActivity().getSupportFragmentManager(), CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG);
                 }
             }
