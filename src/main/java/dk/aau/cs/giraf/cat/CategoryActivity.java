@@ -21,7 +21,7 @@ import dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser;
 import dk.aau.cs.giraf.gui.GProfileSelector;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
-import dk.aau.cs.giraf.gui.GirafInflateableDialog;
+import dk.aau.cs.giraf.gui.GirafInflatableDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Department;
@@ -308,7 +308,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onSettingsButtonClicked(View view) {
         // Create the dialog
-        GirafInflateableDialog dialog = GirafInflateableDialog.newInstance("Indstillinger for Trafik", "Her kan du ændre piktogrammet og titlen for kategorien", R.layout.category_settings_dialog);
+        GirafInflatableDialog dialog = GirafInflatableDialog.newInstance("Indstillinger for Trafik", "Her kan du ændre piktogrammet og titlen for kategorien", R.layout.category_settings_dialog);
 
         dialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
     }
