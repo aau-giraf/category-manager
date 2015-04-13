@@ -9,7 +9,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
 import java.util.List;
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
@@ -41,6 +47,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     private CategoryAdapter categoryAdapter;
     private CategoryAdapter.CategoryViewPair selectedCategoryAndViewItem = null;
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
