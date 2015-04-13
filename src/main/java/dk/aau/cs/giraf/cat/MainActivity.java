@@ -776,7 +776,7 @@ public class MainActivity extends Activity implements CreateCategoryListener{
 		catch (Exception e) {
 
             GDialogAlert diag = new GDialogAlert(this,
-                    getString(R.string.pictosearch_unavaiable),
+                    getString(R.string.pictosearch_unavailable),
                     getString(R.string.ask_installed),
                     new View.OnClickListener() {
                         @Override

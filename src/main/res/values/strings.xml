@@ -1,5 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+    ================================================================================================
+    MISC
+    ================================================================================================
+    -->
+
+    <!-- Name of the application -->
+    <string name="app_name">Kategoriværktøjet</string>
+
+    <!--
+    ================================================================================================
+    ERROR MESSAGES
+    ================================================================================================
+    -->
+
+    <!-- Error message to output whenever the application is started incorrectly (no user data)
+         Arg #1: The name of the application -->
+    <string name="error_must_be_started_from_giraf">"%1$s skal startes fra GIRAF"</string>
+
+    <!--
+    ================================================================================================
+    CATEGORY DETAILS FRAGMENT
+    ================================================================================================
+    -->
+
+    <!-- Placeholder-text for empty category grid -->
+    <string name="no_pictograms_text">Der er ikke nogen piktogrammer i denne kategori</string>
+
+    <!-- Used in the title-bar to indicate which categories are being showed
+         Arg #1: The indicator for the category, for instance department name or the name of user -->
+    <string name="categories_for">"Kategorier for %1$s"</string>
+
+    <!--
+    ================================================================================================
+    REMOVE PICTOGRAM FROM CATEGORY
+    ================================================================================================
+    -->
+
+    <!-- Will be shown whenever the user tries to delete a pictogram without selecting one first -->
+    <string name="pick_pictogram_before_delete">Du skal vælge et piktogram før du kan slette det</string>
+    <string name="remove_pictogram_dialog_title">Fjern Piktogram</string>
+
+    <!-- Confirmation when removing a pictogram from a category
+         Arg #1: Name of pictogram.
+         Arg #2: Name of category -->
+    <string name="remove_pictogram_dialog_body">Er du sikker på at du vil fjerne \"%1$s\" fra \"%2$s\"?</string>
+
+    <!--
+    ================================================================================================
+    CREATING A CATEGORY
+    ================================================================================================
+    -->
+    <string name="create_category_no_pictogram_selected">Du skal vælge et piktogram til kategorien</string>
+
+
+    <!-- WARNING: Old (and possibly unused) strings below!! -->
 
     <string-array name="dialog_options">
         <item>Skift titel</item>
@@ -8,13 +64,12 @@
         <item>Kopier kategori</item>
     </string-array>
 
-    <string name="app_name">Kategoriværktøjet</string>
     <string name="currentChild">Aktiv borger: </string>
     <string name="categories">Kategorier</string>
     <string name="subcategories">Underkategorier</string>
     <string name="category">kategori</string>
     <string name="subcategory">underkategori</string>
-    <string name="pictograms">Pictogrammer</string>
+    <string name="pictograms">Piktogrammer</string>
     <string name="pressInfo">Tryk i lang tid for yderligere valgmuligheder</string>
     <string name="back">Tilbage</string>
     <string name="menu_settings">Settings</string>
@@ -51,8 +106,8 @@
     <string name="already_has_category"> har allerede en kategori med samme navn</string>
     <string name="not_implemented">Denne funktionalitet er ikke implementeret</string>
     <string name="subcat_copied">Underkategorier kopieret: </string>
-    <string name="pictograms_copied">Pictogrammer kopieret: </string>
-    <string name="pictosearch_unavaiable">Kunne ikke tilgå pictosearch</string>
+    <string name="pictograms_copied">Piktogrammer kopieret: </string>
+    <string name="pictosearch_unavailable">Kunne ikke tilgå Piktosøger</string>
     <string name="ask_installed">Er det installeret?</string>
     <string name="error">Fejl</string>
     <string name="category_copied">Kategorien er kopieret</string>
@@ -62,12 +117,5 @@
     <string name="no_categories_selected_text">Ingen kategorier valgt</string>
     <string name="create_new_category">Opret ny kategori</string>
     <string name="administrate_citizen">Administrer borgere</string>
-    <string name="no_pictograms_text">Der er ikke nogen piktogrammer i denne kategori</string>
-    <string name="pick_pictogram_before_delete">Du skal vælge et piktogram før du kan slette det</string>
-    <string name="remove_pictogram_dialog_title">Fjern Piktogram</string>
-    <string name="remove_pictogram_dialog_body">Er du sikker på at du vil fjerne \"%1$s\" fra \"%2$s\"?</string>
-    <string name="create_category_no_pictogram_selected">Du skal vælge et piktogram til kategorien</string>
-    <string name="categories_for">"Kategorier for "</string>
-    <string name="must_start_from_giraf">" skal startes fra GIRAF"</string>
 
 </resources>

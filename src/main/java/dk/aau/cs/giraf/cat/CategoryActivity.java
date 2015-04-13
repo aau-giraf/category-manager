@@ -142,7 +142,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Test if the activity was started correctly
         if (extras == null) {
-            Toast.makeText(CategoryActivity.this, getResources().getString(R.string.app_name) + getString(R.string.must_start_from_giraf), Toast.LENGTH_SHORT).show();
+            Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_from_giraf), getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
 
             // The activity was not started correctly, now finish it!
             finish();
@@ -165,7 +165,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         // Change the title of the action-bar and content of right side depending on what type of categories are being modified
         if(currentUserProfile != null && getCurrentUser().getRole() == Profile.Roles.CHILD) {
             // Change the title bar text
-            setActionBarTitle(getString(R.string.categories_for) + currentUserProfile.getName());
+            setActionBarTitle(String.format(getString(R.string.categories_for), currentUserProfile.getName()));
 
             // Set the content of the frame layout to the default fragment
             setContent(InitialFragmentSpecificUser.newInstance(getCurrentUser()), R.id.categorytool_framelayout);
@@ -175,7 +175,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             Department department = helper.departmentsHelper.getDepartmentById(currentUserProfile.getDepartmentId());
 
             // Change the title bar text
-            setActionBarTitle(getString(R.string.categories_for) + department.getName());
+            setActionBarTitle(String.format(getString(R.string.categories_for), department.getName()));
 
             // Set the content of the frame layout to the default fragment
             setContent(InitialFragment.newInstance(), R.id.categorytool_framelayout);
