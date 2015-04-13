@@ -19,6 +19,7 @@ import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser;
 import dk.aau.cs.giraf.gui.GProfileSelector;
+import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflatableDialog;
@@ -180,6 +181,17 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // Set the content of the frame layout to the default fragment
             setContent(InitialFragment.newInstance(), R.id.categorytool_framelayout);
         }
+
+        final GirafButton helpGirafButton = new GirafButton(this, getResources().getDrawable(R.drawable.icon_help));
+        helpGirafButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ShowcaseManager.ShowcaseCapable currentContent = (ShowcaseManager.ShowcaseCapable) getSupportFragmentManager().findFragmentById(R.id.categorytool_framelayout);
+                currentContent.toggleShowcase();
+            }
+        });
+
+        addGirafButtonToActionBar(helpGirafButton, GirafActivity.RIGHT);
 
         // Find the ListView that will contain the categories
         categoryContainer = (ListView) this.findViewById(R.id.category_container);

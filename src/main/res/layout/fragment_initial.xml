@@ -41,7 +41,7 @@
             android:textSize="20sp"
             android:layout_marginBottom="20dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -49,18 +49,23 @@
             android:layout_marginTop="20dp">
 
             <dk.aau.cs.giraf.gui.GirafButton
+                android:id="@+id/category_create_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
                 app:text="@string/create_new_category"
                 android:layout_marginRight="20dp"
                 android:onClick="onCreateCategoryButtonClicked" />
 
             <dk.aau.cs.giraf.gui.GirafButton
+                android:layout_toRightOf="@id/category_create_button"
+                android:id="@+id/administrate_citizen_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:text="@string/administrate_citizen" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
