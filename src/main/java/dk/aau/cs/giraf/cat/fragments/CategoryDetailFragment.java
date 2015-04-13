@@ -1,7 +1,5 @@
 package dk.aau.cs.giraf.cat.fragments;
 
-import android.content.ComponentName;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,7 +17,6 @@ import java.util.List;
 import dk.aau.cs.giraf.cat.CategoryActivity;
 import dk.aau.cs.giraf.cat.PictogramAdapter;
 import dk.aau.cs.giraf.cat.R;
-import dk.aau.cs.giraf.gui.GDialogAlert;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
@@ -33,12 +30,16 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
 
     // Bundle (Argument) Tags
     private static final String CATEGORY_ID_TAG = "CATEGORY_ID_TAG";
+    private static final String IS_CHILD_CATEGORY_TAG = "IS_CHILD_CATEGORY_TAG";
 
     // Dialog fragment Tags
     private static final String CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG = "CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG";
 
     // Helper that will be used to fetch profiles
     private Helper helper;
+
+    // Identifiers to use when handling dialogs
+    public static final int DISABLED_BUTTON_HELP_DIALOG_RESPONSE = 101;
 
     private ViewGroup categoryDetailLayout;
     private GridView pictogramGrid;
@@ -47,6 +48,8 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
 
     private Pictogram selectedPictogram = null;
     private Category selectedCategory = null;
+
+    private boolean isChildCategory;
 
     /**
      * Class used to load pictograms into the pictogram grid
@@ -95,12 +98,27 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
+     * @param categoryId the id of the category to show details for
      * @return A new instance of fragment CategoryDetailFragment.
      */
     public static CategoryDetailFragment newInstance(final long categoryId) {
+        return newInstance(categoryId, false);
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param categoryId the id of the category to show details for
+     * @param isChildCategory True if you want to hide category-management buttons (Copy to citizens / settings). Defaults to false.
+     * @return
+     */
+    public static CategoryDetailFragment newInstance(final long categoryId, boolean isChildCategory) {
         CategoryDetailFragment fragment = new CategoryDetailFragment();
+        fragment.isChildCategory = isChildCategory;
         Bundle args = new Bundle();
         args.putLong(CATEGORY_ID_TAG, categoryId);
+        args.putBoolean(IS_CHILD_CATEGORY_TAG, isChildCategory);
         fragment.setArguments(args);
         return fragment;
     }
@@ -152,6 +170,17 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
                 }
             }
         });
+
+        // Find the category-management buttons and hide them if the current category is a child-category
+        if(isChildCategory) {
+            // Hide the copy categories to user-button
+            final GirafButton copyToUserButton = (GirafButton) categoryDetailLayout.findViewById(R.id.copyToUserButton);
+            copyToUserButton.setEnabled(false);
+
+            // Hide the settings button
+            final GirafButton categorySettingsButton = (GirafButton) categoryDetailLayout.findViewById(R.id.categorySettingsButton);
+            categorySettingsButton.setEnabled(false);
+        }
 
         return categoryDetailLayout;
     }

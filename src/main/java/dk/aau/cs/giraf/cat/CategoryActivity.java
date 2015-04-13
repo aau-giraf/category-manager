@@ -27,7 +27,6 @@ import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Department;
 import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
-import dk.aau.cs.giraf.oasis.lib.models.ProfileCategory;
 
 public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
 
@@ -358,7 +357,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         view.setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_active));
 
         // "Open" the fragment in the frame layout
-        pushContent(CategoryDetailFragment.newInstance(id), R.id.categorytool_framelayout);
+        pushContent(CategoryDetailFragment.newInstance(id, getCurrentUser().getRole() == Profile.Roles.CHILD), R.id.categorytool_framelayout);
     }
 
     /**
