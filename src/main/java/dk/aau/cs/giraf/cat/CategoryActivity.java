@@ -2,14 +2,19 @@ package dk.aau.cs.giraf.cat;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.List;
@@ -61,6 +66,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     private CategoryAdapter categoryAdapter;
     private CategoryAdapter.CategoryViewPair selectedCategoryAndViewItem = null;
+    Category selectedCategory;
 
     /**
      * Will be called every time the back-button is pressed
@@ -308,9 +314,27 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onSettingsButtonClicked(View view) {
         // Create the dialog
-        GirafInflateableDialog dialog = GirafInflateableDialog.newInstance("Indstillinger for Trafik", "Her kan du ændre piktogrammet og titlen for kategorien", R.layout.category_settings_dialog);
+        GirafInflateableDialog dialog = GirafInflateableDialog.newInstance(getString(R.string.settings_for) + selectedCategory.getName(),
+                getString(R.string.settings_dialog_description),
+                R.layout.category_settings_dialog);
 
         dialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
+
+        // Find the customview of the dialog
+        /*
+        RelativeLayout settingsDialogCustomView = (RelativeLayout) dialog.getCustomView();
+
+        settingsDialogCustomView.setBackgroundColor(Color.RED);
+
+        // Find the pictogram from the customview
+        ImageView pictogram = (ImageView) settingsDialogCustomView.findViewById(R.id.category_pictogram);
+        pictogram.setImageBitmap(selectedCategory.getImage());
+
+        // Find the title from the customview
+        EditText title = (EditText) settingsDialogCustomView.findViewById(R.id.category_title);
+        title.setText(selectedCategory.getName());
+        */
+
     }
 
     /**
@@ -359,8 +383,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             }
         }
 
-        // Set the selected category
+        // Set the selected category and view item
         selectedCategoryAndViewItem = new CategoryAdapter.CategoryViewPair(categoryAdapter.getCategoryFromId(id), view);
+
+        // Set the selected category
+        selectedCategory = selectedCategoryAndViewItem.getCategory();
         view.setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_active));
 
         // "Open" the fragment in the frame layout
