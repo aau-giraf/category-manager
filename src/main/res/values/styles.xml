@@ -27,4 +27,28 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>
+
+    <style name="GirafCustomShowcaseTheme" parent="ShowcaseView.Light">
+        <item name="sv_backgroundColor">@color/showcase_overlay_color</item>
+        <item name="sv_showcaseColor">@color/showcase_button_color</item>
+        <item name="sv_buttonText">Next</item>
+        <item name="sv_titleTextAppearance">@style/CustomTitle</item>
+        <item name="sv_detailTextAppearance">@style/CustomDetail</item>
+    </style>
+
+    <style name="GirafLastCustomShowcaseTheme" parent="ShowcaseView.Light">
+        <item name="sv_backgroundColor">@color/showcase_overlay_color</item>
+        <item name="sv_showcaseColor">@color/showcase_button_color</item>
+        <item name="sv_buttonText">Close</item>
+        <item name="sv_titleTextAppearance">@style/CustomTitle</item>
+        <item name="sv_detailTextAppearance">@style/CustomDetail</item>
+    </style>
+
+    <style name="CustomTitle" parent="TextAppearance.ShowcaseView.Title">
+        <item name="android:textColor">#E0E0E0</item>
+    </style>
+    <style name="CustomDetail" parent="TextAppearance.ShowcaseView.Detail">
+        <item name="android:textColor">#E0E0E0</item>
+    </style>
+
 </resources>
