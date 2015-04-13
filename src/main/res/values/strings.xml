@@ -66,5 +66,8 @@
     <string name="pick_pictogram_before_delete">Du skal vælge et piktogram før du kan slette det</string>
     <string name="remove_pictogram_dialog_title">Fjern Piktogram</string>
     <string name="remove_pictogram_dialog_body">Er du sikker på at du vil fjerne \"%1$s\" fra \"%2$s\"?</string>
+    <string name="create_category_no_pictogram_selected">Du skal vælge et piktogram til kategorien</string>
+    <string name="categories_for">"Kategorier for "</string>
+    <string name="must_start_from_giraf">" skal startes fra GIRAF"</string>
 
 </resources>
