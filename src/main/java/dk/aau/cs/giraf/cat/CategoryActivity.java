@@ -9,17 +9,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
-
 import java.util.List;
+
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
+import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflateableDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
@@ -47,7 +45,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     private CategoryAdapter categoryAdapter;
     private CategoryAdapter.CategoryViewPair selectedCategoryAndViewItem = null;
-
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -78,8 +75,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     public void onBackPressed() {
 
         // Check if there is a previously selected view and if there is no popup
-        if (selectedCategoryAndViewItem != null && getSupportFragmentManager().findFragmentByTag(CATEGORY_SETTINGS_TAG) == null)
-        {
+        if (selectedCategoryAndViewItem != null && getSupportFragmentManager().findFragmentByTag(CATEGORY_SETTINGS_TAG) == null) {
             // Set the selected category to "null" and set background to in-active
             selectedCategoryAndViewItem.getView().setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_inactive));
             selectedCategoryAndViewItem = null;
@@ -174,6 +170,17 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 guardianProfile = helper.profilesHelper.getProfileById(guardianId);
             }
         }
+
+        final GirafButton helpGirafButton = new GirafButton(this, getResources().getDrawable(R.drawable.icon_help));
+        helpGirafButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ShowcaseManager.ShowcaseCapable currentContent = (ShowcaseManager.ShowcaseCapable) getSupportFragmentManager().findFragmentById(R.id.categorytool_framelayout);
+                currentContent.toggleShowcase();
+            }
+        });
+
+        addGirafButtonToActionBar(helpGirafButton, GirafActivity.RIGHT);
 
         // Find the ListView that will contain the categories
         categoryContainer = (ListView) this.findViewById(R.id.category_container);
