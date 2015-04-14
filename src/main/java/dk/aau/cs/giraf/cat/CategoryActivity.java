@@ -2,14 +2,19 @@ package dk.aau.cs.giraf.cat;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.List;
@@ -30,7 +35,7 @@ import dk.aau.cs.giraf.oasis.lib.models.Department;
 import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafNotifyDialog.Notification {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification {
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 101;
@@ -65,6 +70,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     private CategoryAdapter categoryAdapter;
     private CategoryAdapter.CategoryViewPair selectedCategoryAndViewItem = null;
+    Category selectedCategory;
 
     /**
      * Will be called every time the back-button is pressed
@@ -81,6 +87,18 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
         super.onBackPressed();
+    }
+
+    @Override
+    public void editCustomView(ViewGroup viewGroup, int i) {
+        switch (i) {
+            case 42:
+                ImageView icon = (ImageView) viewGroup.findViewById(R.id.category_pictogram);
+                EditText editTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
+                icon.setImageBitmap(selectedCategory.getImage());
+                editTitle.setText(selectedCategory.getName());
+                break;
+        }
     }
 
     /**
@@ -323,9 +341,28 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onSettingsButtonClicked(View view) {
         // Create the dialog
-        GirafInflatableDialog dialog = GirafInflatableDialog.newInstance("Indstillinger for Trafik", "Her kan du ændre piktogrammet og titlen for kategorien", R.layout.category_settings_dialog);
+        GirafInflatableDialog dialog = GirafInflatableDialog.newInstance(String.format(getString(R.string.settings_for), selectedCategory.getName()),
+                getString(R.string.settings_dialog_description),
+                R.layout.category_settings_dialog, 42);
+
 
         dialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
+
+        // Find the customview of the dialog
+        /*
+        RelativeLayout settingsDialogCustomView = (RelativeLayout) dialog.getCustomView();
+
+        settingsDialogCustomView.setBackgroundColor(Color.RED);
+
+        // Find the pictogram from the customview
+        ImageView pictogram = (ImageView) settingsDialogCustomView.findViewById(R.id.category_pictogram);
+        pictogram.setImageBitmap(selectedCategory.getImage());
+
+        // Find the title from the customview
+        EditText title = (EditText) settingsDialogCustomView.findViewById(R.id.category_title);
+        title.setText(selectedCategory.getName());
+        */
+
     }
 
     /**
@@ -374,8 +411,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             }
         }
 
-        // Set the selected category
+        // Set the selected category and view item
         selectedCategoryAndViewItem = new CategoryAdapter.CategoryViewPair(categoryAdapter.getCategoryFromId(id), view);
+
+        // Set the selected category
+        selectedCategory = selectedCategoryAndViewItem.getCategory();
         view.setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_active));
 
         // "Open" the fragment in the frame layout

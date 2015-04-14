@@ -19,6 +19,9 @@
          Arg #1: The name of the application -->
     <string name="error_must_be_started_from_giraf">"%1$s skal startes fra GIRAF"</string>
 
+    <!-- Error message to tell the user that she needs to select a pictogram for an icon for the category -->
+    <string name="create_category_no_pictogram_selected">Du skal vælge et piktogram til kategorien</string>
+
     <!--
     ================================================================================================
     CATEGORY DETAILS FRAGMENT
@@ -31,6 +34,13 @@
     <!-- Used in the title-bar to indicate which categories are being showed
          Arg #1: The indicator for the category, for instance department name or the name of user -->
     <string name="categories_for">"Kategorier for %1$s"</string>
+
+    <!-- Used in the title of the edit category dialog,
+        Arg #1: The name of the category being edited -->
+    <string name="settings_for">"Indstillinger for %1$s"</string>
+
+    <!-- The description in the edit category dialog -->
+    <string name="settings_dialog_description">Her kan du ændre piktogrammet og titlen for kategorien</string>
 
     <!-- Title of notification dialog showed when user presses an inactive category settings button -->
     <string name="disabled_button_notification_dialog_title">Ugyldig handling</string>
@@ -59,14 +69,6 @@
          Arg #1: Name of pictogram.
          Arg #2: Name of category -->
     <string name="remove_pictogram_dialog_body">Er du sikker på at du vil fjerne \"%1$s\" fra \"%2$s\"?</string>
-
-    <!--
-    ================================================================================================
-    CREATING A CATEGORY
-    ================================================================================================
-    -->
-    <string name="create_category_no_pictogram_selected">Du skal vælge et piktogram til kategorien</string>
-
 
     <!-- WARNING: Old (and possibly unused) strings below!! -->
 
@@ -130,5 +132,7 @@
     <string name="no_categories_selected_text">Ingen kategorier valgt</string>
     <string name="create_new_category">Opret ny kategori</string>
     <string name="administrate_citizen">Administrer borgere</string>
+    <string name="no_pictogram_selected">Der blev ikke valgt noget piktogram</string>
+    <string name="multiple_pictogram_selected_first_used">Mere end et piktogram valgt, det øverste i listen bruges</string>
 
 </resources>

@@ -68,7 +68,7 @@ public class CreateCategoryActivity extends GirafActivity {
             public void onClick(final View v) {
                 final EditText titleBox = (EditText) findViewById(R.id.create_category_title);
 
-                if(iconPictogram == null) {
+                if (iconPictogram == null) {
                     Toast.makeText(CreateCategoryActivity.this, getString(R.string.create_category_no_pictogram_selected), Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -97,21 +97,20 @@ public class CreateCategoryActivity extends GirafActivity {
         });
     }
 
-    public void onIconClick(View view){
+    public void onIconClick(View view) {
         Intent request = new Intent(); // A intent request
 
         // Try to send the intent
-        try{
+        try {
             // Sets properties on the intent
             request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
             request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_SINGLE_TAG);
 
             // Sends the intent
             startActivityForResult(request, GET_SINGLE_PICTOGRAM);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
-            Toast.makeText(this,"Could not open PictoSearch", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
             // TODO - Open notify dialog instead of toast
         }
     }
@@ -135,16 +134,17 @@ public class CreateCategoryActivity extends GirafActivity {
                     // TODO Update when pictosearch changes how they return a single pictogram
 
                     // If there were returned more than one pictogram tell the user that the first is used
-                    if(pictogramIds.length > 1)
-                    {
-                        Toast.makeText(this,"Mere end et piktogram valgt, det øverste i listen bruges",Toast.LENGTH_LONG).show();
+                    if (pictogramIds.length > 1) {
+                        Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
+                    } else if (pictogramIds.length < 1) {
+                        Toast.makeText(this, getString(R.string.no_pictogram_selected), Toast.LENGTH_LONG).show();
+                    } else {
+                        // Set the wanted pictogram to be what was returned form pictosearh
+                        iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
+
+                        // Update the gui with the found pictogram
+                        iconView.setImageBitmap(iconPictogram.getImage());
                     }
-
-                    // Set the wanted pictogram to be what was returned form pictosearh
-                    iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
-
-                    // Update the gui with the found pictogram
-                    iconView.setImageBitmap(iconPictogram.getImage());
                 }
                 break;
         }
