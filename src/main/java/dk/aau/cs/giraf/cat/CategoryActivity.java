@@ -24,16 +24,17 @@ import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragment;
 import dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser;
 import dk.aau.cs.giraf.gui.GProfileSelector;
+import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
-import dk.aau.cs.giraf.gui.GirafInflateableDialog;
+import dk.aau.cs.giraf.gui.GirafInflatableDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Department;
 import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener {
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 101;
@@ -83,6 +84,18 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
         super.onBackPressed();
+    }
+
+    @Override
+    public void editCustomView(ViewGroup viewGroup, int i) {
+        switch (i) {
+            case 42:
+                ImageView icon = (ImageView) viewGroup.findViewById(R.id.category_pictogram);
+                EditText editTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
+                icon.setImageBitmap(selectedCategory.getImage());
+                editTitle.setText(selectedCategory.getName());
+                break;
+        }
     }
 
     /**
@@ -148,7 +161,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Test if the activity was started correctly
         if (extras == null) {
-            Toast.makeText(CategoryActivity.this, getResources().getString(R.string.app_name) + getString(R.string.must_start_from_giraf), Toast.LENGTH_SHORT).show();
+            Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_from_giraf), getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
 
             // The activity was not started correctly, now finish it!
             finish();
@@ -171,7 +184,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         // Change the title of the action-bar and content of right side depending on what type of categories are being modified
         if(currentUserProfile != null && getCurrentUser().getRole() == Profile.Roles.CHILD) {
             // Change the title bar text
-            setActionBarTitle(getString(R.string.categories_for) + currentUserProfile.getName());
+            setActionBarTitle(String.format(getString(R.string.categories_for), currentUserProfile.getName()));
 
             // Set the content of the frame layout to the default fragment
             setContent(InitialFragmentSpecificUser.newInstance(getCurrentUser()), R.id.categorytool_framelayout);
@@ -181,11 +194,22 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             Department department = helper.departmentsHelper.getDepartmentById(currentUserProfile.getDepartmentId());
 
             // Change the title bar text
-            setActionBarTitle(getString(R.string.categories_for) + department.getName());
+            setActionBarTitle(String.format(getString(R.string.categories_for), department.getName()));
 
             // Set the content of the frame layout to the default fragment
             setContent(InitialFragment.newInstance(), R.id.categorytool_framelayout);
         }
+
+        final GirafButton helpGirafButton = new GirafButton(this, getResources().getDrawable(R.drawable.icon_help));
+        helpGirafButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ShowcaseManager.ShowcaseCapable currentContent = (ShowcaseManager.ShowcaseCapable) getSupportFragmentManager().findFragmentById(R.id.categorytool_framelayout);
+                currentContent.toggleShowcase();
+            }
+        });
+
+        addGirafButtonToActionBar(helpGirafButton, GirafActivity.RIGHT);
 
         // Find the ListView that will contain the categories
         categoryContainer = (ListView) this.findViewById(R.id.category_container);
@@ -314,9 +338,10 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onSettingsButtonClicked(View view) {
         // Create the dialog
-        GirafInflateableDialog dialog = GirafInflateableDialog.newInstance(getString(R.string.settings_for) + selectedCategory.getName(),
+        GirafInflatableDialog dialog = GirafInflatableDialog.newInstance(String.format(getString(R.string.settings_for), selectedCategory.getName()),
                 getString(R.string.settings_dialog_description),
-                R.layout.category_settings_dialog);
+                R.layout.category_settings_dialog, 42);
+
 
         dialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
 
@@ -391,7 +416,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         view.setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_active));
 
         // "Open" the fragment in the frame layout
-        pushContent(CategoryDetailFragment.newInstance(id), R.id.categorytool_framelayout);
+        pushContent(CategoryDetailFragment.newInstance(id, getCurrentUser().getRole() == Profile.Roles.CHILD), R.id.categorytool_framelayout);
     }
 
     /**

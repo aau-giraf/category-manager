@@ -31,7 +31,7 @@
                 android:layout_marginRight="20dp" />
 
             <EditText
-                android:id="@+id/category_title"
+                android:id="@+id/category_edit_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/create_category_edittext_hint"
