@@ -5,8 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +17,7 @@ import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 public class PictogramAdapter extends BaseAdapter {
     private List<Pictogram> pictogramList;
     private final LayoutInflater inflater;
+    private final Context context;
 
     public PictogramAdapter(List<Pictogram> pictogramList, Context context) {
         super();
@@ -29,6 +28,8 @@ public class PictogramAdapter extends BaseAdapter {
         else {
             this.pictogramList = pictogramList;
         }
+
+        this.context = context;
 
         // Save the layout inflater. Will be used in {@link getView()}
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -51,19 +52,11 @@ public class PictogramAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Find the pictogram in question
+        // Find the pictogram to show
         final Pictogram pictogram = pictogramList.get(position);
 
-        // Find the view that the pictogram should be inserted into
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.pictogram_grid_item, null);
-
-        // Set the title of the pictogram in the inflated view
-        ((TextView) view.findViewById(R.id.category_title)).setText(pictogram.getName());
-
-        // Set the icon of the pictogram in the inflated view
-        ((ImageView) view.findViewById(R.id.category_icon)).setImageBitmap(pictogram.getImage());
-
-        return view;
+        // Create the pictogram view and return it
+        return new dk.aau.cs.giraf.cat.GirafPictogram(context, pictogram);
     }
 
     /**
