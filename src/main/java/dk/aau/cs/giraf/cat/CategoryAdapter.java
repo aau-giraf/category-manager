@@ -5,12 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
 import dk.aau.cs.giraf.oasis.lib.models.Category;
+import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
 /**
  * Created on 24/03/15.
@@ -20,6 +20,8 @@ public class CategoryAdapter extends BaseAdapter {
     private List<Category> categoryList;
     private final LayoutInflater inflater;
     private SelectedCategoryAware selectedCategoryAware;
+
+    private static final int CATEGORY_PADDING = 20;
 
     /**
      * Used to save a selected category paired with a specific view (View for when the category is selected)
@@ -120,14 +122,20 @@ public class CategoryAdapter extends BaseAdapter {
         // Find the category in question
         final Category category = categoryList.get(position);
 
-        // Find the view that the category should be inserted into
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.category_list_item, null);
+        // Create pictogram that looks like the category
+        Pictogram pictogram = new Pictogram();
+        pictogram.setName(category.getName());
+        pictogram.setImage(category.getImage());
 
-        // Set the title of the category in the inflated view
-        ((TextView) view.findViewById(R.id.category_title)).setText(category.getName());
+        // Create a new UI pictogram
+        GirafPictogram view = new GirafPictogram(context, pictogram);
 
-        // Set the icon of the category in the inflated view
-        ((ImageView) view.findViewById(R.id.category_icon)).setImageBitmap(category.getImage());
+        // Add a small bit of padding. This will allow us to indicate that the category is selected
+        int paddingInDP = (int) (CATEGORY_PADDING * context.getResources().getDisplayMetrics().density);
+        view.setPadding(paddingInDP, paddingInDP, paddingInDP, paddingInDP);
+
+        // Center the pictogram/category by making it as wide as the parent container (Content of this view is centered)
+        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         // Check if the user provided a SelectedCategoryAware
         if (selectedCategoryAware != null) {
@@ -140,6 +148,7 @@ public class CategoryAdapter extends BaseAdapter {
                 selectedCategoryViewPair.setView(view);
             }
         }
+
         return view;
     }
 }
