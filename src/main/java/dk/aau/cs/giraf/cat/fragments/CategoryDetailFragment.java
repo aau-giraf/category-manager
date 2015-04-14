@@ -176,10 +176,22 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
             // Hide the copy categories to user-button
             final GirafButton copyToUserButton = (GirafButton) categoryDetailLayout.findViewById(R.id.copyToUserButton);
             copyToUserButton.setEnabled(false);
+            copyToUserButton.setOnDisabledClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    Toast.makeText(getActivity(), "Kopiering er ikke tilgængelig", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             // Hide the settings button
             final GirafButton categorySettingsButton = (GirafButton) categoryDetailLayout.findViewById(R.id.categorySettingsButton);
             categorySettingsButton.setEnabled(false);
+            categorySettingsButton.setOnDisabledClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    Toast.makeText(getActivity(), "Katagori settings er ikke tilgængelig", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         return categoryDetailLayout;
@@ -198,6 +210,7 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
     public void onDestroy() {
         super.onDestroy();
 
+        // In case the loadPictogramTask didn't complete before this fragment is destroyed; close it.
         if (loadPictogramTask != null) {
             loadPictogramTask.cancel(true);
         }
@@ -211,14 +224,17 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
      * Will be called whenever a confirm dialog is handled
      */
     @Override
-    public void confirmDialog(int methodID) {
-        if (methodID == CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID) {
-            // Remove the specific pictogram
-            helper.pictogramCategoryHelper.removePictogramCategory(selectedCategory.getId(), selectedPictogram.getId());
+    public void confirmDialog(final int methodID) {
 
-            // Reload the list of pictograms
-            loadPictogramTask = new LoadPictogramTask();
-            loadPictogramTask.execute();
+        switch (methodID) {
+            case CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID: {
+                // Remove the specific pictogram
+                helper.pictogramCategoryHelper.removePictogramCategory(selectedCategory.getId(), selectedPictogram.getId());
+
+                // Reload the list of pictograms
+                loadPictogramTask = new LoadPictogramTask();
+                loadPictogramTask.execute();
+            }
         }
     }
 }
