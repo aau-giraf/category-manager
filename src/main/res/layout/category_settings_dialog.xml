@@ -28,6 +28,7 @@
                 android:scaleType="center"
                 android:src="@drawable/add"
                 android:layout_gravity="center"
+                android:onClick="onEditCategoryPictogramClicked"
                 android:layout_marginRight="20dp" />
 
             <EditText
