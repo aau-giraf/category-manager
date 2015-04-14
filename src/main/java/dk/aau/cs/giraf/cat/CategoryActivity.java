@@ -477,20 +477,24 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // When returning from PictoSearch with multiple pictograms (external intent)
             case GET_MULTIPLE_PICTOGRAMS:
 
-                Bundle extras = data.getExtras(); // Get the data from the intent
+                // Make sure the request was successful
+                if(resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras(); // Get the data from the intent
 
-                // Check if there was returned any pictogram ids
-                if(data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
-                    // TODO pictosearch should use longs instead of integers
-                    int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
+                    // Check if there was returned any pictogram ids
+                    if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
+                        // TODO pictosearch should use longs instead of integers
+                        int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
 
-                    // Foreach pictogramid insert them to the currently selected category
-                    for(int id : pictogramIds) {
-                        helper.pictogramCategoryHelper.insertPictogramCategory(
-                                new PictogramCategory(id, selectedCategoryAndViewItem.getCategory().getId())
-                        );
+                        // Foreach pictogramid insert them to the currently selected category
+                        for (int id : pictogramIds) {
+                            helper.pictogramCategoryHelper.insertPictogramCategory(
+                                    new PictogramCategory(id, selectedCategoryAndViewItem.getCategory().getId())
+                            );
+                        }
                     }
                 }
+
                 break;
         }
     }
