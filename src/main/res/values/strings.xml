@@ -32,6 +32,19 @@
          Arg #1: The indicator for the category, for instance department name or the name of user -->
     <string name="categories_for">"Kategorier for %1$s"</string>
 
+    <!-- Title of notification dialog showed when user presses an inactive category settings button -->
+    <string name="disabled_button_notification_dialog_title">Ugyldig handling</string>
+
+    <!-- Helpful text used to guide the user back the the main view when trying to copy user categories -->
+    <string name="disabled_button_notification_dialog_body_copy">
+        Det er ikke muligt at kopiere bruger-kategorier. Vend i stedet tilbage til hovedoversigten.
+    </string>
+
+    <!-- Helpful text used to guide the user back the the main view when trying change settings for user categories -->
+    <string name="disabled_button_notification_dialog_body_settings">
+        Det er ikke muligt at lave indstillinger for bruger-kategorier. Vend i stedet tilbage til hovedoversigten.
+    </string>
+
     <!--
     ================================================================================================
     REMOVE PICTOGRAM FROM CATEGORY

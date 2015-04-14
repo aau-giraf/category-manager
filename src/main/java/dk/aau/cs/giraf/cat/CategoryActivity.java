@@ -23,13 +23,14 @@ import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflatableDialog;
+import dk.aau.cs.giraf.gui.GirafNotifyDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Department;
 import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafNotifyDialog.Notification {
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 101;
@@ -37,6 +38,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     public static final int GET_SINGLE_PICTOGRAM = 103;
     public static final int GET_MULTIPLE_PICTOGRAMS = 104;
+
+    public static final int NOTIFICATION_DIALOG_DO_NOTHING = 105;
 
     public static final String PICTO_SEARCH_IDS_TAG = "checkoutIds";
     public static final String PICTO_SEARCH_PURPOSE_TAG = "purpose";
@@ -470,5 +473,16 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     @Override
     public CategoryAdapter.CategoryViewPair getSelectedMutableCategoryViewPair() {
         return selectedCategoryAndViewItem;
+    }
+
+    /**
+     * Will be called whenever a notification dialog is handled
+     * @param i the method id (response code)
+     */
+    @Override
+    public void noticeDialog(int i) {
+        if(i == NOTIFICATION_DIALOG_DO_NOTHING) {
+            // Do nothing
+        }
     }
 }
