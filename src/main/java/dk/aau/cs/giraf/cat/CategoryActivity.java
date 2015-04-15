@@ -164,7 +164,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Test if the activity was started correctly
         if (extras == null) {
-            Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_from_giraf), getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+            Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_from_giraf), getString(R.string.categorymanager)), Toast.LENGTH_SHORT).show();
 
             // The activity was not started correctly, now finish it!
             finish();
