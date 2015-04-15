@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
@@ -27,11 +28,15 @@ import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
  */
 public class InitialFragment extends Fragment implements OnShowcaseEventListener, ShowcaseManager.ShowcaseCapable {
 
-    private static final String IS_FIRST_RUN_KEY = "IS_FIRST_RUN_KEY";
+    private static final String IS_FIRST_RUN_KEY = "IS_FIRST_RUN_KEY_INITIAL_FRAGMENT";
 
     private ShowcaseManager showcaseManager;
-    //ShowcaseView sv;
     private OnFragmentInteractionListener mListener;
+
+    /**
+     * Used in onResume and onPause for handling showcaseview for first run
+     */
+    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -51,7 +56,7 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         final Bundle arguments = getArguments();
@@ -71,21 +76,54 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
+        // Check if this is the first run of the app
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-
         final boolean isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
 
+        // If it is the first run display ShowcaseView
         if (isFirstRun) {
+            getView().getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    showShowcase();
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(IS_FIRST_RUN_KEY, false);
+                    editor.commit();
 
-            showShowcase();
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(IS_FIRST_RUN_KEY, false);
-            editor.commit();
+                    synchronized (InitialFragment.this) {
+                        globalLayoutListener = null;
+                        getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        synchronized (InitialFragment.this) {
+            if (globalLayoutListener != null)
+                getView().getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+            globalLayoutListener = null;
+        }
+
+        if (showcaseManager != null) {
+            showcaseManager.stop();
+        }
+    }
+
 
     /*
     * Shows a quick walkthrough of the functionality
@@ -95,8 +133,8 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
     public synchronized void showShowcase() {
 
         // Targets for the Showcase
-        final ViewTarget target1 = new ViewTarget(R.id.category_create_button, getActivity());
-        final ViewTarget target2 = new ViewTarget(R.id.administrate_citizen_button, getActivity());
+        final ViewTarget createCategoryTarget = new ViewTarget(R.id.category_create_button, getActivity(), 1.5f);
+        final ViewTarget adminCitizenTarget = new ViewTarget(R.id.administrate_citizen_button, getActivity(), 1.5f);
 
         // Create a relative location for the next button
         final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -115,22 +153,24 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
             @Override
             public void configShowCaseView(final ShowcaseView showcaseView) {
 
-                showcaseView.setShowcase(target1, true);
-                showcaseView.setContentTitle("Se kage!");
-                showcaseView.setContentText("Det her er noget lækkert kage");
+                showcaseView.setShowcase(createCategoryTarget, true);
+                showcaseView.setContentTitle(getString(R.string.create_category_button_showcase_help_titel_text));
+                showcaseView.setContentText(getString(R.string.create_category_button_showcase_help_content_text));
                 showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
                 showcaseView.setButtonPosition(lps);
+                showcaseView.setTextPostion(textX, textY);
             }
         });
 
         showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
             @Override
             public void configShowCaseView(final ShowcaseView showcaseView) {
-                showcaseView.setShowcase(target2, true);
-                showcaseView.setContentTitle("Det her er også kage!");
-                showcaseView.setContentText("Men den smager ikke godt");
+                showcaseView.setShowcase(adminCitizenTarget, true);
+                showcaseView.setContentTitle(getString(R.string.administrate_citizen_button_showcase_help_titel_text));
+                showcaseView.setContentText(getString(R.string.administrate_citizen_button_showcase_help_content_text));
                 showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
                 showcaseView.setButtonPosition(lps);
+                showcaseView.setTextPostion(textX, textY);
             }
         });
 
@@ -141,7 +181,7 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
             }
         });
 
-        showcaseManager.start(getActivity(), textX, textY);
+        showcaseManager.start(getActivity());
     }
 
     @Override
@@ -160,15 +200,6 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
             hideShowcase();
         } else {
             showShowcase();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        if (showcaseManager != null) {
-            showcaseManager.stop();
         }
     }
 

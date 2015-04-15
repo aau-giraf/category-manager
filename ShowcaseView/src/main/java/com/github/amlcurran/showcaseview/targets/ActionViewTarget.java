@@ -12,6 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTICE: This file has been modified in order to enable custom size of the showcase and
+ * custom positioning of text.
  */
 
 package com.github.amlcurran.showcaseview.targets;
@@ -20,7 +23,7 @@ import android.app.Activity;
 import android.graphics.Point;
 import android.view.ViewParent;
 
-public class ActionViewTarget implements Target {
+public class ActionViewTarget extends Target {
 
     private final Activity mActivity;
     private final Type mType;
@@ -29,6 +32,7 @@ public class ActionViewTarget implements Target {
     Reflector mReflector;
 
     public ActionViewTarget(Activity activity, Type type) {
+        super(1.0f);
         mActivity = activity;
         mType = type;
     }
@@ -39,8 +43,8 @@ public class ActionViewTarget implements Target {
         mActionBarWrapper = new ActionBarViewWrapper(p);
     }
 
-    @Override
-    public Point getPoint() {
+    public Target getInternalTarget()
+    {
         Target internal = null;
         setUp();
         switch (mType) {
@@ -60,13 +64,26 @@ public class ActionViewTarget implements Target {
             case TITLE:
                 internal = new ViewTarget(mActionBarWrapper.getTitleView());
                 break;
-                
+
             case MEDIA_ROUTE_BUTTON:
                 internal = new ViewTarget(mActionBarWrapper.getMediaRouterButtonView());
                 break;
 
         }
+
+        return internal;
+    }
+
+    @Override
+    public Point getPoint() {
+        Target internal = getInternalTarget();
         return internal.getPoint();
+    }
+
+    @Override
+    public float getRadius() {
+        Target internal = getInternalTarget();
+        return internal.getRadius();
     }
 
     public enum Type {

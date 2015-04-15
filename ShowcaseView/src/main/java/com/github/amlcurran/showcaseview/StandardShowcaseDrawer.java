@@ -12,6 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTICE: This file has been modified in order to enable custom size of the showcase and
+ * custom positioning of text.
  */
 
 package com.github.amlcurran.showcaseview;
@@ -50,7 +53,7 @@ class StandardShowcaseDrawer implements ShowcaseDrawer {
     }
 
     @Override
-    public void drawShowcase(Bitmap buffer, float x, float y, float scaleMultiplier) {
+    public void drawShowcase(Bitmap buffer, float x, float y, float innerRadius, float scaleMultiplier) {
         Canvas bufferCanvas = new Canvas(buffer);
         bufferCanvas.drawCircle(x, y, showcaseRadius, eraserPaint);
         int halfW = getShowcaseWidth() / 2;
@@ -91,6 +94,11 @@ class StandardShowcaseDrawer implements ShowcaseDrawer {
     @Override
     public void drawToCanvas(Canvas canvas, Bitmap bitmapBuffer) {
         canvas.drawBitmap(bitmapBuffer, 0, 0, basicPaint);
+    }
+
+    @Override
+    public void setInnerRadius(float innerRadius) {
+        throw new UnsupportedOperationException();
     }
 
 }

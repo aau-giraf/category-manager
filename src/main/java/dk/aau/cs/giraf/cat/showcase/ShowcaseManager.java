@@ -66,10 +66,8 @@ public class ShowcaseManager {
     /**
      * Start showing all added showcases and place text at @param textX, @param textY
      * @param activity
-     * @param textX
-     * @param textY
      */
-    public void start(final Activity activity, final int textX, final int textY) {
+    public void start(final Activity activity) {
 
         if (showcases.isEmpty()) {
             return;
@@ -84,7 +82,7 @@ public class ShowcaseManager {
                         @Override
                         public void onClick(final View v) {
                             if (!showcases.isEmpty()) {
-                                start(activity, textX, textY);
+                                start(activity);
                             } else {
                                 if (onDoneCallback != null) {
                                     onDoneCallback.onDone(showcaseView);
@@ -94,8 +92,6 @@ public class ShowcaseManager {
                         }
                     })
                     .hasManualPosition(true)
-                    .xPostion(textX)
-                    .yPostion(textY)
                     .setStyle(R.style.GirafCustomShowcaseTheme)
                     .build();
         }

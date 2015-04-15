@@ -12,6 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTICE: This file has been modified in order to enable custom size of the showcase and
+ * custom positioning of text.
  */
 
 package com.github.amlcurran.showcaseview.targets;
@@ -23,24 +26,39 @@ import android.view.View;
 /**
  * Target a view on the screen. This will centre the target on the view.
  */
-public class ViewTarget implements Target {
+public class ViewTarget extends Target {
 
     private final View mView;
 
-    public ViewTarget(View view) {
+    public ViewTarget(final View view) {
+        this(view, 1.5f);
+    }
+
+    public ViewTarget(final int viewId, final Activity activity) {
+        this(viewId, activity, 1.5f);
+    }
+
+    public ViewTarget(final View view, final float scaleMultiplier) {
+        super(scaleMultiplier);
         mView = view;
     }
 
-    public ViewTarget(int viewId, Activity activity) {
+    public ViewTarget(final int viewId, final Activity activity, final float scaleMultiplier) {
+        super(scaleMultiplier);
         mView = activity.findViewById(viewId);
     }
 
     @Override
     public Point getPoint() {
-        int[] location = new int[2];
+        final int[] location = new int[2];
         mView.getLocationInWindow(location);
         int x = location[0] + mView.getWidth() / 2;
         int y = location[1] + mView.getHeight() / 2;
         return new Point(x, y);
+    }
+
+    @Override
+    public float getRadius() {
+        return Math.max(mView.getMeasuredWidth(),  mView.getMeasuredHeight()) / 2;
     }
 }

@@ -12,6 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTICE: This file has been modified in order to enable custom size of the showcase and
+ * custom positioning of text.
  */
 
 package com.github.amlcurran.showcaseview.targets;
@@ -26,7 +29,7 @@ import android.view.ViewParent;
  *
  * @see com.github.amlcurran.showcaseview.targets.ActionItemTarget
  */
-public class ActionItemTarget implements Target {
+public class ActionItemTarget extends Target {
 
     private final Activity mActivity;
     private final int mItemId;
@@ -34,6 +37,7 @@ public class ActionItemTarget implements Target {
     ActionBarViewWrapper mActionBarWrapper;
 
     public ActionItemTarget(Activity activity, int itemId) {
+        super(1.0f);
         mActivity = activity;
         mItemId = itemId;
     }
@@ -42,6 +46,12 @@ public class ActionItemTarget implements Target {
     public Point getPoint() {
         setUp();
         return new ViewTarget(mActionBarWrapper.getActionItem(mItemId)).getPoint();
+    }
+
+    @Override
+    public float getRadius() {
+        setUp();
+        return new ViewTarget(mActionBarWrapper.getActionItem(mItemId)).getRadius();
     }
 
     protected void setUp() {
