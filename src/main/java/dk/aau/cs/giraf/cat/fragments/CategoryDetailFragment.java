@@ -28,6 +28,7 @@ import dk.aau.cs.giraf.cat.R;
 import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
+import dk.aau.cs.giraf.gui.GirafNotifyDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
@@ -197,20 +198,26 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
             // Hide the copy categories to user-button
             final GirafButton copyToUserButton = (GirafButton) categoryDetailLayout.findViewById(R.id.copyToUserButton);
             copyToUserButton.setEnabled(false);
+
+            // Help the user to realize that it is not possible to copy child-categories
             copyToUserButton.setOnDisabledClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-                    Toast.makeText(getActivity(), "Kopiering er ikke tilgængelig", Toast.LENGTH_SHORT).show();
+                    GirafNotifyDialog notifyDialog = GirafNotifyDialog.newInstance(getString(R.string.disabled_button_notification_dialog_title), getString(R.string.disabled_button_notification_dialog_body_copy), CategoryActivity.NOTIFICATION_DIALOG_DO_NOTHING);
+                    notifyDialog.show(getActivity().getSupportFragmentManager(), "" + CategoryActivity.NOTIFICATION_DIALOG_DO_NOTHING);
                 }
             });
 
             // Hide the settings button
             final GirafButton categorySettingsButton = (GirafButton) categoryDetailLayout.findViewById(R.id.categorySettingsButton);
             categorySettingsButton.setEnabled(false);
+
+            // Help the user to realize that it is not possible to change settings for a child-category
             categorySettingsButton.setOnDisabledClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-                    Toast.makeText(getActivity(), "Katagori settings er ikke tilgængelig", Toast.LENGTH_SHORT).show();
+                    GirafNotifyDialog notifyDialog = GirafNotifyDialog.newInstance(getString(R.string.disabled_button_notification_dialog_title), getString(R.string.disabled_button_notification_dialog_body_settings), CategoryActivity.NOTIFICATION_DIALOG_DO_NOTHING);
+                    notifyDialog.show(getActivity().getSupportFragmentManager(), "" + CategoryActivity.NOTIFICATION_DIALOG_DO_NOTHING);
                 }
             });
         }

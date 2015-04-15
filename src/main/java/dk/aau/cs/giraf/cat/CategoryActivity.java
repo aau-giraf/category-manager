@@ -2,14 +2,19 @@ package dk.aau.cs.giraf.cat;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.List;
@@ -23,13 +28,14 @@ import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflatableDialog;
+import dk.aau.cs.giraf.gui.GirafNotifyDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Department;
 import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification {
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 101;
@@ -37,6 +43,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     public static final int GET_SINGLE_PICTOGRAM = 103;
     public static final int GET_MULTIPLE_PICTOGRAMS = 104;
+
+    public static final int NOTIFICATION_DIALOG_DO_NOTHING = 105;
 
     public static final String PICTO_SEARCH_IDS_TAG = "checkoutIds";
     public static final String PICTO_SEARCH_PURPOSE_TAG = "purpose";
@@ -62,6 +70,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     private CategoryAdapter categoryAdapter;
     private CategoryAdapter.CategoryViewPair selectedCategoryAndViewItem = null;
+    Category selectedCategory;
 
     /**
      * Will be called every time the back-button is pressed
@@ -78,6 +87,18 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
         super.onBackPressed();
+    }
+
+    @Override
+    public void editCustomView(ViewGroup viewGroup, int i) {
+        switch (i) {
+            case 42:
+                ImageView icon = (ImageView) viewGroup.findViewById(R.id.category_pictogram);
+                EditText editTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
+                icon.setImageBitmap(selectedCategory.getImage());
+                editTitle.setText(selectedCategory.getName());
+                break;
+        }
     }
 
     /**
@@ -143,7 +164,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Test if the activity was started correctly
         if (extras == null) {
-            Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_from_giraf), getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+            Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_from_giraf), getString(R.string.categorymanager)), Toast.LENGTH_SHORT).show();
 
             // The activity was not started correctly, now finish it!
             finish();
@@ -320,9 +341,28 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onSettingsButtonClicked(View view) {
         // Create the dialog
-        GirafInflatableDialog dialog = GirafInflatableDialog.newInstance("Indstillinger for Trafik", "Her kan du ændre piktogrammet og titlen for kategorien", R.layout.category_settings_dialog);
+        GirafInflatableDialog dialog = GirafInflatableDialog.newInstance(String.format(getString(R.string.settings_for), selectedCategory.getName()),
+                getString(R.string.settings_dialog_description),
+                R.layout.category_settings_dialog, 42);
+
 
         dialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
+
+        // Find the customview of the dialog
+        /*
+        RelativeLayout settingsDialogCustomView = (RelativeLayout) dialog.getCustomView();
+
+        settingsDialogCustomView.setBackgroundColor(Color.RED);
+
+        // Find the pictogram from the customview
+        ImageView pictogram = (ImageView) settingsDialogCustomView.findViewById(R.id.category_pictogram);
+        pictogram.setImageBitmap(selectedCategory.getImage());
+
+        // Find the title from the customview
+        EditText title = (EditText) settingsDialogCustomView.findViewById(R.id.category_title);
+        title.setText(selectedCategory.getName());
+        */
+
     }
 
     /**
@@ -371,8 +411,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             }
         }
 
-        // Set the selected category
+        // Set the selected category and view item
         selectedCategoryAndViewItem = new CategoryAdapter.CategoryViewPair(categoryAdapter.getCategoryFromId(id), view);
+
+        // Set the selected category
+        selectedCategory = selectedCategoryAndViewItem.getCategory();
         view.setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_active));
 
         // "Open" the fragment in the frame layout
@@ -434,20 +477,24 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // When returning from PictoSearch with multiple pictograms (external intent)
             case GET_MULTIPLE_PICTOGRAMS:
 
-                Bundle extras = data.getExtras(); // Get the data from the intent
+                // Make sure the request was successful
+                if(resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras(); // Get the data from the intent
 
-                // Check if there was returned any pictogram ids
-                if(data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
-                    // TODO pictosearch should use longs instead of integers
-                    int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
+                    // Check if there was returned any pictogram ids
+                    if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
+                        // TODO pictosearch should use longs instead of integers
+                        int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
 
-                    // Foreach pictogramid insert them to the currently selected category
-                    for(int id : pictogramIds) {
-                        helper.pictogramCategoryHelper.insertPictogramCategory(
-                                new PictogramCategory(id, selectedCategoryAndViewItem.getCategory().getId())
-                        );
+                        // Foreach pictogramid insert them to the currently selected category
+                        for (int id : pictogramIds) {
+                            helper.pictogramCategoryHelper.insertPictogramCategory(
+                                    new PictogramCategory(id, selectedCategoryAndViewItem.getCategory().getId())
+                            );
+                        }
                     }
                 }
+
                 break;
         }
     }
@@ -470,5 +517,16 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     @Override
     public CategoryAdapter.CategoryViewPair getSelectedMutableCategoryViewPair() {
         return selectedCategoryAndViewItem;
+    }
+
+    /**
+     * Will be called whenever a notification dialog is handled
+     * @param i the method id (response code)
+     */
+    @Override
+    public void noticeDialog(int i) {
+        if(i == NOTIFICATION_DIALOG_DO_NOTHING) {
+            // Do nothing
+        }
     }
 }

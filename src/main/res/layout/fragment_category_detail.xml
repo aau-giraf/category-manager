@@ -67,13 +67,14 @@
         android:id="@+id/pictogram_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="200dp"
+        android:columnWidth="120dp"
         android:numColumns="auto_fit"
-        android:verticalSpacing="10dp"
+        android:verticalSpacing="20dp"
         android:layout_above="@id/contextual_bottom_bar"
-        android:horizontalSpacing="10dp"
+        android:horizontalSpacing="30dp"
         android:stretchMode="columnWidth"
-        android:gravity="center" />
+        android:gravity="center"
+        android:padding="20dp"/>
 
     <TextView
         android:id="@+id/empty_gridview_text"
