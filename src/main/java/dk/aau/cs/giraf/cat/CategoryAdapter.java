@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -135,7 +134,10 @@ public class CategoryAdapter extends BaseAdapter {
         view.setPadding(paddingInDP, paddingInDP, paddingInDP, paddingInDP);
 
         // Center the pictogram/category by making it as wide as the parent container (Content of this view is centered)
-        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        view.requestLayout();
+
 
         // Check if the user provided a SelectedCategoryAware
         if (selectedCategoryAware != null) {
