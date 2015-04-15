@@ -1,9 +1,12 @@
 package dk.aau.cs.giraf.cat;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -59,6 +62,8 @@ public class GirafPictogram extends LinearLayout {
         // Set the name of the pictogram provided
         titleContainer = (TextView) view.findViewById(R.id.pictogram_title);
         titleContainer.setText(pictogram.getName());
+
+        setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.WRAP_CONTENT));
     }
 
     /**
