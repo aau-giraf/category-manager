@@ -12,6 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTICE: This file has been modified in order to enable custom size of the showcase and
+ * custom positioning of text.
  */
 
 package com.github.amlcurran.showcaseview;
@@ -61,7 +64,7 @@ class TextDrawer {
         textPaint.setAntiAlias(true);
     }
 
-    public void setTestPostionManually(int xPosition, int yPosition) {
+    public void setTextPostionManually(int xPosition, int yPosition) {
         mBestTextPosition[0] = xPosition;
         mBestTextPosition[1] = yPosition;
     }
@@ -150,7 +153,7 @@ class TextDrawer {
     	case 0:
     		mBestTextPosition[0] = padding;
     		mBestTextPosition[1] = padding;
-    		mBestTextPosition[2] = showcase.left - 2 * padding;
+    		mBestTextPosition[2] = (canvasW + showcase.left) - 2 * padding;
     		break;
     	case 1:
     		mBestTextPosition[0] = padding;
