@@ -12,6 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTICE: This file has been modified in order to enable custom size of the showcase and
+ * custom positioning of text.
  */
 
 package com.github.amlcurran.showcaseview;
@@ -26,13 +29,14 @@ import android.graphics.Canvas;
 class NewShowcaseDrawer extends StandardShowcaseDrawer {
 
     private static final int ALPHA_60_PERCENT = 153;
-    private final float outerRadius;
-    private final float innerRadius;
+    private float outerRadius;
+    private float innerRadius;
 
     public NewShowcaseDrawer(Resources resources) {
         super(resources);
-        outerRadius = resources.getDimension(R.dimen.showcase_radius_outer);
-        innerRadius = resources.getDimension(R.dimen.showcase_radius_inner);
+
+        //this.outerRadius = resources.getDimension(R.dimen.showcase_radius_outer);
+        //this.innerRadius = resources.getDimension(R.dimen.showcase_radius_inner);
     }
 
     @Override
@@ -41,12 +45,18 @@ class NewShowcaseDrawer extends StandardShowcaseDrawer {
     }
 
     @Override
-    public void drawShowcase(Bitmap buffer, float x, float y, float scaleMultiplier) {
+    public void drawShowcase(Bitmap buffer, float x, float y, float innerRadius, float scaleMultiplier) {
         Canvas bufferCanvas = new Canvas(buffer);
+
         eraserPaint.setAlpha(ALPHA_60_PERCENT);
-        bufferCanvas.drawCircle(x, y, outerRadius, eraserPaint);
+        bufferCanvas.drawCircle(x, y, this.outerRadius * scaleMultiplier, eraserPaint);
         eraserPaint.setAlpha(0);
-        bufferCanvas.drawCircle(x, y, innerRadius, eraserPaint);
+        bufferCanvas.drawCircle(x, y, this.innerRadius * scaleMultiplier, eraserPaint);
+    }
+
+    public void setInnerRadius(float innerRadius) {
+        this.innerRadius = innerRadius;
+        this.outerRadius = (innerRadius * 4) / 3;
     }
 
     @Override

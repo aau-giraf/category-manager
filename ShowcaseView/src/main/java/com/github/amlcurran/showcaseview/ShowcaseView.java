@@ -12,6 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTICE: This file has been modified in order to enable custom size of the showcase and
+ * custom positioning of text.
  */
 
 package com.github.amlcurran.showcaseview;
@@ -78,6 +81,9 @@ public class ShowcaseView extends RelativeLayout
     private long fadeOutMillis;
     private boolean isShowing;
 
+    // Current target
+    private Target currentTarget;
+
     protected ShowcaseView(Context context, boolean newStyle) {
         this(context, null, R.styleable.CustomTheme_showcaseViewStyle, newStyle);
     }
@@ -140,29 +146,33 @@ public class ShowcaseView extends RelativeLayout
         return shotStateStore.hasShot();
     }
 
-    void setShowcasePosition(Point point) {
+    void setShowcasePosition(final Point point) {
         setShowcasePosition(point.x, point.y);
     }
 
-    void setShowcasePosition(int x, int y) {
+
+    void setShowcasePosition(final int x, final int y) {
+
         if (shotStateStore.hasShot()) {
             return;
         }
-        showcaseX = x;
-        showcaseY = y;
+
+        this.showcaseX = x;
+        this.showcaseY = y;
         //init();
         invalidate();
     }
 
     public void setTarget(final Target target) {
-        setShowcase(target, false);
+        setShowcase(target, true);
     }
 
     public void setShowcase(final Target target, final boolean animate) {
-        postDelayed(new Runnable() {
+        currentTarget = target;
+        showcaseDrawer.setInnerRadius(target.getRadius());
+        this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void run() {
-
+            public void onGlobalLayout() {
                 if (!shotStateStore.hasShot()) {
 
                     updateBitmap();
@@ -173,6 +183,7 @@ public class ShowcaseView extends RelativeLayout
                             animationFactory.animateTargetToPoint(ShowcaseView.this, targetPoint);
                         } else {
                             setShowcasePosition(targetPoint);
+
                         }
                     } else {
                         hasNoTarget = true;
@@ -180,14 +191,16 @@ public class ShowcaseView extends RelativeLayout
                     }
 
                 }
+
+                getViewTreeObserver().removeGlobalOnLayoutListener(this);
             }
-        }, 100);
+        });
     }
 
     private void updateBitmap() {
         if (bitmapBuffer == null || haveBoundsChanged()) {
-            if(bitmapBuffer != null)
-        		bitmapBuffer.recycle();
+            if (bitmapBuffer != null)
+                bitmapBuffer.recycle();
             bitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
 
         }
@@ -201,6 +214,7 @@ public class ShowcaseView extends RelativeLayout
     public boolean hasShowcaseView() {
         return (showcaseX != 1000000 && showcaseY != 1000000) && !hasNoTarget;
     }
+
 
     public void setShowcaseX(int x) {
         setShowcasePosition(x, showcaseY);
@@ -256,6 +270,10 @@ public class ShowcaseView extends RelativeLayout
         boolean recalculateText = recalculatedCling || hasAlteredText;
         if (recalculateText) {
             textDrawer.calculateTextPosition(getMeasuredWidth(), getMeasuredHeight(), this, shouldCentreText);
+
+            if (hasManualPostion) {
+                textDrawer.setTextPostionManually(xPosition, yPosition);
+            }
         }
         hasAlteredText = false;
     }
@@ -273,7 +291,7 @@ public class ShowcaseView extends RelativeLayout
 
         // Draw the showcase drawable
         if (!hasNoTarget) {
-            showcaseDrawer.drawShowcase(bitmapBuffer, showcaseX, showcaseY, scaleMultiplier);
+            showcaseDrawer.drawShowcase(bitmapBuffer, showcaseX, showcaseY, currentTarget.getRadius(), currentTarget.scaleMultiplier);
             showcaseDrawer.drawToCanvas(canvas, bitmapBuffer);
         }
 
@@ -369,7 +387,7 @@ public class ShowcaseView extends RelativeLayout
         textDrawer.setContentText(text);
     }
 
-    private void setScaleMultiplier(float scaleMultiplier) {
+    public void setScaleMultiplier(float scaleMultiplier) {
         this.scaleMultiplier = scaleMultiplier;
     }
 
@@ -379,6 +397,12 @@ public class ShowcaseView extends RelativeLayout
 
     public void showButton() {
         mEndButton.setVisibility(VISIBLE);
+    }
+
+    public void setTextPostion(final int xPostion, final int yPosition) {
+        this.xPosition = xPostion;
+        this.yPosition = yPosition;
+        this.invalidate();
     }
 
     /**
@@ -649,9 +673,11 @@ public class ShowcaseView extends RelativeLayout
             boolean recalculatedCling = showcaseAreaCalculator.calculateShowcaseRect(showcaseX, showcaseY, showcaseDrawer);
             boolean recalculateText = recalculatedCling || hasAlteredText;
             if (recalculateText) {
+
                 textDrawer.calculateTextPosition(ShowcaseView.this.getMeasuredWidth(), ShowcaseView.this.getMeasuredHeight(), ShowcaseView.this, shouldCentreText);
+
                 if (hasManualPostion) {
-                    textDrawer.setTestPostionManually(xPosition, yPosition);
+                    textDrawer.setTextPostionManually(xPosition, yPosition);
                 }
             }
             hasAlteredText = false;

@@ -12,19 +12,35 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTICE: This file has been modified in order to enable custom size of the showcase and
+ * custom positioning of text.
  */
 
 package com.github.amlcurran.showcaseview.targets;
 
 import android.graphics.Point;
 
-public interface Target {
-    Target NONE = new Target() {
+public abstract class Target {
+
+    public final float scaleMultiplier;
+
+    Target(final float scaleMultiplier)
+    {
+        this.scaleMultiplier = scaleMultiplier;
+    }
+
+    public static Target NONE = new Target(1.0f) {
         @Override
-        public Point getPoint() {
+         public Point getPoint() {
             return new Point(1000000, 1000000);
+        }
+        @Override
+        public float getRadius() {
+            return 0f;
         }
     };
 
-    public Point getPoint();
+    public abstract Point getPoint();
+    public abstract float getRadius();
 }

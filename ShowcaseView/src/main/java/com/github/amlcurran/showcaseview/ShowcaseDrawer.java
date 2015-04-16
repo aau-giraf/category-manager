@@ -12,6 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTICE: This file has been modified in order to enable custom size of the showcase and
+ * custom positioning of text.
  */
 
 package com.github.amlcurran.showcaseview;
@@ -26,7 +29,7 @@ interface ShowcaseDrawer {
 
     void setShowcaseColour(int color);
 
-    void drawShowcase(Bitmap buffer, float x, float y, float scaleMultiplier);
+    void drawShowcase(Bitmap buffer, float x, float y, float innerRadius, float scaleMultiplier);
 
     int getShowcaseWidth();
 
@@ -39,4 +42,6 @@ interface ShowcaseDrawer {
     void erase(Bitmap bitmapBuffer);
 
     void drawToCanvas(Canvas canvas, Bitmap bitmapBuffer);
+
+    void setInnerRadius(float innerRadius);
 }

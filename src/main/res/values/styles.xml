@@ -31,7 +31,7 @@
     <style name="GirafCustomShowcaseTheme" parent="ShowcaseView.Light">
         <item name="sv_backgroundColor">@color/showcase_overlay_color</item>
         <item name="sv_showcaseColor">@color/showcase_button_color</item>
-        <item name="sv_buttonText">Next</item>
+        <item name="sv_buttonText">Næste</item>
         <item name="sv_titleTextAppearance">@style/CustomTitle</item>
         <item name="sv_detailTextAppearance">@style/CustomDetail</item>
     </style>
@@ -39,7 +39,7 @@
     <style name="GirafLastCustomShowcaseTheme" parent="ShowcaseView.Light">
         <item name="sv_backgroundColor">@color/showcase_overlay_color</item>
         <item name="sv_showcaseColor">@color/showcase_button_color</item>
-        <item name="sv_buttonText">Close</item>
+        <item name="sv_buttonText">Luk</item>
         <item name="sv_titleTextAppearance">@style/CustomTitle</item>
         <item name="sv_detailTextAppearance">@style/CustomDetail</item>
     </style>

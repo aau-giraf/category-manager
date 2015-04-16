@@ -1,15 +1,23 @@
 package dk.aau.cs.giraf.cat.fragments;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +25,21 @@ import java.util.List;
 import dk.aau.cs.giraf.cat.CategoryActivity;
 import dk.aau.cs.giraf.cat.PictogramAdapter;
 import dk.aau.cs.giraf.cat.R;
+import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
+import dk.aau.cs.giraf.utilities.GirafScalingUtilities;
 
 /**
  * Created on 25/03/15.
  */
-public class CategoryDetailFragment extends Fragment implements GirafConfirmDialog.Confirmation {
+public class CategoryDetailFragment extends Fragment implements OnShowcaseEventListener, ShowcaseManager.ShowcaseCapable, GirafConfirmDialog.Confirmation {
+
+    private static final String IS_FIRST_RUN_KEY = "IS_FIRST_RUN_KEY_CATEGORY_DETAIL_FRAGMENT";
 
     // Bundle (Argument) Tags
     private static final String CATEGORY_ID_TAG = "CATEGORY_ID_TAG";
@@ -50,7 +62,14 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
     private Pictogram selectedPictogram = null;
     private Category selectedCategory = null;
 
+    private ShowcaseManager showcaseManager;
+
     private boolean isChildCategory;
+
+    /**
+     * Used in onResume and onPause for handling showcaseview for first run
+     */
+    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
 
     /**
      * Class used to load pictograms into the pictogram grid
@@ -110,7 +129,7 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param categoryId the id of the category to show details for
+     * @param categoryId      the id of the category to show details for
      * @param isChildCategory True if you want to hide category-management buttons (Copy to citizens / settings). Defaults to false.
      * @return
      */
@@ -142,6 +161,8 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
         categoryDetailLayout = (ViewGroup) inflater.inflate(R.layout.fragment_category_detail, container, false);
 
         pictogramGrid = (GridView) categoryDetailLayout.findViewById(R.id.pictogram_gridview);
+
+        // Set the selected pictogram from the grid when a pictogram is clicked on
         pictogramGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -163,9 +184,9 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
                 {
                     // Create and show confirmation dialog
                     final GirafConfirmDialog confirmDialog = GirafConfirmDialog.newInstance(
-                        getActivity().getResources().getString(R.string.remove_pictogram_dialog_title), // Title of the dialog
-                        String.format(getActivity().getResources().getString(R.string.remove_pictogram_dialog_body), selectedPictogram.getName(), selectedCategory.getName()), // Body of the dialog
-                        CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID
+                            getActivity().getResources().getString(R.string.remove_pictogram_dialog_title), // Title of the dialog
+                            String.format(getActivity().getResources().getString(R.string.remove_pictogram_dialog_body), selectedPictogram.getName(), selectedCategory.getName()), // Body of the dialog
+                            CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID
                     );
                     confirmDialog.show(getActivity().getSupportFragmentManager(), CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG);
                 }
@@ -173,7 +194,7 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
         });
 
         // Find the category-management buttons and hide them if the current category is a child-category
-        if(isChildCategory) {
+        if (isChildCategory) {
             // Hide the copy categories to user-button
             final GirafButton copyToUserButton = (GirafButton) categoryDetailLayout.findViewById(R.id.copyToUserButton);
             copyToUserButton.setEnabled(false);
@@ -214,6 +235,49 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        // Check if this is the first run of the app
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        final boolean isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
+
+        // If it is the first run display ShowcaseView
+        if (isFirstRun) {
+            getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+
+                    showShowcase();
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(IS_FIRST_RUN_KEY, false);
+                    editor.commit();
+
+                    synchronized (CategoryDetailFragment.this) {
+                        globalLayoutListener = null;
+                        getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        synchronized (CategoryDetailFragment.this) {
+            if (globalLayoutListener != null)
+                getView().getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+            globalLayoutListener = null;
+        }
+
+        if (showcaseManager != null) {
+            showcaseManager.stop();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
@@ -242,6 +306,189 @@ public class CategoryDetailFragment extends Fragment implements GirafConfirmDial
                 loadPictogramTask = new LoadPictogramTask();
                 loadPictogramTask.execute();
             }
+        }
+    }
+
+    @Override
+    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+    }
+
+    @Override
+    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+    }
+
+    @Override
+    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+    }
+
+    @Override
+    public void showShowcase() {
+
+        // Targets for the Showcase
+        final int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+
+        // Create a relative location for the next button
+        final RelativeLayout.LayoutParams rightButtonParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rightButtonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        rightButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        rightButtonParams.setMargins(margin, margin, margin, margin);
+
+        // Create a relative location for the next button
+        final RelativeLayout.LayoutParams centerRightButtonParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        centerRightButtonParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        centerRightButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        centerRightButtonParams.setMargins(margin, margin, margin, margin);
+
+        // Calculate position for the help text
+        final int textX = getActivity().findViewById(R.id.category_sidebar).getLayoutParams().width + margin * 2;
+        final int textY = getResources().getDisplayMetrics().heightPixels / 2 + margin;
+
+        showcaseManager = new ShowcaseManager();
+
+        // Add showcase for copyToUserButton
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+
+                final ViewTarget copyToUserButtonTarget = new ViewTarget(R.id.copyToUserButton, getActivity());
+
+                showcaseView.setShowcase(copyToUserButtonTarget, true);
+                showcaseView.setContentTitle(getString(R.string.copy_category_to_user_button_showcase_help_titel_text));
+                showcaseView.setContentText(getString(R.string.copy_category_to_user_button_showcase_help_content_text));
+                showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                showcaseView.setButtonPosition(rightButtonParams);
+
+                final int textXPosition = (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 220);
+                final int textYPosition = copyToUserButtonTarget.getPoint().y - (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 200);
+                showcaseView.setTextPostion(textXPosition, textYPosition);
+            }
+        });
+
+        // Add showcase for categorySettingsButton
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+
+                final ViewTarget categorySettingsButtonTarget = new ViewTarget(R.id.categorySettingsButton, getActivity());
+
+                showcaseView.setShowcase(categorySettingsButtonTarget, true);
+                showcaseView.setContentTitle(getString(R.string.pictogram_settings_button_showcase_help_titel_text));
+                showcaseView.setContentText(getString(R.string.pictogram_settings_button_showcase_help_content_text));
+                showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                showcaseView.setButtonPosition(rightButtonParams);
+
+                final int textXPosition = categorySettingsButtonTarget.getPoint().x;
+                final int textYPosition = categorySettingsButtonTarget.getPoint().y - (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 200);
+                showcaseView.setTextPostion(textXPosition, textYPosition);
+            }
+        });
+
+        // Add showcase for deletePictogramButton
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+
+                final ViewTarget deletePictogramButtonTarget = new ViewTarget(R.id.deletePictogramButton, getActivity());
+
+                showcaseView.setShowcase(deletePictogramButtonTarget, true);
+                showcaseView.setContentTitle(getString(R.string.delete_pictogram_button_showcase_help_titel_text));
+                showcaseView.setContentText(getString(R.string.delete_pictogram_button_showcase_help_content_text));
+                showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                showcaseView.setButtonPosition(centerRightButtonParams);
+
+                final View deletePictogramButton = categoryDetailLayout.findViewById(R.id.deletePictogramButton);
+
+                final int textXPosition = deletePictogramButtonTarget.getPoint().x - deletePictogramButton.getWidth() * 3;
+                final int textYPosition = deletePictogramButtonTarget.getPoint().y - (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 200);
+                showcaseView.setTextPostion(textXPosition, textYPosition);
+            }
+        });
+
+        // Add showcase for addPictogramButton
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+
+                final ViewTarget addPictogramButtonTarget = new ViewTarget(R.id.addPictogramButton, getActivity());
+
+                showcaseView.setShowcase(addPictogramButtonTarget, true);
+                showcaseView.setContentTitle(getString(R.string.add_pictogram_button_showcase_help_titel_text));
+                showcaseView.setContentText(getString(R.string.add_pictogram_button_showcase_help_content_text));
+                showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                showcaseView.setButtonPosition(centerRightButtonParams);
+                //showcaseView.setTextPostion();
+            }
+        });
+
+        // Add showcase for either empty_gridview_text or the first pictogram in the grid (Depends if there is a pictogram in the current category)
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+
+                int[] categoryDetailLayoutPositionOnScreen = new int[2];
+                categoryDetailLayout.getLocationOnScreen(categoryDetailLayoutPositionOnScreen);
+                showcaseView.setContentTitle(getString(R.string.pictogram_grid_showcase_help_titel_text));
+
+                if (pictogramGrid.getCount() == 0) {
+                    final ViewTarget pictogramGridTarget = new ViewTarget(R.id.empty_gridview_text, getActivity(), 1.3f);
+                    showcaseView.setShowcase(pictogramGridTarget, false);
+
+                    showcaseView.setContentText(getString(R.string.pictogram_grid_empty_showcase_help_content_text));
+
+                    // Calculate the position of the help text
+                    final int textXPosition = categoryDetailLayoutPositionOnScreen[0] + margin * 2;
+                    final int textYPosition = categoryDetailLayoutPositionOnScreen[1] + margin * 2;
+
+                    showcaseView.setTextPostion(textXPosition, textYPosition);
+
+                } else {
+                    final ViewTarget pictogramTarget = new ViewTarget(pictogramGrid.getChildAt(0), 1.3f);
+                    showcaseView.setShowcase(pictogramTarget, true);
+                    showcaseView.setContentText(getString(R.string.pictogram_grid_pictogram_showcase_help_content_text));
+
+                    // Calculate the position of the help text
+                    final int textXPosition = (int) (categoryDetailLayoutPositionOnScreen[0] * 2.5);
+                    final int textYPosition = (int) (categoryDetailLayoutPositionOnScreen[1] * 1.5 + margin * 2);
+
+                    showcaseView.setTextPostion(textXPosition, textYPosition);
+                }
+
+                showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
+                showcaseView.setHideOnTouchOutside(true);
+                showcaseView.setButtonPosition(rightButtonParams);
+
+            }
+        });
+
+        showcaseManager.setOnDoneListener(new ShowcaseManager.OnDoneListener() {
+            @Override
+            public void onDone(ShowcaseView showcaseView) {
+                showcaseManager = null;
+            }
+        });
+
+        showcaseManager.start(getActivity());
+    }
+
+    @Override
+    public synchronized void hideShowcase() {
+
+        if (showcaseManager != null) {
+            showcaseManager.stop();
+            showcaseManager = null;
+        }
+    }
+
+    @Override
+    public synchronized void toggleShowcase() {
+
+        if (showcaseManager != null) {
+            hideShowcase();
+        } else {
+            showShowcase();
         }
     }
 }

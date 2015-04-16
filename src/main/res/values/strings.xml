@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    ================================================================================================
-    MISC
-    ================================================================================================
-    -->
-
-    <!-- Name of the application -->
-    <string name="app_name">Kategoriværktøjet</string>
 
     <!--
     ================================================================================================
@@ -132,5 +124,24 @@
     <string name="no_categories_selected_text">Ingen kategorier valgt</string>
     <string name="create_new_category">Opret ny kategori</string>
     <string name="administrate_citizen">Administrer borgere</string>
+
+    <string name="pictogram_grid_pictogram_showcase_help_content_text">Her er dine piktogrammer</string>
+    <string name="pictogram_grid_empty_showcase_help_content_text">Her vil dine piktogrammer dukke up</string>
+    <string name="pictogram_grid_showcase_help_titel_text">Piktogrammer</string>
+    <string name="add_pictogram_button_showcase_help_titel_text">Tilføj piktogram</string>
+    <string name="add_pictogram_button_showcase_help_content_text">Tilføj et piktogram til den\n nuværende kategori</string>
+    <string name="delete_pictogram_button_showcase_help_titel_text">Slet piktogram</string>
+    <string name="delete_pictogram_button_showcase_help_content_text">Slet det nuværende valgte piktogram</string>
+    <string name="pictogram_settings_button_showcase_help_titel_text">Indstillinger for kategori</string>
+    <string name="pictogram_settings_button_showcase_help_content_text">Indstil navn og piktogram icon for den valgte kategori</string>
+    <string name="copy_category_to_user_button_showcase_help_titel_text">Kopier kategori til bruger</string>
+    <string name="copy_category_to_user_button_showcase_help_content_text">Kopier den nuværende kategori til en bruger</string>
+    <string name="create_category_button_showcase_help_titel_text">Opret kategori</string>
+    <string name="create_category_button_showcase_help_content_text">Opret en ny kategori</string>
+    <string name="administrate_citizen_button_showcase_help_titel_text">Administrér borger</string>
+    <string name="administrate_citizen_button_showcase_help_content_text">Administrér katagorier for en borger</string>
+
+    <string name="no_pictogram_selected">Der blev ikke valgt noget piktogram</string>
+    <string name="multiple_pictogram_selected_first_used">Mere end et piktogram valgt, det øverste i listen bruges</string>
 
 </resources>
