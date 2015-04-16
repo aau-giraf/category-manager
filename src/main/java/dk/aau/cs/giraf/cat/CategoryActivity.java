@@ -2,6 +2,7 @@ package dk.aau.cs.giraf.cat;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -467,7 +468,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // Set the content of the frame layout to the default fragment
             getSupportFragmentManager().popBackStack();
 
-            selectedCategoryAndViewItem.getView().setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_inactive));
+            selectedCategoryAndViewItem.getView().setBackgroundDrawable(null); // Remove the background
 
             // Check if the same category was selected twice (deselected)
             if (selectedCategoryAndViewItem.getCategory().getId() == id) {
