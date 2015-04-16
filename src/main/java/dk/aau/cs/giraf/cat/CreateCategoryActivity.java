@@ -31,7 +31,7 @@ public class CreateCategoryActivity extends GirafActivity {
     private final Helper helper = new Helper(this);
 
     private Profile guardianProfile;
-    private ImageView iconView;
+    private GirafPictogram iconView;
 
     private Intent returnIntent = new Intent();
 
@@ -56,7 +56,12 @@ public class CreateCategoryActivity extends GirafActivity {
             }
         }
 
-        iconView = (ImageView) findViewById(R.id.create_category_pictogram);
+        iconView = (GirafPictogram) findViewById(R.id.create_category_pictogram);
+
+        // TODO - Use placeholder pictogram instead of finding pictogram with id 416
+        Pictogram pictogramPlaceholder = helper.pictogramHelper.getPictogramById(416);
+        iconView.setPictogram(pictogramPlaceholder);
+        iconView.hideTitle();
 
         // Set the default result (if something goes wrong or the user canceled the process)
         setResult(RESULT_CANCELED, returnIntent);
@@ -145,7 +150,7 @@ public class CreateCategoryActivity extends GirafActivity {
                             iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
 
                             // Update the gui with the found pictogram
-                            iconView.setImageBitmap(iconPictogram.getImage());
+                            iconView.setPictogram(iconPictogram);
                         }
                     }
                 }
