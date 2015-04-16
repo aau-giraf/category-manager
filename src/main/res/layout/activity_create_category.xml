@@ -14,15 +14,14 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <ImageView
+        <dk.aau.cs.giraf.gui.GirafPictogram
             android:id="@+id/create_category_pictogram"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:adjustViewBounds="true"
             android:onClick="onIconClick"
-            android:scaleType="center"
-            android:src="@drawable/icon_choose" />
+            android:scaleType="center" />
 
         <EditText
             android:id="@+id/create_category_title"

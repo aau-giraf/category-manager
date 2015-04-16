@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.gui.GirafButton;
+import dk.aau.cs.giraf.gui.GirafPictogram;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
@@ -31,7 +32,7 @@ public class CreateCategoryActivity extends GirafActivity {
     private final Helper helper = new Helper(this);
 
     private Profile guardianProfile;
-    private ImageView iconView;
+    private GirafPictogram iconView;
 
     private Intent returnIntent = new Intent();
 
@@ -56,7 +57,12 @@ public class CreateCategoryActivity extends GirafActivity {
             }
         }
 
-        iconView = (ImageView) findViewById(R.id.create_category_pictogram);
+        iconView = (GirafPictogram) findViewById(R.id.create_category_pictogram);
+
+        // TODO - Use placeholder pictogram instead of finding pictogram with id 416
+        Pictogram pictogramPlaceholder = helper.pictogramHelper.getPictogramById(416);
+        iconView.setPictogram(pictogramPlaceholder);
+        iconView.hideTitle();
 
         // Set the default result (if something goes wrong or the user canceled the process)
         setResult(RESULT_CANCELED, returnIntent);
@@ -125,25 +131,28 @@ public class CreateCategoryActivity extends GirafActivity {
         // Check which request we're responding to
         switch (requestCode) {
             case GET_SINGLE_PICTOGRAM:
-                Bundle extras = data.getExtras(); // Get the data from the intent
 
-                // Check if there was returned any pictogram ids
-                if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
-                    // TODO pictosearch should use longs instead of integers
-                    int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
-                    // TODO Update when pictosearch changes how they return a single pictogram
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras(); // Get the data from the intent
 
-                    // If there were returned more than one pictogram tell the user that the first is used
-                    if (pictogramIds.length > 1) {
-                        Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
-                    } else if (pictogramIds.length < 1) {
-                        Toast.makeText(this, getString(R.string.no_pictogram_selected), Toast.LENGTH_LONG).show();
-                    } else {
-                        // Set the wanted pictogram to be what was returned form pictosearh
-                        iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
+                    // Check if there was returned any pictogram ids
+                    if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
+                        // TODO pictosearch should use longs instead of integers
+                        int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
+                        // TODO Update when pictosearch changes how they return a single pictogram
 
-                        // Update the gui with the found pictogram
-                        iconView.setImageBitmap(iconPictogram.getImage());
+                        // If there were returned more than one pictogram tell the user that the first is used
+                        if (pictogramIds.length > 1) {
+                            Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
+                        } else if (pictogramIds.length < 1) {
+                            Toast.makeText(this, getString(R.string.no_pictogram_selected), Toast.LENGTH_LONG).show();
+                        } else {
+                            // Set the wanted pictogram to be what was returned form pictosearh
+                            iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
+
+                            // Update the gui with the found pictogram
+                            iconView.setPictogram(iconPictogram);
+                        }
                     }
                 }
                 break;

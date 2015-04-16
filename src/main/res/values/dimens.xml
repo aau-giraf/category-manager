@@ -4,5 +4,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="contextual_bottom_bar_spacing">10dp</dimen>
+    <dimen name="pictogram_height">200dp</dimen>
+    <dimen name="pictogram_width">200dp</dimen>
 
 </resources>
