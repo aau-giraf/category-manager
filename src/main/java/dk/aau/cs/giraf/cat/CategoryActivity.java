@@ -102,15 +102,22 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         switch (i) {
             case EDIT_CATEGORY_DIALOG:
                 // Finds the views
-                ImageView iconView  = (ImageView) viewGroup.findViewById(R.id.category_pictogram);
+                GirafPictogram girafPictogram = (GirafPictogram) viewGroup.findViewById(R.id.category_pictogram);
                 categoryTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
 
-                // If there is not returned any pictogram use the pictogram of the category
-                if(changedPictogram == null) {
-                    iconView.setImageBitmap(getSelectedCategory().getImage());
+                // If PictoSearch returned a pictogram, update the view. Otherwise set it to the regular pictogram
+                if(changedPictogram != null) {
+                    girafPictogram.setPictogram(changedPictogram);
                 } else {
-                    iconView.setImageBitmap(changedPictogram.getImage());
+                    Pictogram temp = new Pictogram();
+                    temp.setName(getSelectedCategory().getName());
+                    temp.setImage(getSelectedCategory().getImage());
+                    girafPictogram.setPictogram(temp);
                 }
+
+                // Hide the title of the pictogram.
+                // Notice: This is the title of the pictogram selected for the category and not the actual title of the category
+                girafPictogram.hideTitle();
 
                 // If the text was changed insert that into the edittex otherwise use selected category name
                 if(changedText == null) {
