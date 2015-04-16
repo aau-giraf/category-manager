@@ -120,7 +120,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 girafPictogram.hideTitle();
 
                 // If the text was changed insert that into the edittex otherwise use selected category name
-                if(changedText == null) {
+                if (changedText == null) {
                     categoryTitle.setText(getSelectedCategory().getName());
                 } else {
                     categoryTitle.setText(changedText);
@@ -214,14 +214,13 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         Profile currentUserProfile = getCurrentUser();
 
         // Change the title of the action-bar and content of right side depending on what type of categories are being modified
-        if(currentUserProfile != null && getCurrentUser().getRole() == Profile.Roles.CHILD) {
+        if (currentUserProfile != null && getCurrentUser().getRole() == Profile.Roles.CHILD) {
             // Change the title bar text
             setActionBarTitle(String.format(getString(R.string.categories_for), currentUserProfile.getName()));
 
             // Set the content of the frame layout to the default fragment
             setContent(InitialFragmentSpecificUser.newInstance(getCurrentUser()), R.id.categorytool_framelayout);
-        }
-        else {
+        } else {
             // Find the department for the guardian
             Department department = helper.departmentsHelper.getDepartmentById(currentUserProfile.getDepartmentId());
 
@@ -272,7 +271,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                                 Profile selectedProfile = helper.profilesHelper.getProfileById((int) id);
 
                                 // Make sure that the selected profile is a child
-                                if(selectedProfile.getRole() == Profile.Roles.CHILD) {
+                                if (selectedProfile.getRole() == Profile.Roles.CHILD) {
                                     // Dismiss the dialog
                                     profileSelectorDialog.dismiss();
 
@@ -366,7 +365,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     public void onSaveCategoryClicked(final View view) {
 
         // Update the category
-        if(changedPictogram != null) {
+        if (changedPictogram != null) {
             getSelectedCategory().setImage(changedPictogram.getImage());
         }
 
@@ -389,6 +388,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     /**
      * Called when a category is selected and when the settings buttons is pressed
+     *
      * @param view needed for onClickListner
      */
     public void onSettingsButtonClicked(View view) {
@@ -404,9 +404,10 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     /**
      * Called when the pictogram is clicked
+     *
      * @param view needed for onClickListner
      */
-    public void onEditCategoryPictogramClicked(View view){
+    public void onEditCategoryPictogramClicked(View view) {
 
         // Reset the returned value
         changedPictogram = null;
@@ -415,40 +416,39 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         Intent request = new Intent(); // A intent request
 
         // Try to send the intent
-        try{
+        try {
             // Sets properties on the intent
             request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
             request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_SINGLE_TAG);
 
             // Sends the intent
             startActivityForResult(request, GET_SINGLE_PICTOGRAM);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
-            Toast.makeText(this,"Could not open PictoSearch", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
             // TODO - Open notify dialog instead of toast
         }
     }
 
     /**
      * When a person clicks the add button to add a pictogram
+     *
      * @param view
      */
     public void onAddButtonClick(View view) {
         Intent request = new Intent(); // A intent request
 
         // Try to send the intent
-        try{
+        try {
             // Sets properties on the intent
             request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
             request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_MULTI_TAG);
 
             // Sends the intent
             startActivityForResult(request, GET_MULTIPLE_PICTOGRAMS);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
-            Toast.makeText(this,"Could not open PictoSearch", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
             // TODO - Open notify dialog instead of toast
         }
     }
@@ -511,7 +511,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         switch (requestCode) {
 
             // When returning from CreatCategoryActivity (internal intent)
-            case CREATE_CATEGORY_REQUEST : {
+            case CREATE_CATEGORY_REQUEST: {
                 // Make sure the request was successful
                 if (resultCode == RESULT_OK) {
 
@@ -534,22 +534,25 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             }
             // When returning from PictoSearch with single pictogram (external intent)
             case GET_SINGLE_PICTOGRAM: {
-                Bundle extras = data.getExtras(); // Get the data from the intent
 
-                // Check if there was returned any pictogram ids
-                if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
-                    // TODO pictosearch should use longs instead of integers
-                    int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
-                    // TODO Update when pictosearch changes how they return a single pictogram
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras(); // Get the data from the intent
 
-                    // If there were returned more than one pictogram tell the user that the first is used
-                    if (pictogramIds.length > 1) {
-                        Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
-                    } else if (pictogramIds.length < 1) {
-                        Toast.makeText(this, getString(R.string.no_pictogram_selected), Toast.LENGTH_LONG).show();
-                    } else {
-                        // Set the wanted pictogram to be what was returned form pictosearh
-                        changedPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
+                    // Check if there was returned any pictogram ids
+                    if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
+                        // TODO pictosearch should use longs instead of integers
+                        int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
+                        // TODO Update when pictosearch changes how they return a single pictogram
+
+                        // If there were returned more than one pictogram tell the user that the first is used
+                        if (pictogramIds.length > 1) {
+                            Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
+                        } else if (pictogramIds.length < 1) {
+                            Toast.makeText(this, getString(R.string.no_pictogram_selected), Toast.LENGTH_LONG).show();
+                        } else {
+                            // Set the wanted pictogram to be what was returned form pictosearh
+                            changedPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
+                        }
                     }
                 }
                 break;
@@ -575,7 +578,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                         }
                     }
                 }
-
                 break;
             }
         }
@@ -603,16 +605,17 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     /**
      * Will be called whenever a notification dialog is handled
+     *
      * @param i the method id (response code)
      */
     @Override
     public void noticeDialog(int i) {
-        if(i == NOTIFICATION_DIALOG_DO_NOTHING) {
+        if (i == NOTIFICATION_DIALOG_DO_NOTHING) {
             // Do nothing
         }
     }
 
-    private Category getSelectedCategory(){
+    private Category getSelectedCategory() {
         return selectedCategoryAndViewItem.getCategory();
     }
 }

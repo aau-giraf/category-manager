@@ -125,25 +125,28 @@ public class CreateCategoryActivity extends GirafActivity {
         // Check which request we're responding to
         switch (requestCode) {
             case GET_SINGLE_PICTOGRAM:
-                Bundle extras = data.getExtras(); // Get the data from the intent
 
-                // Check if there was returned any pictogram ids
-                if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
-                    // TODO pictosearch should use longs instead of integers
-                    int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
-                    // TODO Update when pictosearch changes how they return a single pictogram
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras(); // Get the data from the intent
 
-                    // If there were returned more than one pictogram tell the user that the first is used
-                    if (pictogramIds.length > 1) {
-                        Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
-                    } else if (pictogramIds.length < 1) {
-                        Toast.makeText(this, getString(R.string.no_pictogram_selected), Toast.LENGTH_LONG).show();
-                    } else {
-                        // Set the wanted pictogram to be what was returned form pictosearh
-                        iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
+                    // Check if there was returned any pictogram ids
+                    if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
+                        // TODO pictosearch should use longs instead of integers
+                        int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
+                        // TODO Update when pictosearch changes how they return a single pictogram
 
-                        // Update the gui with the found pictogram
-                        iconView.setImageBitmap(iconPictogram.getImage());
+                        // If there were returned more than one pictogram tell the user that the first is used
+                        if (pictogramIds.length > 1) {
+                            Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
+                        } else if (pictogramIds.length < 1) {
+                            Toast.makeText(this, getString(R.string.no_pictogram_selected), Toast.LENGTH_LONG).show();
+                        } else {
+                            // Set the wanted pictogram to be what was returned form pictosearh
+                            iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
+
+                            // Update the gui with the found pictogram
+                            iconView.setImageBitmap(iconPictogram.getImage());
+                        }
                     }
                 }
                 break;
