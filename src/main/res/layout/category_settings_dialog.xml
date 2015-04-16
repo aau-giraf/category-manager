@@ -7,11 +7,10 @@
     android:layout_centerInParent="true">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        android:background="@color/giraf_background">
+        android:layout_centerHorizontal="true">
 
         <!-- Pictogram selector and text edit box -->
         <LinearLayout
@@ -23,8 +22,8 @@
 
             <dk.aau.cs.giraf.cat.GirafPictogram
                 android:id="@+id/category_pictogram"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/pictogram_width"
+                android:layout_height="@dimen/pictogram_height"
                 android:layout_marginRight="20dp"
                 android:onClick="onEditCategoryPictogramClicked" />
 
