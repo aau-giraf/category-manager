@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
+import dk.aau.cs.giraf.gui.GirafPictogram;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 

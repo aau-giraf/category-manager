@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
+import dk.aau.cs.giraf.gui.GirafPictogram;
 
 /**
  * Created on 24/03/15.
@@ -56,7 +57,7 @@ public class PictogramAdapter extends BaseAdapter {
         final Pictogram pictogram = pictogramList.get(position);
 
         // Create the pictogram view and return it
-        return new dk.aau.cs.giraf.cat.GirafPictogram(context, pictogram);
+        return new GirafPictogram(context, pictogram);
     }
 
     /**
