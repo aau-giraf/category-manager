@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="30dp">
 
-            <dk.aau.cs.giraf.gui.GirafPictogram
+            <dk.aau.cs.giraf.gui.GirafPictogramItemView
                 android:id="@+id/category_pictogram"
                 android:layout_width="@dimen/pictogram_width"
                 android:layout_height="@dimen/pictogram_height"

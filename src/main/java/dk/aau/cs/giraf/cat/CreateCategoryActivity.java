@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.gui.GirafButton;
-import dk.aau.cs.giraf.gui.GirafPictogram;
+import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
@@ -32,7 +32,7 @@ public class CreateCategoryActivity extends GirafActivity {
     private final Helper helper = new Helper(this);
 
     private Profile guardianProfile;
-    private GirafPictogram iconView;
+    private GirafPictogramItemView iconView;
 
     private Intent returnIntent = new Intent();
 
@@ -57,7 +57,7 @@ public class CreateCategoryActivity extends GirafActivity {
             }
         }
 
-        iconView = (GirafPictogram) findViewById(R.id.create_category_pictogram);
+        iconView = (GirafPictogramItemView) findViewById(R.id.create_category_pictogram);
 
         // TODO - Use placeholder pictogram instead of finding pictogram with id 416
         Pictogram pictogramPlaceholder = helper.pictogramHelper.getPictogramById(416);

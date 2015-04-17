@@ -29,7 +29,7 @@ import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflatableDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
-import dk.aau.cs.giraf.gui.GirafPictogram;
+import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Department;
@@ -79,6 +79,9 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     // View to contain categories
     private ListView categoryContainer;
 
+    // List of categories
+    private List<Category> categoryList;
+
     // Save the current category and its adapters
     private CategoryAdapter categoryAdapter;
     private CategoryAdapter.CategoryViewPair selectedCategoryAndViewItem = null;
@@ -105,7 +108,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         switch (i) {
             case EDIT_CATEGORY_DIALOG:
                 // Finds the views
-                GirafPictogram girafPictogram = (GirafPictogram) viewGroup.findViewById(R.id.category_pictogram);
+                GirafPictogramItemView girafPictogram = (GirafPictogramItemView) viewGroup.findViewById(R.id.category_pictogram);
                 categoryTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
 
                 // If PictoSearch returned a pictogram, update the view. Otherwise set it to the regular pictogram
@@ -152,6 +155,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
         protected void onPostExecute(final List<Category> result) {
+            categoryList = result;
             categoryAdapter = new CategoryAdapter(CategoryActivity.this, CategoryActivity.this, result);
             categoryContainer.setAdapter(categoryAdapter);
 
@@ -360,8 +364,13 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      * Called when a category is selected and the delete button is pressed
      */
     public void onDeleteCategoryClicked(final View view) {
-        Toast.makeText(CategoryActivity.this, "Kategorien blev slettet", Toast.LENGTH_SHORT).show();
 
+        helper.categoryHelper.removeCategory(getSelectedCategory()); // Remove from DB
+        categoryList.remove(getSelectedCategory()); // Remove from list in adapter
+        categoryAdapter.notifyDataSetChanged(); // Tell the adapter to update
+
+        // TODO - Check if any children are affected by this, and ask if they still want to delete it
+        Toast.makeText(CategoryActivity.this, "Kategorien blev slettet", Toast.LENGTH_SHORT).show();
         editDialog.dismiss();
     }
 
