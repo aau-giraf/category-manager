@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dk.aau.cs.giraf.cat"
     xmlns:tools="http://schemas.android.com/tools"
+    package="dk.aau.cs.giraf.cat"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -17,8 +17,8 @@
         android:allowBackup="true"
         android:icon="@drawable/category_tool"
         android:label="@string/categorymanager"
-        tools:replace="label, icon"
-        android:theme="@style/GirafTheme">
+        android:theme="@style/GirafTheme"
+        tools:replace="label, icon">
 
         <activity
             android:name="dk.aau.cs.giraf.cat.CategoryActivity"
@@ -33,11 +33,11 @@
 
         <activity
             android:name=".CreateCategoryActivity"
-            android:label="Opret ny kategori"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize"
             android:exported="true"
-            android:launchMode="singleTop" />
+            android:label="Opret ny kategori"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 </manifest>
