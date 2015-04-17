@@ -1,14 +1,19 @@
 package dk.aau.cs.giraf.cat.fragments;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
@@ -20,7 +25,9 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import dk.aau.cs.giraf.cat.CategoryActivity;
 import dk.aau.cs.giraf.cat.PictogramAdapter;
@@ -29,6 +36,7 @@ import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
+import dk.aau.cs.giraf.gui.GirafPictogram;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
@@ -59,7 +67,7 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
 
     private LoadPictogramTask loadPictogramTask;
 
-    private Pictogram selectedPictogram = null;
+    private Set<Pictogram> selectedPictograms = null;
     private Category selectedCategory = null;
 
     private ShowcaseManager showcaseManager;
@@ -81,7 +89,7 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
             super.onPreExecute();
 
             // Reset selected pictogram
-            selectedPictogram = null;
+            selectedPictograms.clear();
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(new ProgressBar(CategoryDetailFragment.this.getActivity()));
@@ -105,7 +113,26 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
         }
 
         protected void onPostExecute(final List<Pictogram> result) {
+
             final PictogramAdapter categoryAdapter = new PictogramAdapter(result, CategoryDetailFragment.this.getActivity());
+
+            // TODO Delete me if not needed (if setMultiChoiceModeListener fixes it)
+            /*
+            {
+                // Set pictogram to be selceted if it is in the set of selected pictograms
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    GirafPictogram girafPictogram = (GirafPictogram) super.getView(position, convertView, parent);
+
+                    // Check if the pictogram is in the selected pictograms set
+                    if (selectedPictograms.contains(this.getItem(position))) {
+                        // TODO Update indicator better
+                        girafPictogram.setBackgroundColor(Color.BLUE);
+                    }
+                    return girafPictogram;
+                }
+            };*/
+
             pictogramGrid.setAdapter(categoryAdapter);
 
             // Set view when list is empty
@@ -153,6 +180,8 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
 
         // Helper that will be used to fetch profiles
         helper = new Helper(this.getActivity());
+
+        selectedPictograms = new HashSet<Pictogram>();
     }
 
     @Override
@@ -162,30 +191,62 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
 
         pictogramGrid = (GridView) categoryDetailLayout.findViewById(R.id.pictogram_gridview);
 
-        // Set the selected pictogram from the grid when a pictogram is clicked on
-        pictogramGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        pictogramGrid.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
+
+        pictogramGrid.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                // If the pictogram is in the selected set remove it
+
+                if (selectedPictograms.contains((Pictogram) pictogramGrid.getAdapter().getItem(position)) && !checked) {
+                    // Remove the pictogram to the selectedPictograms
+                    selectedPictograms.remove((Pictogram) pictogramGrid.getAdapter().getItem(position));
+
+                    // If the last pictogram was deselected disable multiSelectionMode
+                    if (selectedPictograms.isEmpty()) {
+                    }
+                    // If the pictogram is not in the selected set add it
+                } else {
+                    // Add the pictogram to the selectedPictograms
+                    selectedPictograms.add((Pictogram) pictogramGrid.getAdapter().getItem(position));
+
+                }
+            }
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Save a reference to the currently selected pictogram
-                selectedPictogram = (Pictogram) pictogramGrid.getAdapter().getItem(position);
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+
             }
         });
-
 
         final GirafButton deletePictogramButton = (GirafButton) categoryDetailLayout.findViewById(R.id.deletePictogramButton);
         deletePictogramButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedPictogram == null) {
+                if (selectedPictograms.isEmpty()) {
                     // TODO: Use something different than a toast
                     Toast.makeText(CategoryDetailFragment.this.getActivity(), getActivity().getResources().getString(R.string.pick_pictogram_before_delete), Toast.LENGTH_SHORT).show();
                 } else // delete the selected pictogram and reload
                 {
                     // Create and show confirmation dialog
                     final GirafConfirmDialog confirmDialog = GirafConfirmDialog.newInstance(
-                            getActivity().getResources().getString(R.string.remove_pictogram_dialog_title), // Title of the dialog
-                            String.format(getActivity().getResources().getString(R.string.remove_pictogram_dialog_body), selectedPictogram.getName(), selectedCategory.getName()), // Body of the dialog
+                            getActivity().getResources().getString(R.string.remove_pictograms_dialog_title), // Title of the dialog
+                            String.format(getActivity().getResources().getString(R.string.remove_pictogram_dialog_body), selectedPictograms.size(), selectedCategory.getName()), // Body of the dialog
                             CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID
                     );
                     confirmDialog.show(getActivity().getSupportFragmentManager(), CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG);
@@ -299,8 +360,11 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
 
         switch (methodID) {
             case CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID: {
-                // Remove the specific pictogram
-                helper.pictogramCategoryHelper.removePictogramCategory(selectedCategory.getId(), selectedPictogram.getId());
+                // Remove the specific pictograms
+
+                for (Pictogram selectedPictogram : selectedPictograms) {
+                    helper.pictogramCategoryHelper.removePictogramCategory(selectedCategory.getId(), selectedPictogram.getId());
+                }
 
                 // Reload the list of pictograms
                 loadPictogramTask = new LoadPictogramTask();
