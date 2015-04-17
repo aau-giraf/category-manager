@@ -1,6 +1,7 @@
 package dk.aau.cs.giraf.categorymanager.fragments;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -34,6 +37,7 @@ import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
+import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
@@ -111,26 +115,22 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
 
         protected void onPostExecute(final List<Pictogram> result) {
 
-            final PictogramAdapter categoryAdapter = new PictogramAdapter(result, CategoryDetailFragment.this.getActivity());
-
-            // TODO Delete me if not needed (if setMultiChoiceModeListener fixes it)
-            /*
-            {
-                // Set pictogram to be selceted if it is in the set of selected pictograms
+            final PictogramAdapter pictogramAdapter = new PictogramAdapter(result, CategoryDetailFragment.this.getActivity()) {
+                // Set pictogram to be selected if it is in the set of selected pictogram(s)
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
-                    GirafPictogram girafPictogram = (GirafPictogram) super.getView(position, convertView, parent);
+                    GirafPictogramItemView girafPictogram = (GirafPictogramItemView) super.getView(position, convertView, parent);
 
-                    // Check if the pictogram is in the selected pictograms set
+                    // Check if the pictogram is in the selected pictogram(s) set
                     if (selectedPictograms.contains(this.getItem(position))) {
-                        // TODO Update indicator better
-                        girafPictogram.setBackgroundColor(Color.BLUE);
+                        girafPictogram.setChecked(true);
                     }
+
                     return girafPictogram;
                 }
-            };*/
+            };
 
-            pictogramGrid.setAdapter(categoryAdapter);
+            pictogramGrid.setAdapter(pictogramAdapter);
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(categoryDetailLayout.findViewById(R.id.empty_gridview_text));
@@ -188,46 +188,25 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
 
         pictogramGrid = (GridView) categoryDetailLayout.findViewById(R.id.pictogram_gridview);
 
-        pictogramGrid.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
-
-        pictogramGrid.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+        pictogramGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Find the selected pictogram
+                Pictogram selectedPictogram = (Pictogram) pictogramGrid.getAdapter().getItem(position);
+
                 // If the pictogram is in the selected set remove it
-
-                if (selectedPictograms.contains((Pictogram) pictogramGrid.getAdapter().getItem(position)) && !checked) {
-                    // Remove the pictogram to the selectedPictograms
-                    selectedPictograms.remove((Pictogram) pictogramGrid.getAdapter().getItem(position));
-
-                    // If the last pictogram was deselected disable multiSelectionMode
-                    if (selectedPictograms.isEmpty()) {
-                    }
-                    // If the pictogram is not in the selected set add it
-                } else {
-                    // Add the pictogram to the selectedPictograms
-                    selectedPictograms.add((Pictogram) pictogramGrid.getAdapter().getItem(position));
-
+                if (selectedPictograms.contains(selectedPictogram)) {
+                    // Remove the pictogram to the selected pictogram(s)
+                    selectedPictograms.remove(selectedPictogram);
                 }
-            }
+                // If the pictogram is not in the selected set add it
+                else {
+                    // Add the pictogram to the selected pictogram(s)
+                    selectedPictograms.add(selectedPictogram);
+                }
 
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-
+                // Update the UI accordingly to above changes
+                ((GirafPictogramItemView) view).toggle();
             }
         });
 
