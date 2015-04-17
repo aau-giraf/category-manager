@@ -6,27 +6,7 @@
     android:orientation="horizontal"
     android:background="@color/giraf_background">
 
-    <RelativeLayout
-        android:id="@+id/category_sidebar"
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
-        android:background="@drawable/sidebar_background">
-
-        <ListView
-            android:id="@+id/category_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:verticalScrollbarPosition="left" />
-
-        <TextView
-            android:id="@+id/empty_list_item"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/no_categories_text"
-            android:visibility="gone"
-            android:gravity="center" />
-
-    </RelativeLayout>
+    <include layout="@layout/giraf_sidebar_layout"/>
 
     <!-- Layout to contain different fragments depending on what the user is currently doing.
          For instance when viewing the content of a category. -->

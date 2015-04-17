@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -193,6 +194,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
+        TextView empty_list_item = (TextView) this.findViewById(R.id.empty_list_item);
+        empty_list_item.setText(R.string.no_categories_text);
 
         // Get the extra information from when the activity was started (contains profile ids etc.)
         final Bundle extras = getIntent().getExtras();

@@ -34,9 +34,6 @@ class NewShowcaseDrawer extends StandardShowcaseDrawer {
 
     public NewShowcaseDrawer(Resources resources) {
         super(resources);
-
-        //this.outerRadius = resources.getDimension(R.dimen.showcase_radius_outer);
-        //this.innerRadius = resources.getDimension(R.dimen.showcase_radius_inner);
     }
 
     @Override

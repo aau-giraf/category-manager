@@ -1,0 +1,15 @@
+   =========================================================================
+   ==  NOTICE file with the Apache License, Version 2.0,                  ==
+   ==  For extensions to ShowcaseView library.                            ==
+   ==  Originally hosted at: https://github.com/amlcurran/ShowcaseView    ==
+   ==  Originally made by and copyright holder: Alex Curran               ==
+   =========================================================================
+
+Changes summary:
+
+The interface Target has been changed to an abstract class. And subclasses of Target, i.e. classes that previously implemented the interface Target, has been modified with additional constructors, methods and properties to allow them to store their radius and a scaleMultiplier (This was previously hardcoded). The ViewTarget subclass, of Target, has been further modified to calculate its own radius based on its target View.  
+
+The ShowcaseView class and supporting classes have been modified to allow manual positioning of the help text for the ShowcaseView. 
+
+The TextDrawer class has been modified to fix a problem with negative widths of the drawing area.
+
