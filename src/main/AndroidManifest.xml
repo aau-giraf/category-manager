@@ -16,9 +16,9 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/category_tool"
-        android:label="@string/app_name"
-        android:theme="@style/GirafTheme"
-        tools:replace="icon">
+        android:label="@string/categorymanager"
+        tools:replace="label, icon"
+        android:theme="@style/GirafTheme">
 
         <activity
             android:name="dk.aau.cs.giraf.cat.CategoryActivity"
