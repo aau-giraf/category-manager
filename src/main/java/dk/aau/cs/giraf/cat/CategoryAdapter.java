@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
-import dk.aau.cs.giraf.gui.GirafPictogram;
+import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
@@ -128,7 +128,7 @@ public class CategoryAdapter extends BaseAdapter {
         pictogram.setImage(category.getImage());
 
         // Create a new UI pictogram
-        GirafPictogram view = new GirafPictogram(context, pictogram);
+        GirafPictogramItemView view = new GirafPictogramItemView(context, pictogram);
 
         // Add a small bit of padding. This will allow us to indicate that the category is selected
         int paddingInDP = (int) (CATEGORY_PADDING * context.getResources().getDisplayMetrics().density);

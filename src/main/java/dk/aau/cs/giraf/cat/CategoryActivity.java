@@ -29,7 +29,7 @@ import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflatableDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
-import dk.aau.cs.giraf.gui.GirafPictogram;
+import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Department;
@@ -105,7 +105,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         switch (i) {
             case EDIT_CATEGORY_DIALOG:
                 // Finds the views
-                GirafPictogram girafPictogram = (GirafPictogram) viewGroup.findViewById(R.id.category_pictogram);
+                GirafPictogramItemView girafPictogram = (GirafPictogramItemView) viewGroup.findViewById(R.id.category_pictogram);
                 categoryTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
 
                 // If PictoSearch returned a pictogram, update the view. Otherwise set it to the regular pictogram
