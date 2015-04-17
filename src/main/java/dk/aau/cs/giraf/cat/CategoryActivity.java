@@ -79,6 +79,9 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     // View to contain categories
     private ListView categoryContainer;
 
+    // List of categories
+    private List<Category> categoryList;
+
     // Save the current category and its adapters
     private CategoryAdapter categoryAdapter;
     private CategoryAdapter.CategoryViewPair selectedCategoryAndViewItem = null;
@@ -152,6 +155,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
         protected void onPostExecute(final List<Category> result) {
+            categoryList = result;
             categoryAdapter = new CategoryAdapter(CategoryActivity.this, CategoryActivity.this, result);
             categoryContainer.setAdapter(categoryAdapter);
 
@@ -359,8 +363,13 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      * Called when a category is selected and the delete button is pressed
      */
     public void onDeleteCategoryClicked(final View view) {
-        Toast.makeText(CategoryActivity.this, "Kategorien blev slettet", Toast.LENGTH_SHORT).show();
 
+        helper.categoryHelper.removeCategory(getSelectedCategory()); // Remove from DB
+        categoryList.remove(getSelectedCategory()); // Remove from list in adapter
+        categoryAdapter.notifyDataSetChanged(); // Tell the adapter to update
+
+        // TODO - Check if any children are affected by this, and ask if they still want to delete it
+        Toast.makeText(CategoryActivity.this, "Kategorien blev slettet", Toast.LENGTH_SHORT).show();
         editDialog.dismiss();
     }
 

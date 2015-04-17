@@ -55,12 +55,12 @@
 
     <!-- Will be shown whenever the user tries to delete a pictogram without selecting one first -->
     <string name="pick_pictogram_before_delete">Du skal vælge et piktogram før du kan slette det</string>
-    <string name="remove_pictogram_dialog_title">Fjern Piktogram</string>
+    <string name="remove_pictograms_dialog_title">Fjern Piktogrammer</string>
 
     <!-- Confirmation when removing a pictogram from a category
-         Arg #1: Name of pictogram.
+         Arg #1: Number of pictograms.
          Arg #2: Name of category -->
-    <string name="remove_pictogram_dialog_body">Er du sikker på at du vil fjerne \"%1$s\" fra \"%2$s\"?</string>
+    <string name="remove_pictogram_dialog_body">Er du sikker på at du vil fjerne \"%1$s\ piktogramm(er)" fra \"%2$s\"?</string>
 
     <!-- WARNING: Old (and possibly unused) strings below!! -->
 
