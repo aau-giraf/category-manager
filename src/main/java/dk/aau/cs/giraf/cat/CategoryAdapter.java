@@ -139,7 +139,6 @@ public class CategoryAdapter extends BaseAdapter {
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         view.requestLayout();
 
-
         // Check if the user provided a SelectedCategoryAware
         if (selectedCategoryAware != null) {
             final CategoryViewPair selectedCategoryViewPair = selectedCategoryAware.getSelectedMutableCategoryViewPair();
