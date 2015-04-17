@@ -237,6 +237,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
         final GirafButton helpGirafButton = new GirafButton(this, getResources().getDrawable(R.drawable.icon_help));
+        helpGirafButton.setId(R.id.help_button);
         helpGirafButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

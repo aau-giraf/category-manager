@@ -32,6 +32,7 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
 
     private ShowcaseManager showcaseManager;
     private OnFragmentInteractionListener mListener;
+    private boolean isFirstRun;
 
     /**
      * Used in onResume and onPause for handling showcaseview for first run
@@ -88,7 +89,7 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
 
         // Check if this is the first run of the app
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-        final boolean isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
+        this.isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
 
         // If it is the first run display ShowcaseView
         if (isFirstRun) {
@@ -168,11 +169,32 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
                 showcaseView.setShowcase(adminCitizenTarget, true);
                 showcaseView.setContentTitle(getString(R.string.administrate_citizen_button_showcase_help_titel_text));
                 showcaseView.setContentText(getString(R.string.administrate_citizen_button_showcase_help_content_text));
-                showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
+
+                if (!isFirstRun) {
+                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
+                } else {
+                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                }
                 showcaseView.setButtonPosition(lps);
                 showcaseView.setTextPostion(textX, textY);
             }
         });
+
+        if (isFirstRun) {
+            final ViewTarget helpButtonTarget = new ViewTarget(getActivity().getActionBar().getCustomView().findViewById(R.id.help_button), 1.5f);
+
+            showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+                @Override
+                public void configShowCaseView(final ShowcaseView showcaseView) {
+                    showcaseView.setShowcase(helpButtonTarget, true);
+                    showcaseView.setContentTitle("Hjælpe knap");
+                    showcaseView.setContentText("Hvis du bliver i tvivl kan du altid få hjælp her");
+                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
+                    showcaseView.setButtonPosition(lps);
+                    showcaseView.setTextPostion(textX, textY);
+                }
+            });
+        }
 
         showcaseManager.setOnDoneListener(new ShowcaseManager.OnDoneListener() {
             @Override
