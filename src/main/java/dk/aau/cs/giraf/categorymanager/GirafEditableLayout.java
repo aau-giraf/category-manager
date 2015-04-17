@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.cat;
+package dk.aau.cs.giraf.categorymanager;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-
-import dk.aau.cs.giraf.oasis.lib.models.Frame;
 
 /**
  * Created on 14/04/2015.

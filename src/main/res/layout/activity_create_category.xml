@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/giraf_background"
-    tools:context="dk.aau.cs.giraf.cat.CreateCategoryActivity">
+    tools:context="dk.aau.cs.giraf.categorymanager.CreateCategoryActivity">
 
     <LinearLayout
         android:layout_width="200dp"

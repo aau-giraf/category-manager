@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.cat.showcase;
+package dk.aau.cs.giraf.categorymanager.showcase;
 
 import android.app.Activity;
 import android.view.View;
@@ -9,7 +9,7 @@ import com.github.amlcurran.showcaseview.targets.Target;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import dk.aau.cs.giraf.cat.R;
+import dk.aau.cs.giraf.categorymanager.R;
 
 /**
  * Used to handle multiple showcases

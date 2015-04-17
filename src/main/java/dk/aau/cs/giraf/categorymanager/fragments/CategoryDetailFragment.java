@@ -1,7 +1,6 @@
-package dk.aau.cs.giraf.cat.fragments;
+package dk.aau.cs.giraf.categorymanager.fragments;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -29,14 +27,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import dk.aau.cs.giraf.cat.CategoryActivity;
-import dk.aau.cs.giraf.cat.PictogramAdapter;
-import dk.aau.cs.giraf.cat.R;
-import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.categorymanager.CategoryActivity;
+import dk.aau.cs.giraf.categorymanager.PictogramAdapter;
+import dk.aau.cs.giraf.categorymanager.R;
+import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
-import dk.aau.cs.giraf.gui.GirafPictogram;
 import dk.aau.cs.giraf.oasis.lib.Helper;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;

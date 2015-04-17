@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.cat.fragments;
+package dk.aau.cs.giraf.categorymanager.fragments;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -9,15 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import dk.aau.cs.giraf.cat.R;
+import dk.aau.cs.giraf.categorymanager.R;
 import dk.aau.cs.giraf.oasis.lib.models.Profile;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser.OnFragmentInteractionListener} interface
+ * {@link dk.aau.cs.giraf.categorymanager.fragments.InitialFragmentSpecificUser.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser#newInstance} factory method to
+ * Use the {@link dk.aau.cs.giraf.categorymanager.fragments.InitialFragmentSpecificUser#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class InitialFragmentSpecificUser extends Fragment {

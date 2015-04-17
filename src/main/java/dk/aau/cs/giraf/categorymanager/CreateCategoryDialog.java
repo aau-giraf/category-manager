@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.cat;
+package dk.aau.cs.giraf.categorymanager;
 
 import android.app.Activity;
 import android.app.Dialog;

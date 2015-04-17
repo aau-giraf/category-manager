@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.cat.fragments;
+package dk.aau.cs.giraf.categorymanager.fragments;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -15,8 +15,8 @@ import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
-import dk.aau.cs.giraf.cat.R;
-import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.categorymanager.R;
+import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
 
 /**
  * A simple {@link Fragment} subclass.

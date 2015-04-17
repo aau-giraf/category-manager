@@ -1,8 +1,7 @@
-package dk.aau.cs.giraf.cat;
+package dk.aau.cs.giraf.categorymanager;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,11 +18,11 @@ import android.widget.Toast;
 import java.util.List;
 
 import dk.aau.cs.giraf.activity.GirafActivity;
-import dk.aau.cs.giraf.cat.fragments.CategoryDetailFragment;
-import dk.aau.cs.giraf.cat.fragments.InitialFragment;
-import dk.aau.cs.giraf.cat.fragments.InitialFragmentSpecificUser;
+import dk.aau.cs.giraf.categorymanager.fragments.CategoryDetailFragment;
+import dk.aau.cs.giraf.categorymanager.fragments.InitialFragment;
+import dk.aau.cs.giraf.categorymanager.fragments.InitialFragmentSpecificUser;
 import dk.aau.cs.giraf.gui.GProfileSelector;
-import dk.aau.cs.giraf.cat.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflatableDialog;
@@ -253,7 +251,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         addGirafButtonToActionBar(helpGirafButton, GirafActivity.RIGHT);
 
         // Find the ListView that will contain the categories
-        categoryContainer = (ListView) this.findViewById(R.id.category_container);
+        categoryContainer = (ListView) this.findViewById(R.id.giraf_sidebar_container);
         categoryContainer.setOnItemClickListener(this);
 
         // Load the categories using the LoadCategoriesTask

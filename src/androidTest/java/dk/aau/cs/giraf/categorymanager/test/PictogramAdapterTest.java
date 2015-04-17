@@ -1,11 +1,11 @@
-package dk.aau.cs.giraf.cat.test;
+package dk.aau.cs.giraf.categorymanager.test;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
 import java.util.ArrayList;
 
-import dk.aau.cs.giraf.cat.PictogramAdapter;
+import dk.aau.cs.giraf.categorymanager.PictogramAdapter;
 import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
 /**

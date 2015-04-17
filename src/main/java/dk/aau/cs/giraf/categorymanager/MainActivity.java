@@ -1,4 +1,4 @@
-package dk.aau.cs.giraf.cat;
+package dk.aau.cs.giraf.categorymanager;
 
 import java.util.ArrayList;
 import java.util.List;
