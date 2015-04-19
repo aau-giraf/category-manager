@@ -26,7 +26,7 @@ import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
  * Use the {@link InitialFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class InitialFragment extends Fragment implements OnShowcaseEventListener, ShowcaseManager.ShowcaseCapable {
+public class InitialFragment extends Fragment implements ShowcaseManager.ShowcaseCapable {
 
     private static final String IS_FIRST_RUN_KEY = "IS_FIRST_RUN_KEY_INITIAL_FRAGMENT";
 
@@ -239,21 +239,6 @@ public class InitialFragment extends Fragment implements OnShowcaseEventListener
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onShowcaseViewHide(final ShowcaseView showcaseView) {
-
-    }
-
-    @Override
-    public void onShowcaseViewDidHide(final ShowcaseView showcaseView) {
-
-    }
-
-    @Override
-    public void onShowcaseViewShow(final ShowcaseView showcaseView) {
-
     }
 
     /**

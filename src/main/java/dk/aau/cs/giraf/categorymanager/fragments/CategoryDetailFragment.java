@@ -42,7 +42,7 @@ import dk.aau.cs.giraf.utilities.GirafScalingUtilities;
 /**
  * Created on 25/03/15.
  */
-public class CategoryDetailFragment extends Fragment implements OnShowcaseEventListener, ShowcaseManager.ShowcaseCapable, GirafConfirmDialog.Confirmation {
+public class CategoryDetailFragment extends Fragment implements ShowcaseManager.ShowcaseCapable, GirafConfirmDialog.Confirmation {
 
     private static final String IS_FIRST_RUN_KEY = "IS_FIRST_RUN_KEY_CATEGORY_DETAIL_FRAGMENT";
 
@@ -357,8 +357,8 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
 
         switch (methodID) {
             case CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID: {
-                // Remove the specific pictograms
 
+                // Remove the specific pictograms
                 for (Pictogram selectedPictogram : selectedPictograms) {
                     helper.pictogramCategoryHelper.removePictogramCategory(selectedCategory.getId(), selectedPictogram.getId());
                 }
@@ -368,21 +368,6 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
                 loadPictogramTask.execute();
             }
         }
-    }
-
-    @Override
-    public void onShowcaseViewHide(ShowcaseView showcaseView) {
-
-    }
-
-    @Override
-    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
-
-    }
-
-    @Override
-    public void onShowcaseViewShow(ShowcaseView showcaseView) {
-
     }
 
     @Override
@@ -402,10 +387,6 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
         centerRightButtonParams.addRule(RelativeLayout.CENTER_VERTICAL);
         centerRightButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         centerRightButtonParams.setMargins(margin, margin, margin, margin);
-
-        // Calculate position for the help text
-        final int textX = getActivity().findViewById(R.id.category_sidebar).getLayoutParams().width + margin * 2;
-        final int textY = getResources().getDisplayMetrics().heightPixels / 2 + margin;
 
         showcaseManager = new ShowcaseManager();
 
