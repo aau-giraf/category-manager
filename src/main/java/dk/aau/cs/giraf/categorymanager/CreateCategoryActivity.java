@@ -2,12 +2,21 @@ package dk.aau.cs.giraf.categorymanager;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
 import dk.aau.cs.giraf.activity.GirafActivity;
+import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 import dk.aau.cs.giraf.oasis.lib.Helper;
@@ -17,7 +26,7 @@ import dk.aau.cs.giraf.oasis.lib.models.Profile;
 import dk.aau.cs.giraf.oasis.lib.models.ProfileCategory;
 
 
-public class CreateCategoryActivity extends GirafActivity {
+public class CreateCategoryActivity extends GirafActivity implements ShowcaseManager.ShowcaseCapable {
 
     // Constants
     public static final String CATEGORY_CREATED_ID_TAG = "CATEGORY_CREATED_ID_TAG";
@@ -25,6 +34,7 @@ public class CreateCategoryActivity extends GirafActivity {
     public static final String PICTO_SEARCH_IDS_TAG = "checkoutIds";
     public static final String PICTO_SEARCH_PURPOSE_TAG = "purpose";
     public static final String PICTO_SEARCH_SINGLE_TAG = "single";
+    private static final String IS_FIRST_RUN_KEY = "IS_FIRST_RUN_KEY_CREATE_CATEGORY_ACTIVITY";
     private Pictogram iconPictogram;
 
     // Helper that will be used to fetch profiles
@@ -34,6 +44,17 @@ public class CreateCategoryActivity extends GirafActivity {
     private GirafPictogramItemView iconView;
 
     private Intent returnIntent = new Intent();
+
+    /**
+     * Used to showcase views
+     */
+    private ShowcaseManager showcaseManager;
+    private boolean isFirstRun;
+
+    /**
+     * Used in onResume and onPause for handling showcaseview for first run
+     */
+    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -100,6 +121,17 @@ public class CreateCategoryActivity extends GirafActivity {
             }
 
         });
+
+        final GirafButton helpGirafButton = new GirafButton(this, getResources().getDrawable(R.drawable.icon_help));
+        helpGirafButton.setId(R.id.help_button);
+        helpGirafButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CreateCategoryActivity.this.toggleShowcase();
+            }
+        });
+
+        addGirafButtonToActionBar(helpGirafButton, GirafActivity.RIGHT);
     }
 
     public void onIconClick(View view) {
@@ -117,6 +149,35 @@ public class CreateCategoryActivity extends GirafActivity {
 
             Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
             // TODO - Open notify dialog instead of toast
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Check if this is the first run of the app
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        this.isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
+
+        // If it is the first run display ShowcaseView
+        if (isFirstRun) {
+
+            final ViewGroup rootView = (ViewGroup) this.findViewById(android.R.id.content);
+            rootView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    showShowcase();
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(IS_FIRST_RUN_KEY, false);
+                    editor.commit();
+
+                    synchronized (this) {
+                        globalLayoutListener = null;
+                        rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
         }
     }
 
@@ -155,6 +216,120 @@ public class CreateCategoryActivity extends GirafActivity {
                     }
                 }
                 break;
+        }
+    }
+
+    /*
+    * Shows a quick walkthrough of the functionality
+    * */
+
+    @Override
+    public synchronized void showShowcase() {
+
+        // Targets for the Showcase
+        final ViewTarget choosePictogramAsIconTarget = new ViewTarget(R.id.create_category_pictogram, this, 1.5f);
+        final ViewTarget chooseCategoryTitle = new ViewTarget(R.id.create_category_title, this, 1.5f);
+        final ViewTarget createCategoryButtonTarget = new ViewTarget(R.id.category_create_button, this, 1.5f);
+
+        // Create a relative location for the next button
+        final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        final int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        // Calculate position for the help text
+        final int textX = this.findViewById(R.id.create_category_pictogram).getLayoutParams().width + margin * 2;
+        final int textY = getResources().getDisplayMetrics().heightPixels / 2 + margin;
+
+        showcaseManager = new ShowcaseManager();
+
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+
+                showcaseView.setShowcase(choosePictogramAsIconTarget, true);
+                showcaseView.setContentTitle(getString(R.string.create_category_pick_icon_showcase_help_title_text));
+                showcaseView.setContentText(getString(R.string.create_category_pick_icon_showcase_help_content_text));
+                showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                showcaseView.setButtonPosition(lps);
+                showcaseView.setTextPostion(textX, textY);
+            }
+        });
+
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+                showcaseView.setShowcase(chooseCategoryTitle, true);
+                showcaseView.setContentTitle(getString(R.string.create_category_naming_showcase_help_title_text));
+                showcaseView.setContentText(getString(R.string.create_category_naming_showcase_help_content_text));
+                showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                showcaseView.setButtonPosition(lps);
+                showcaseView.setTextPostion(textX, textY);
+            }
+        });
+
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+                showcaseView.setShowcase(createCategoryButtonTarget, true);
+                showcaseView.setContentTitle(getString(R.string.create_category_button_showcase_help_titel_text));
+                showcaseView.setContentText(getString(R.string.create_category_button_showcase_help_content_text));
+
+                if (!isFirstRun) {
+                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
+                } else {
+                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                }
+                showcaseView.setButtonPosition(lps);
+                showcaseView.setTextPostion(textX, textY);
+            }
+        });
+
+        if (isFirstRun) {
+            final ViewTarget helpButtonTarget = new ViewTarget(this.getActionBar().getCustomView().findViewById(R.id.help_button), 1.5f);
+
+            showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+                @Override
+                public void configShowCaseView(final ShowcaseView showcaseView) {
+                    showcaseView.setShowcase(helpButtonTarget, true);
+                    showcaseView.setContentTitle("Hjælpe knap");
+                    showcaseView.setContentText("Hvis du bliver i tvivl kan du altid få hjælp her");
+                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
+                    showcaseView.setButtonPosition(lps);
+                    showcaseView.setTextPostion(textX, textY);
+                }
+            });
+        }
+
+        ShowcaseManager.OnDoneListener onDoneCallback = new ShowcaseManager.OnDoneListener() {
+            @Override
+            public void onDone(ShowcaseView showcaseView) {
+                showcaseManager = null;
+                isFirstRun = false;
+            }
+        };
+        showcaseManager.setOnDoneListener(onDoneCallback);
+
+        showcaseManager.start(this);
+    }
+
+    @Override
+    public synchronized void hideShowcase() {
+
+        if (showcaseManager != null) {
+            showcaseManager.stop();
+            showcaseManager = null;
+        }
+    }
+
+    @Override
+    public synchronized void toggleShowcase() {
+
+        if (showcaseManager != null) {
+            hideShowcase();
+        } else {
+            showShowcase();
         }
     }
 }

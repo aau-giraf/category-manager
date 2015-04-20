@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
@@ -67,7 +66,12 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
     private Set<Pictogram> selectedPictograms = null;
     private Category selectedCategory = null;
 
+    /**
+     * Used to showcase views
+     */
     private ShowcaseManager showcaseManager;
+    private boolean isFirstRun;
+
 
     private boolean isChildCategory;
 
@@ -298,7 +302,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
         // Check if this is the first run of the app
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-        final boolean isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
+        this.isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
 
         // If it is the first run display ShowcaseView
         if (isFirstRun) {
@@ -373,8 +377,16 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
     @Override
     public void showShowcase() {
 
-        // Targets for the Showcase
+        // Create a relative location for the next button
+        final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         final int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        // Calculate position for the help text
+        final int textX = getActivity().findViewById(R.id.category_sidebar).getLayoutParams().width + margin * 2;
+        final int textY = getResources().getDisplayMetrics().heightPixels / 2 + margin;
 
         // Create a relative location for the next button
         final RelativeLayout.LayoutParams rightButtonParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -387,6 +399,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         centerRightButtonParams.addRule(RelativeLayout.CENTER_VERTICAL);
         centerRightButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         centerRightButtonParams.setMargins(margin, margin, margin, margin);
+
 
         showcaseManager = new ShowcaseManager();
 
@@ -497,18 +510,39 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
                     showcaseView.setTextPostion(textXPosition, textYPosition);
                 }
+                if (!isFirstRun) {
+                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
+                } else {
+                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                }
 
-                showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
                 showcaseView.setHideOnTouchOutside(true);
                 showcaseView.setButtonPosition(rightButtonParams);
 
             }
         });
 
+        if (isFirstRun) {
+            final ViewTarget helpButtonTarget = new ViewTarget(getActivity().getActionBar().getCustomView().findViewById(R.id.help_button), 1.5f);
+
+            showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+                @Override
+                public void configShowCaseView(final ShowcaseView showcaseView) {
+                    showcaseView.setShowcase(helpButtonTarget, true);
+                    showcaseView.setContentTitle("Hjælpe knap");
+                    showcaseView.setContentText("Hvis du bliver i tvivl kan du altid få hjælp her");
+                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
+                    showcaseView.setButtonPosition(lps);
+                    showcaseView.setTextPostion(textX, textY);
+                }
+            });
+        }
+
         showcaseManager.setOnDoneListener(new ShowcaseManager.OnDoneListener() {
             @Override
             public void onDone(ShowcaseView showcaseView) {
                 showcaseManager = null;
+                isFirstRun = false;
             }
         });
 

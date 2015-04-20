@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
@@ -30,8 +29,12 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
 
     private static final String IS_FIRST_RUN_KEY = "IS_FIRST_RUN_KEY_INITIAL_FRAGMENT";
 
-    private ShowcaseManager showcaseManager;
     private OnFragmentInteractionListener mListener;
+
+    /**
+     * Used to showcase views
+     */
+    private ShowcaseManager showcaseManager;
     private boolean isFirstRun;
 
     /**
@@ -100,6 +103,7 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean(IS_FIRST_RUN_KEY, false);
                     editor.commit();
+
 
                     synchronized (InitialFragment.this) {
                         globalLayoutListener = null;
@@ -200,6 +204,7 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
             @Override
             public void onDone(ShowcaseView showcaseView) {
                 showcaseManager = null;
+                isFirstRun = false;
             }
         });
 
