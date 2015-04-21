@@ -1,10 +1,11 @@
 package dk.aau.cs.giraf.categorymanager;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.GridLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +18,9 @@ import dk.aau.cs.giraf.gui.GirafPictogramItemView;
  */
 public class PictogramAdapter extends BaseAdapter {
     private List<Pictogram> pictogramList;
-    private final LayoutInflater inflater;
     private final Context context;
 
-    public PictogramAdapter(List<Pictogram> pictogramList, Context context) {
+    public PictogramAdapter(List<Pictogram> pictogramList, final Context context) {
         super();
 
         if(pictogramList == null) {
@@ -31,9 +31,6 @@ public class PictogramAdapter extends BaseAdapter {
         }
 
         this.context = context;
-
-        // Save the layout inflater. Will be used in {@link getView()}
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -56,8 +53,25 @@ public class PictogramAdapter extends BaseAdapter {
         // Find the pictogram to show
         final Pictogram pictogram = pictogramList.get(position);
 
-        // Create the pictogram view and return it
-        return new GirafPictogramItemView(context, pictogram);
+        // Check if the view is in memory (reuse)
+        if(convertView == null) {
+            // Create the pictogram view and return it
+            GirafPictogramItemView girafPictogramItemView = new GirafPictogramItemView(context, pictogram, pictogram.getName());
+            girafPictogramItemView.setLayoutParams(new AbsListView.LayoutParams(GridLayout.LayoutParams.MATCH_PARENT, GridLayout.LayoutParams.WRAP_CONTENT));
+
+            return girafPictogramItemView;
+        }
+
+        // Reuse the view that was previously discarded.
+        // Note that this is a "random" view recovered from memory.
+        else {
+            // Update the old view accordingly to the provided pictogram
+            GirafPictogramItemView girafPictogramItemView = (GirafPictogramItemView) convertView;
+            girafPictogramItemView.resetPictogramView();
+            girafPictogramItemView.setImageModel(pictogram);
+            girafPictogramItemView.setTitle(pictogram.getName());
+            return girafPictogramItemView;
+        }
     }
 
     /**

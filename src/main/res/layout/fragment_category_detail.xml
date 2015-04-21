@@ -74,7 +74,9 @@
         android:horizontalSpacing="30dp"
         android:stretchMode="columnWidth"
         android:gravity="center"
-        android:padding="20dp"/>
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:clipToPadding="false"/>
 
     <TextView
         android:id="@+id/empty_gridview_text"

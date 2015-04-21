@@ -81,7 +81,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
 
         // TODO - Use placeholder pictogram instead of finding pictogram with id 416
         Pictogram pictogramPlaceholder = helper.pictogramHelper.getPictogramById(416);
-        iconView.setPictogram(pictogramPlaceholder);
+        iconView.setImageModel(pictogramPlaceholder);
         iconView.hideTitle();
 
         // Set the default result (if something goes wrong or the user canceled the process)
@@ -211,7 +211,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
                             iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
 
                             // Update the gui with the found pictogram
-                            iconView.setPictogram(iconPictogram);
+                            iconView.setImageModel(iconPictogram);
                         }
                     }
                 }
