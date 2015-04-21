@@ -58,12 +58,11 @@ public class ShowcaseView extends RelativeLayout
     private final ShotStateStore shotStateStore;
 
     private boolean hasManualPostion = false;
-    private int xPosition, yPosition, width;
+    private int xPosition, yPosition;
 
     // Showcase metrics
     private int showcaseX = -1;
     private int showcaseY = -1;
-    private float scaleMultiplier = 1f;
 
     // Touch items
     private boolean hasCustomClickListener = false;
@@ -149,7 +148,6 @@ public class ShowcaseView extends RelativeLayout
     void setShowcasePosition(final Point point) {
         setShowcasePosition(point.x, point.y);
     }
-
 
     void setShowcasePosition(final int x, final int y) {
 
@@ -385,10 +383,6 @@ public class ShowcaseView extends RelativeLayout
     @Override
     public void setContentText(CharSequence text) {
         textDrawer.setContentText(text);
-    }
-
-    public void setScaleMultiplier(float scaleMultiplier) {
-        this.scaleMultiplier = scaleMultiplier;
     }
 
     public void hideButton() {
