@@ -18,6 +18,7 @@
     <!-- Error message to output whenever the application is started incorrectly (no user data)
          Arg #1: The name of the application -->
     <string name="error_must_be_started_from_giraf">"%1$s skal startes fra GIRAF"</string>
+    <string name="error_must_be_started_with_valid_profile">"%1$s blev startet med en ugyldig profil"</string>
 
     <!-- Error message to tell the user that she needs to select a pictogram for an icon for the category -->
     <string name="create_category_no_pictogram_selected">Du skal vælge et piktogram til kategorien</string>

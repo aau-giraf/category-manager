@@ -198,15 +198,15 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         final Bundle extras = getIntent().getExtras();
 
         // Test if the activity was started correctly
-        if (extras == null) {
+        if (extras == null || (!extras.containsKey(getString(R.string.current_child_id)) && !extras.containsKey(getString(R.string.current_guardian_id)))) {
             Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_from_giraf), getString(R.string.categorymanager)), Toast.LENGTH_SHORT).show();
 
             // The activity was not started correctly, now finish it!
             finish();
             return;
         } else {
-            int childId = extras.getInt(getString(R.string.current_child_id));
-            int guardianId = extras.getInt(getString(R.string.current_guardian_id));
+            final int childId = extras.getInt(getString(R.string.current_child_id));
+            final int guardianId = extras.getInt(getString(R.string.current_guardian_id));
 
             if (childId != -1) {
                 childProfile = helper.profilesHelper.getProfileById(childId);
@@ -217,15 +217,24 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             }
         }
 
-        Profile currentUserProfile = getCurrentUser();
+        final Profile currentUserProfile = getCurrentUser();
+
+        if(currentUserProfile == null)
+        {
+            Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_with_valid_profile), getString(R.string.categorymanager)), Toast.LENGTH_SHORT).show();
+
+            // The activity was not started correctly, now finish it!
+            finish();
+            return;
+        }
 
         // Change the title of the action-bar and content of right side depending on what type of categories are being modified
-        if (currentUserProfile != null && getCurrentUser().getRole() == Profile.Roles.CHILD) {
+        if (currentUserProfile.getRole() == Profile.Roles.CHILD) {
             // Change the title bar text
             setActionBarTitle(String.format(getString(R.string.categories_for), currentUserProfile.getName()));
 
             // Set the content of the frame layout to the default fragment
-            setContent(InitialFragmentSpecificUser.newInstance(getCurrentUser()), R.id.categorytool_framelayout);
+            setContent(InitialFragmentSpecificUser.newInstance(currentUserProfile), R.id.categorytool_framelayout);
         } else {
             // Find the department for the guardian
             Department department = helper.departmentsHelper.getDepartmentById(currentUserProfile.getDepartmentId());
