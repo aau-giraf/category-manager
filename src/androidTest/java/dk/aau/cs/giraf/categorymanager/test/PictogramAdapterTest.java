@@ -14,9 +14,6 @@ import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 public class PictogramAdapterTest extends ApplicationTestCase<Application> {
     private PictogramAdapter adapter;
 
-    private Pictogram p1;
-    private Pictogram p2;
-
     public PictogramAdapterTest() {
         super(Application.class);
     }
@@ -24,6 +21,8 @@ public class PictogramAdapterTest extends ApplicationTestCase<Application> {
     protected void setUp() throws Exception {
         super.setUp();
         ArrayList<Pictogram> data = new ArrayList<Pictogram>();
+
+        Pictogram p1, p2;
 
         p1 = new Pictogram();
         p1.setName("p1");

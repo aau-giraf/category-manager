@@ -108,7 +108,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
                 final List<Pictogram> pictogramList = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
 
-                final PictogramAdapter pictogramAdapter = new PictogramAdapter(pictogramList, CategoryDetailFragment.this.getActivity()) {
+                return new PictogramAdapter(pictogramList, CategoryDetailFragment.this.getActivity()) {
                     // Set pictogram to be selected if it is in the set of selected pictogram(s)
                     @Override
                     public View getView(final int position, final View convertView, final ViewGroup parent) {
@@ -123,8 +123,6 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
                         return girafPictogram;
                     }
                 };
-
-                return pictogramAdapter;
             }
 
             return null;

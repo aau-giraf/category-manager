@@ -15,8 +15,8 @@ import dk.aau.cs.giraf.oasis.lib.models.Category;
  */
 public class CategoryAdapter extends BaseAdapter {
     private final Context context;
-    private List<Category> categoryList;
-    private SelectedCategoryAware selectedCategoryAware;
+    private final List<Category> categoryList;
+    private final SelectedCategoryAware selectedCategoryAware;
 
     private static final int CATEGORY_PADDING = 20;
 

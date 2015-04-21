@@ -27,7 +27,7 @@ class AppCompatReflector implements Reflector {
 
     private Activity mActivity;
 
-    public AppCompatReflector(Activity activity) {
+    public AppCompatReflector(final Activity activity) {
         mActivity = activity;
     }
 

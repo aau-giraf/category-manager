@@ -27,7 +27,7 @@ class ActionBarReflector implements Reflector {
 
     private Activity mActivity;
 
-    public ActionBarReflector(Activity activity) {
+    public ActionBarReflector(final Activity activity) {
         mActivity = activity;
     }
 

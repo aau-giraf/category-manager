@@ -73,17 +73,14 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_initial, container, false);
 
-        return view;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_initial, container, false);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-
     }
 
     @Override
