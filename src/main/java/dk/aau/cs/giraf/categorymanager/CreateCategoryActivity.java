@@ -69,7 +69,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
 
         // Test if the activity was started correctly
         if (extras == null) {
-            Toast.makeText(this, "The activity was not started correctly", Toast.LENGTH_LONG);
+            Toast.makeText(this, "The activity was not started correctly", Toast.LENGTH_LONG).show();
         } else {
             final int guardianId = extras.getInt(getString(R.string.current_guardian_id));
 
