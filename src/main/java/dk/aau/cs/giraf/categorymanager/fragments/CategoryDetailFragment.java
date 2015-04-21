@@ -21,6 +21,7 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.Inflater;
 
 import dk.aau.cs.giraf.categorymanager.CategoryActivity;
 import dk.aau.cs.giraf.categorymanager.PictogramAdapter;
@@ -57,6 +58,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
     private ViewGroup categoryDetailLayout;
     private GridView pictogramGrid;
+    private ProgressBar loadingPictogramsIndicator;
 
     private LoadPictogramTask loadPictogramTask;
 
@@ -92,6 +94,10 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(new ProgressBar(CategoryDetailFragment.this.getActivity()));
+            loadingPictogramsIndicator = (ProgressBar) categoryDetailLayout.findViewById(R.id.loading_pictograms_indicator);
+
+            // Show the loading indicator
+            loadingPictogramsIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -132,8 +138,10 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(categoryDetailLayout.findViewById(R.id.empty_gridview_text));
-
             pictogramGrid.setAdapter(result);
+
+            // Hide the loading indicator
+            loadingPictogramsIndicator.setVisibility(View.GONE);
         }
 
     }
