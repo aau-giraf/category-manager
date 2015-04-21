@@ -111,12 +111,12 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
                 // If PictoSearch returned a pictogram, update the view. Otherwise set it to the regular pictogram
                 if(changedPictogram != null) {
-                    girafPictogram.setPictogram(changedPictogram);
+                    girafPictogram.setImageModel(changedPictogram);
                 } else {
                     Pictogram temp = new Pictogram();
                     temp.setName(getSelectedCategory().getName());
                     temp.setImage(getSelectedCategory().getImage());
-                    girafPictogram.setPictogram(temp);
+                    girafPictogram.setImageModel(temp);
                 }
 
                 // Hide the title of the pictogram.
