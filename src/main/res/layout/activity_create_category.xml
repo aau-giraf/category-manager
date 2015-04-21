@@ -16,12 +16,10 @@
 
         <dk.aau.cs.giraf.gui.GirafPictogramItemView
             android:id="@+id/create_category_pictogram"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:adjustViewBounds="true"
-            android:onClick="onIconClick"
-            android:scaleType="center" />
+            android:onClick="onIconClick" />
 
         <EditText
             android:id="@+id/create_category_title"

@@ -3,6 +3,7 @@ package dk.aau.cs.giraf.categorymanager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -68,7 +69,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
 
         // Test if the activity was started correctly
         if (extras == null) {
-            Toast.makeText(this, "The activity was not started correctly", Toast.LENGTH_LONG);
+            Toast.makeText(this, "The activity was not started correctly", Toast.LENGTH_LONG).show();
         } else {
             final int guardianId = extras.getInt(getString(R.string.current_guardian_id));
 
@@ -79,10 +80,10 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
 
         iconView = (GirafPictogramItemView) findViewById(R.id.create_category_pictogram);
 
-        // TODO - Use placeholder pictogram instead of finding pictogram with id 416
-        Pictogram pictogramPlaceholder = helper.pictogramHelper.getPictogramById(416);
+        // Create a "template" pictogram
+        final Pictogram pictogramPlaceholder = new Pictogram();
+        pictogramPlaceholder.setImage(BitmapFactory.decodeResource(this.getResources(), R.drawable.icon_add));
         iconView.setImageModel(pictogramPlaceholder);
-        iconView.hideTitle();
 
         // Set the default result (if something goes wrong or the user canceled the process)
         setResult(RESULT_CANCELED, returnIntent);
