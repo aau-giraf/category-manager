@@ -21,8 +21,8 @@ import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.categorymanager.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.categorymanager.fragments.InitialFragment;
 import dk.aau.cs.giraf.categorymanager.fragments.InitialFragmentSpecificUser;
-import dk.aau.cs.giraf.gui.GProfileSelector;
 import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.gui.GProfileSelector;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflatableDialog;
@@ -58,8 +58,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
-    static final String INTENT_CURRENT_CHILD_ID = "currentChildID";
-    static final String INTENT_CURRENT_GUARDIAN_ID = "currentGuardianID";
 
     // Helper that will be used to fetch profiles
     private final Helper helper = new Helper(this);
@@ -110,7 +108,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 categoryTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
 
                 // If PictoSearch returned a pictogram, update the view. Otherwise set it to the regular pictogram
-                if(changedPictogram != null) {
+                if (changedPictogram != null) {
                     girafPictogram.setImageModel(changedPictogram);
                 } else {
                     Pictogram temp = new Pictogram();
@@ -191,6 +189,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_category);
         TextView empty_list_item = (TextView) this.findViewById(R.id.empty_list_item);
         empty_list_item.setText(R.string.no_categories_text);
@@ -206,8 +205,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             finish();
             return;
         } else {
-            int childId = extras.getInt(INTENT_CURRENT_CHILD_ID);
-            int guardianId = extras.getInt(INTENT_CURRENT_GUARDIAN_ID);
+            int childId = extras.getInt(getString(R.string.current_child_id));
+            int guardianId = extras.getInt(getString(R.string.current_guardian_id));
 
             if (childId != -1) {
                 childProfile = helper.profilesHelper.getProfileById(childId);
@@ -285,8 +284,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
                                     // Start a new activity with the selected child
                                     Intent intent = new Intent(CategoryActivity.this, CategoryActivity.class);
-                                    intent.putExtra(INTENT_CURRENT_CHILD_ID, selectedProfile.getId());
-                                    intent.putExtra(INTENT_CURRENT_GUARDIAN_ID, guardianProfile.getId());
+                                    intent.putExtra(getString(R.string.current_child_id), selectedProfile.getId());
+                                    intent.putExtra(getString(R.string.current_guardian_id), guardianProfile.getId());
                                     startActivity(intent);
                                 }
                             }
@@ -575,7 +574,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             case GET_MULTIPLE_PICTOGRAMS: {
 
                 // Make sure the request was successful
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Bundle extras = data.getExtras(); // Get the data from the intent
 
                     // Check if there was returned any pictogram ids

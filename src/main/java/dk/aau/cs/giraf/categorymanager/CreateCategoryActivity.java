@@ -70,7 +70,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
         if (extras == null) {
             Toast.makeText(this, "The activity was not started correctly", Toast.LENGTH_LONG);
         } else {
-            final int guardianId = extras.getInt(CategoryActivity.INTENT_CURRENT_GUARDIAN_ID);
+            final int guardianId = extras.getInt(getString(R.string.current_guardian_id));
 
             if (guardianId != -1) {
                 guardianProfile = helper.profilesHelper.getProfileById(guardianId);

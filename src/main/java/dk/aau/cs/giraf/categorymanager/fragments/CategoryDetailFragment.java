@@ -88,7 +88,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
     /**
      * Class used to load pictograms into the pictogram grid
      */
-    private class LoadPictogramTask extends AsyncTask<Void, Void, List<Pictogram>> {
+    private class LoadPictogramTask extends AsyncTask<Void, Void, PictogramAdapter> {
 
         @Override
         protected void onPreExecute() {
@@ -96,14 +96,18 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
             // Reset selected pictogram
             selectedPictograms.clear();
+            pictogramGrid.setAdapter(null);
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(new ProgressBar(CategoryDetailFragment.this.getActivity()));
         }
 
         @Override
-        protected List<Pictogram> doInBackground(Void... params) {
+        protected PictogramAdapter doInBackground(Void... params) {
+
             final Bundle arguments = getArguments();
+
+            System.gc();
 
             if (arguments != null) {
                 final long selectedCategoryId = arguments.getLong(CATEGORY_ID_TAG);
@@ -112,33 +116,34 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
                 final List<Pictogram> pictogramList = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
 
-                return pictogramList;
+                final PictogramAdapter pictogramAdapter = new PictogramAdapter(pictogramList, CategoryDetailFragment.this.getActivity()) {
+                    // Set pictogram to be selected if it is in the set of selected pictogram(s)
+                    @Override
+                    public View getView(final int position, final View convertView, final ViewGroup parent) {
+
+                        final GirafPictogramItemView girafPictogram = (GirafPictogramItemView) super.getView(position, convertView, parent);
+
+                        // Check if the pictogram is in the selected pictogram(s) set
+                        if (selectedPictograms.contains(this.getItem(position))) {
+                            girafPictogram.setChecked(true);
+                        }
+
+                        return girafPictogram;
+                    }
+                };
+
+                return pictogramAdapter;
             }
 
-            return new ArrayList<Pictogram>();
+            return null;
         }
 
-        protected void onPostExecute(final List<Pictogram> result) {
-
-            final PictogramAdapter pictogramAdapter = new PictogramAdapter(result, CategoryDetailFragment.this.getActivity()) {
-                // Set pictogram to be selected if it is in the set of selected pictogram(s)
-                @Override
-                public View getView(final int position, final View convertView, final ViewGroup parent) {
-                    final GirafPictogramItemView girafPictogram = (GirafPictogramItemView) super.getView(position, convertView, parent);
-
-                    // Check if the pictogram is in the selected pictogram(s) set
-                    if (selectedPictograms.contains(this.getItem(position))) {
-                        girafPictogram.setChecked(true);
-                    }
-
-                    return girafPictogram;
-                }
-            };
-
-            pictogramGrid.setAdapter(pictogramAdapter);
+        protected void onPostExecute(final PictogramAdapter result) {
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(categoryDetailLayout.findViewById(R.id.empty_gridview_text));
+
+            pictogramGrid.setAdapter(result);
         }
 
     }
@@ -187,6 +192,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         categoryDetailLayout = (ViewGroup) inflater.inflate(R.layout.fragment_category_detail, container, false);
 
@@ -271,8 +277,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         super.onStart();
 
         // Start loading the pictograms of this category when the fragment is started
-        loadPictogramTask = new LoadPictogramTask();
-        loadPictogramTask.execute();
+        loadPictograms();
     }
 
     @Override
@@ -347,10 +352,20 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
                 }
 
                 // Reload the list of pictograms
-                loadPictogramTask = new LoadPictogramTask();
-                loadPictogramTask.execute();
+                loadPictograms();
             }
         }
+    }
+
+    public synchronized void loadPictograms()
+    {
+        if(loadPictogramTask != null)
+        {
+            loadPictogramTask.cancel(true);
+        }
+
+        loadPictogramTask = new LoadPictogramTask();
+        loadPictogramTask.execute();
     }
 
     @Override
