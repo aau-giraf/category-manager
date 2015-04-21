@@ -1,7 +1,6 @@
 package dk.aau.cs.giraf.categorymanager;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,7 +9,6 @@ import java.util.List;
 
 import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 import dk.aau.cs.giraf.oasis.lib.models.Category;
-import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 
 /**
  * Created on 24/03/15.
@@ -18,7 +16,6 @@ import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
 public class CategoryAdapter extends BaseAdapter {
     private final Context context;
     private List<Category> categoryList;
-    private final LayoutInflater inflater;
     private SelectedCategoryAware selectedCategoryAware;
 
     private static final int CATEGORY_PADDING = 20;
@@ -77,9 +74,6 @@ public class CategoryAdapter extends BaseAdapter {
         this.context = context;
         this.selectedCategoryAware = selectedCategoryAware;
         this.categoryList = categoryList;
-
-        // Save the layout inflater. Will be used in {@link getView()}
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     /**
