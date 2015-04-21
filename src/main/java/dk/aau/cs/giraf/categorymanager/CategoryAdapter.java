@@ -122,22 +122,12 @@ public class CategoryAdapter extends BaseAdapter {
         // Find the category in question
         final Category category = categoryList.get(position);
 
-        // Create pictogram that looks like the category
-        Pictogram pictogram = new Pictogram();
-        pictogram.setName(category.getName());
-        pictogram.setImage(category.getImage());
-
         // Create a new UI pictogram
-        GirafPictogramItemView view = new GirafPictogramItemView(context, pictogram);
+        GirafPictogramItemView view = new GirafPictogramItemView(context, category, category.getName());
 
         // Add a small bit of padding. This will allow us to indicate that the category is selected
         int paddingInDP = (int) (CATEGORY_PADDING * context.getResources().getDisplayMetrics().density);
         view.setPadding(paddingInDP, paddingInDP, paddingInDP, paddingInDP);
-
-        // Center the pictogram/category by making it as wide as the parent container (Content of this view is centered)
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        view.requestLayout();
 
         // Check if the user provided a SelectedCategoryAware
         if (selectedCategoryAware != null) {

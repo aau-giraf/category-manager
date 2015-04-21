@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.ActionMode;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -118,8 +119,8 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
             final PictogramAdapter pictogramAdapter = new PictogramAdapter(result, CategoryDetailFragment.this.getActivity()) {
                 // Set pictogram to be selected if it is in the set of selected pictogram(s)
                 @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    GirafPictogramItemView girafPictogram = (GirafPictogramItemView) super.getView(position, convertView, parent);
+                public View getView(final int position, final View convertView, final ViewGroup parent) {
+                    final GirafPictogramItemView girafPictogram = (GirafPictogramItemView) super.getView(position, convertView, parent);
 
                     // Check if the pictogram is in the selected pictogram(s) set
                     if (selectedPictograms.contains(this.getItem(position))) {
@@ -180,7 +181,6 @@ public class CategoryDetailFragment extends Fragment implements OnShowcaseEventL
 
         selectedPictograms = new HashSet<Pictogram>();
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
