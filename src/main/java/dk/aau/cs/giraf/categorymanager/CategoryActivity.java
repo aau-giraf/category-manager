@@ -2,6 +2,7 @@ package dk.aau.cs.giraf.categorymanager;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dk.aau.cs.giraf.activity.GirafActivity;
@@ -28,14 +30,16 @@ import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflatableDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
 import dk.aau.cs.giraf.gui.GirafPictogramItemView;
+import dk.aau.cs.giraf.gui.GirafProfileSelectorDialog;
 import dk.aau.cs.giraf.dblib.Helper;
 import dk.aau.cs.giraf.dblib.models.Category;
 import dk.aau.cs.giraf.dblib.models.Department;
 import dk.aau.cs.giraf.dblib.models.Pictogram;
 import dk.aau.cs.giraf.dblib.models.PictogramCategory;
 import dk.aau.cs.giraf.dblib.models.Profile;
+import dk.aau.cs.giraf.dblib.models.ProfileCategory;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification, dk.aau.cs.giraf.categorymanager.GirafProfileSelectorDialog.OnReturnProfilesListener{
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 101;
@@ -58,6 +62,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
+    private static final int COPY_TO_USER_DIALOG_ID = 109;
+    private static final String COPY_TO_USER_DIALOG_TAG = "COPY_TO_USER_DIALOG_TAG";
 
     // Helper that will be used to fetch profiles
     private final Helper helper = new Helper(this);
@@ -129,6 +135,56 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 }
 
                 break;
+        }
+    }
+
+    @Override
+    public void onProfilesSelected(int i, List<Profile> profiles) {
+
+        if(i == COPY_TO_USER_DIALOG_ID) {
+
+            // The selected category to be copied
+            Category selectedCategory = getSelectedCategory();
+
+            // The pictograms of the selected category to be copied
+            List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
+
+            for (Profile child : profiles) {
+
+                // Check if the child already have a copy of this category
+                List<Category> ownedCategories = helper.categoryHelper.getCategoriesByProfileId(child.getId());
+
+                boolean categoryAlreadyCopied = false;
+                for (Category ownedCategory : ownedCategories) {
+                    if (ownedCategory.getSuperCategoryId() == selectedCategory.getId()) {
+                        categoryAlreadyCopied = true;
+                    }
+                }
+
+                // If the category was already copied
+                if (categoryAlreadyCopied) {
+                    break;
+                }
+
+                // Create a copy of the selected category
+                Category categoryCopy = new Category();
+
+                categoryCopy.setName(selectedCategory.getName());
+                categoryCopy.setColour(selectedCategory.getColour());
+                categoryCopy.setImage(selectedCategory.getImage());
+                categoryCopy.setSuperCategoryId(selectedCategory.getId());
+
+                // Insert the new category and get its assigned identifier
+                int latestCategoryId = helper.categoryHelper.insertCategory(categoryCopy);
+
+                // Insert the same pictograms to the new category
+                for (Pictogram pictogram : pictograms) {
+                    helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogram.getId(), categoryCopy.getId()));
+                }
+
+                // Insert the relation between the new category and the associated child
+                helper.profileCategoryController.insert(new ProfileCategory(child.getId(), latestCategoryId));
+            }
         }
     }
 
@@ -367,6 +423,34 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
 
     /**
+     * Called when the pictogram is clicked
+     *
+     * @param view needed for onClickListner
+     */
+    public void onEditCategoryPictogramClicked(View view) {
+
+        // Reset the returned value
+        changedPictogram = null;
+        changedText = categoryTitle.getText().toString();
+
+        Intent request = new Intent(); // A intent request
+
+        // Try to send the intent
+        try {
+            // Sets properties on the intent
+            request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
+            request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_SINGLE_TAG);
+
+            // Sends the intent
+            startActivityForResult(request, GET_SINGLE_PICTOGRAM);
+        } catch (Exception e) {
+
+            Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
+            // TODO - Open notify dialog instead of toast
+        }
+    }
+
+    /**
      * Called when a category is selected and the delete button is pressed
      */
     public void onDeleteCategoryClicked(final View view) {
@@ -408,6 +492,17 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     }
 
     /**
+     * Called when a category is selected and the user settings buttons is pressed
+     *
+     * @param view needed for onClickListner
+     */
+    public void onUserSettingsButtonClicked(final View view) {
+
+        dk.aau.cs.giraf.categorymanager.GirafProfileSelectorDialog selectorDialog = dk.aau.cs.giraf.categorymanager.GirafProfileSelectorDialog.newInstance(this, getCurrentUser().getId(), false, true, "Vælg hvem du vil kopiere kategorien " + getSelectedCategory().getName() + " ud til", COPY_TO_USER_DIALOG_ID);
+        selectorDialog.show(getSupportFragmentManager(),COPY_TO_USER_DIALOG_TAG);
+    }
+
+    /**
      * Called when a category is selected and when the settings buttons is pressed
      *
      * @param view needed for onClickListner
@@ -421,34 +516,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         // Sho the dialog
         editDialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
 
-    }
-
-    /**
-     * Called when the pictogram is clicked
-     *
-     * @param view needed for onClickListner
-     */
-    public void onEditCategoryPictogramClicked(View view) {
-
-        // Reset the returned value
-        changedPictogram = null;
-        changedText = categoryTitle.getText().toString();
-
-        Intent request = new Intent(); // A intent request
-
-        // Try to send the intent
-        try {
-            // Sets properties on the intent
-            request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
-            request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_SINGLE_TAG);
-
-            // Sends the intent
-            startActivityForResult(request, GET_SINGLE_PICTOGRAM);
-        } catch (Exception e) {
-
-            Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
-            // TODO - Open notify dialog instead of toast
-        }
     }
 
     /**
@@ -476,7 +543,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     /*
      * Methods required from interfaces below
-     *//**/
+     * */
 
     /**
      * Called whenever an item in the category list is clicked/selected

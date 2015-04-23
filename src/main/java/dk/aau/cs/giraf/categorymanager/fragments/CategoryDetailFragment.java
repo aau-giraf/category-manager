@@ -21,7 +21,6 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.Inflater;
 
 import dk.aau.cs.giraf.categorymanager.CategoryActivity;
 import dk.aau.cs.giraf.categorymanager.PictogramAdapter;
@@ -241,7 +240,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         // Find the category-management buttons and hide them if the current category is a child-category
         if (isChildCategory) {
             // Hide the copy categories to user-button
-            final GirafButton copyToUserButton = (GirafButton) categoryDetailLayout.findViewById(R.id.copyToUserButton);
+            final GirafButton copyToUserButton = (GirafButton) categoryDetailLayout.findViewById(R.id.userSettingsButton);
             copyToUserButton.setEnabled(false);
 
             // Help the user to realize that it is not possible to copy child-categories
@@ -400,7 +399,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
             @Override
             public void configShowCaseView(final ShowcaseView showcaseView) {
 
-                final ViewTarget copyToUserButtonTarget = new ViewTarget(R.id.copyToUserButton, getActivity());
+                final ViewTarget copyToUserButtonTarget = new ViewTarget(R.id.userSettingsButton, getActivity());
 
                 showcaseView.setShowcase(copyToUserButtonTarget, true);
                 showcaseView.setContentTitle(getString(R.string.copy_category_to_user_button_showcase_help_titel_text));

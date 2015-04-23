@@ -82,7 +82,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
 
         // Create a "template" pictogram
         final Pictogram pictogramPlaceholder = new Pictogram();
-        pictogramPlaceholder.setImage(BitmapFactory.decodeResource(this.getResources(), R.drawable.icon_add));
+        pictogramPlaceholder.setImage(BitmapFactory.decodeResource(this.getResources(), R.drawable.icon_change_picto_nodpi));
         iconView.setImageModel(pictogramPlaceholder);
 
         // Set the default result (if something goes wrong or the user canceled the process)
