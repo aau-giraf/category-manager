@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import dk.aau.cs.giraf.categorymanager.R;
-import dk.aau.cs.giraf.oasis.lib.models.Profile;
+import dk.aau.cs.giraf.dblib.models.Profile;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.

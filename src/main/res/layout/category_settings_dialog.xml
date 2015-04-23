@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_centerInParent="true">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,11 +21,11 @@
             android:layout_marginBottom="30dp">
 
             <dk.aau.cs.giraf.gui.GirafPictogramItemView
-                android:id="@+id/category_pictogram"
+                android:id="@+id/editable_pictogram_view"
                 android:layout_width="@dimen/pictogram_width"
                 android:layout_height="@dimen/pictogram_height"
-                android:layout_marginRight="20dp"
-                android:onClick="onEditCategoryPictogramClicked" />
+                android:onClick="onEditCategoryPictogramClicked"
+                app:editable="true"/>
 
             <EditText
                 android:id="@+id/category_edit_title"
@@ -34,7 +34,7 @@
                 android:hint="@string/create_category_edittext_hint"
                 android:singleLine="true"
                 android:inputType="textPersonName"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"/>
 
         </LinearLayout>
 
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 app:text="Slet kategorien"
                 android:layout_marginRight="20dp"
-                android:onClick="onDeleteCategoryClicked" />
+                android:onClick="onDeleteCategoryClicked"/>
 
             <dk.aau.cs.giraf.gui.GirafButton
                 android:layout_width="match_parent"

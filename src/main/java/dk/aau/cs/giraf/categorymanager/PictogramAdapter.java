@@ -10,7 +10,7 @@ import android.widget.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
+import dk.aau.cs.giraf.dblib.models.Pictogram;
 import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 
 /**

@@ -31,9 +31,9 @@ import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
 import dk.aau.cs.giraf.gui.GirafPictogramItemView;
-import dk.aau.cs.giraf.oasis.lib.Helper;
-import dk.aau.cs.giraf.oasis.lib.models.Category;
-import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
+import dk.aau.cs.giraf.dblib.Helper;
+import dk.aau.cs.giraf.dblib.models.Category;
+import dk.aau.cs.giraf.dblib.models.Pictogram;
 import dk.aau.cs.giraf.utilities.GirafScalingUtilities;
 
 /**

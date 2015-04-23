@@ -20,11 +20,11 @@ import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafPictogramItemView;
-import dk.aau.cs.giraf.oasis.lib.Helper;
-import dk.aau.cs.giraf.oasis.lib.models.Category;
-import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
-import dk.aau.cs.giraf.oasis.lib.models.Profile;
-import dk.aau.cs.giraf.oasis.lib.models.ProfileCategory;
+import dk.aau.cs.giraf.dblib.Helper;
+import dk.aau.cs.giraf.dblib.models.Category;
+import dk.aau.cs.giraf.dblib.models.Pictogram;
+import dk.aau.cs.giraf.dblib.models.Profile;
+import dk.aau.cs.giraf.dblib.models.ProfileCategory;
 
 
 public class CreateCategoryActivity extends GirafActivity implements ShowcaseManager.ShowcaseCapable {
@@ -78,7 +78,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
             }
         }
 
-        iconView = (GirafPictogramItemView) findViewById(R.id.create_category_pictogram);
+        iconView = (GirafPictogramItemView) findViewById(R.id.editable_pictogram_view);
 
         // Create a "template" pictogram
         final Pictogram pictogramPlaceholder = new Pictogram();
@@ -228,7 +228,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
     public synchronized void showShowcase() {
 
         // Targets for the Showcase
-        final ViewTarget choosePictogramAsIconTarget = new ViewTarget(R.id.create_category_pictogram, this, 1.5f);
+        final ViewTarget choosePictogramAsIconTarget = new ViewTarget(R.id.editable_pictogram_view, this, 1.5f);
         final ViewTarget chooseCategoryTitle = new ViewTarget(R.id.create_category_title, this, 1.5f);
         final ViewTarget createCategoryButtonTarget = new ViewTarget(R.id.category_create_button, this, 1.5f);
 
@@ -240,7 +240,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
         lps.setMargins(margin, margin, margin, margin);
 
         // Calculate position for the help text
-        final int textX = this.findViewById(R.id.create_category_pictogram).getLayoutParams().width + margin * 2;
+        final int textX = this.findViewById(R.id.editable_pictogram_view).getLayoutParams().width + margin * 2;
         final int textY = getResources().getDisplayMetrics().heightPixels / 2 + margin;
 
         showcaseManager = new ShowcaseManager();

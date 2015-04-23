@@ -28,12 +28,12 @@ import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafInflatableDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
 import dk.aau.cs.giraf.gui.GirafPictogramItemView;
-import dk.aau.cs.giraf.oasis.lib.Helper;
-import dk.aau.cs.giraf.oasis.lib.models.Category;
-import dk.aau.cs.giraf.oasis.lib.models.Department;
-import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
-import dk.aau.cs.giraf.oasis.lib.models.PictogramCategory;
-import dk.aau.cs.giraf.oasis.lib.models.Profile;
+import dk.aau.cs.giraf.dblib.Helper;
+import dk.aau.cs.giraf.dblib.models.Category;
+import dk.aau.cs.giraf.dblib.models.Department;
+import dk.aau.cs.giraf.dblib.models.Pictogram;
+import dk.aau.cs.giraf.dblib.models.PictogramCategory;
+import dk.aau.cs.giraf.dblib.models.Profile;
 
 public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification {
 
@@ -104,7 +104,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         switch (i) {
             case EDIT_CATEGORY_DIALOG:
                 // Finds the views
-                GirafPictogramItemView girafPictogram = (GirafPictogramItemView) viewGroup.findViewById(R.id.category_pictogram);
+                GirafPictogramItemView girafPictogram = (GirafPictogramItemView) viewGroup.findViewById(R.id.editable_pictogram_view);
                 categoryTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
 
                 // If PictoSearch returned a pictogram, update the view. Otherwise set it to the regular pictogram
@@ -593,7 +593,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
                         // Foreach pictogramid insert them to the currently selected category
                         for (int id : pictogramIds) {
-                            helper.pictogramCategoryHelper.insertPictogramCategory(
+                            helper.pictogramCategoryHelper.insert(
                                     new PictogramCategory(id, getSelectedCategory().getId())
                             );
                         }
