@@ -6,7 +6,7 @@ import android.test.ApplicationTestCase;
 import java.util.ArrayList;
 
 import dk.aau.cs.giraf.categorymanager.PictogramAdapter;
-import dk.aau.cs.giraf.oasis.lib.models.Pictogram;
+import dk.aau.cs.giraf.dblib.models.Pictogram;
 
 /**
  * Created on 14/04/2015.

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -39,7 +40,7 @@ import dk.aau.cs.giraf.dblib.models.PictogramCategory;
 import dk.aau.cs.giraf.dblib.models.Profile;
 import dk.aau.cs.giraf.dblib.models.ProfileCategory;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification, dk.aau.cs.giraf.categorymanager.GirafProfileSelectorDialog.OnReturnProfilesListener{
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification, GirafProfileSelectorDialog.OnReturnProfilesListener {
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 101;
@@ -138,6 +139,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
     }
 
+
+    /*
     @Override
     public void onProfilesSelected(int i, List<Profile> profiles) {
 
@@ -186,6 +189,17 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 helper.profileCategoryController.insert(new ProfileCategory(child.getId(), latestCategoryId));
             }
         }
+    }*/
+
+    @Override
+    public void onProfilesSelected(int dialogIdentifier, List<Pair<Profile, Boolean>> checkedProfileList) {
+
+        for(Pair<Profile,Boolean> pair : checkedProfileList) {
+            Toast.makeText(this, pair.first.getName() + " : " + pair.second, Toast.LENGTH_SHORT).show();
+        }
+
+
+
     }
 
     /**
@@ -275,8 +289,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         final Profile currentUserProfile = getCurrentUser();
 
-        if(currentUserProfile == null)
-        {
+        if (currentUserProfile == null) {
             Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_with_valid_profile), getString(R.string.categorymanager)), Toast.LENGTH_SHORT).show();
 
             // The activity was not started correctly, now finish it!
@@ -498,8 +511,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onUserSettingsButtonClicked(final View view) {
 
-        dk.aau.cs.giraf.categorymanager.GirafProfileSelectorDialog selectorDialog = dk.aau.cs.giraf.categorymanager.GirafProfileSelectorDialog.newInstance(this, getCurrentUser().getId(), false, true, "Vælg hvem du vil kopiere kategorien " + getSelectedCategory().getName() + " ud til", COPY_TO_USER_DIALOG_ID);
-        selectorDialog.show(getSupportFragmentManager(),COPY_TO_USER_DIALOG_TAG);
+        GirafProfileSelectorDialog selectorDialog = GirafProfileSelectorDialog.newInstance(this, getCurrentUser().getId(), false, true, "Vælg hvem du vil kopiere kategorien " + getSelectedCategory().getName() + " ud til", COPY_TO_USER_DIALOG_ID);
+        selectorDialog.show(getSupportFragmentManager(), COPY_TO_USER_DIALOG_TAG);
     }
 
     /**
