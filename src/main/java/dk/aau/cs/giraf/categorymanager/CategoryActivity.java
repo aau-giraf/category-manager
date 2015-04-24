@@ -38,6 +38,7 @@ import dk.aau.cs.giraf.dblib.models.Pictogram;
 import dk.aau.cs.giraf.dblib.models.PictogramCategory;
 import dk.aau.cs.giraf.dblib.models.Profile;
 import dk.aau.cs.giraf.dblib.models.ProfileCategory;
+import dk.aau.cs.giraf.gui.GirafWaitingDialog;
 
 public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification, GirafProfileSelectorDialog.OnMultipleProfilesSelectedListener {
 
@@ -115,6 +116,107 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
     }
+
+    /**
+     * Class to process the deleting and adding of new categories
+     */
+    private class UpdateChildProfiles extends AsyncTask<Void, Void, Void> {
+
+        private final List<Pair<Profile, Boolean>> checkedProfileList;
+        private GirafWaitingDialog waitingDialog;
+
+        public UpdateChildProfiles(List<Pair<Profile, Boolean>> checkedProfileList) {
+            this.checkedProfileList = checkedProfileList;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            waitingDialog = GirafWaitingDialog.newInstance("Vent venligst", "Kategorierne indstilles...");
+            waitingDialog.show(getSupportFragmentManager(), "");
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Find the selected category to be copied
+            Category selectedCategory = getSelectedCategory();
+
+            // Run through the list and modify the children's categories dependently
+            for (Pair<Profile, Boolean> profileBooleanPair : checkedProfileList) {
+                final Profile child = profileBooleanPair.first;
+                final boolean checkedStatus = profileBooleanPair.second;
+
+                // Check if the child already have a copy of this category
+                List<Category> categoriesByProfileId = helper.categoryHelper.getCategoriesByProfileId(child.getId());
+
+                // Boolean and category reference used to indicate weather or not the child already has the category
+                boolean categoryAlreadyCopied = false;
+                Category childCategory = null;
+
+                // Run through the child's categories, searching for the selected category
+                for (Category ownedCategory : categoriesByProfileId) {
+                    if (ownedCategory.getSuperCategoryId() == selectedCategory.getId()) {
+                        categoryAlreadyCopied = true;
+                        childCategory = ownedCategory;
+                        break;
+                    }
+                }
+
+                // Check if the child already has the category and is supposed to have it
+                // OR if the child does not have the category and is not supposed to have it
+                if ((categoryAlreadyCopied && checkedStatus) || (!categoryAlreadyCopied && !checkedStatus)) {
+                    continue;
+                }
+                // Check if the child already has the category, but is not supposed to have it
+                else if (categoryAlreadyCopied && !checkedStatus) {
+                    // Find all pictograms that should be removed from the child's category
+                    List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(childCategory);
+
+                    // Remove all relations between the above pictograms and the child's category
+                    for(Pictogram pictogram : pictograms) {
+                        helper.pictogramCategoryHelper.remove(childCategory.getId(), pictogram.getId());
+                    }
+
+                    // Remove the category and the join-table entry
+                    helper.categoryHelper.remove(childCategory);
+                    helper.profileCategoryController.remove(child.getId(), childCategory.getId());
+                }
+                else if(!categoryAlreadyCopied && checkedStatus) {
+                    // Find the pictograms of the selected category to be copied
+                    List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
+
+                    // Create a copy of the selected category (this will be "given" to the child)
+                    Category newCategory = new Category();
+                    newCategory.setName(selectedCategory.getName());
+                    newCategory.setColour(selectedCategory.getColour());
+                    newCategory.setImage(selectedCategory.getImage());
+                    newCategory.setSuperCategoryId(selectedCategory.getId());
+
+                    // Add the category and join-table entry
+                    int insertedCategoryIdentifier = helper.categoryHelper.insert(newCategory);
+
+                    // Insert the same pictograms to the new category
+                    for (Pictogram pictogram : pictograms) {
+                        helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogram.getId(), insertedCategoryIdentifier));
+                    }
+
+                    // Insert the relation between the new category and the associated child
+                    helper.profileCategoryController.insert(new ProfileCategory(child.getId(), insertedCategoryIdentifier));
+                }
+            }
+
+            // Background thread is now complete...
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void m) {
+            super.onPostExecute(m);
+
+            waitingDialog.dismiss();
+        }
+    };
 
     /**
      * Will return the current profile. If the application is launched from a child profile,
@@ -530,65 +632,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     public void onProfilesSelected(int dialogIdentifier, List<Pair<Profile, Boolean>> checkedProfileList) {
         // Check if the dialog was a "copy to user" dialog
         if(dialogIdentifier == UPDATE_USER_ACCESS_DIALOG) {
-            // The selected category to be copied
-            Category selectedCategory = getSelectedCategory();
-
-            // Run through the list and modify the children's categories dependently
-            for (Pair<Profile, Boolean> profileBooleanPair : checkedProfileList) {
-                final Profile child = profileBooleanPair.first;
-                final boolean checkedStatus = profileBooleanPair.second;
-
-                // Check if the child already have a copy of this category
-                List<Category> categoriesByProfileId = helper.categoryHelper.getCategoriesByProfileId(child.getId());
-
-                // Boolean and category reference used to indicate weather or not the child already has the category
-                boolean categoryAlreadyCopied = false;
-                Category childCategory = null;
-
-                // Run through the child's categories, searching for the selected category
-                for (Category ownedCategory : categoriesByProfileId) {
-                    if (ownedCategory.getSuperCategoryId() == selectedCategory.getId()) {
-                        categoryAlreadyCopied = true;
-                        childCategory = ownedCategory;
-                        break;
-                    }
-                }
-
-                // Check if the child already has the category and is supposed to have it
-                // OR if the child does not have the category and is not supposed to have it
-                if ((categoryAlreadyCopied && checkedStatus) || (!categoryAlreadyCopied && !checkedStatus)) {
-                    continue;
-                }
-                // Check if the child already has the category, but is not supposed to have it
-                else if (categoryAlreadyCopied && !checkedStatus) {
-                    // Remove the category and the join-table entry
-                    helper.categoryHelper.remove(childCategory);
-                    helper.profileCategoryController.remove(child.getId(), childCategory.getId());
-                    // TODO: Remove all pictogram to category references from database
-                }
-                else if(!categoryAlreadyCopied && checkedStatus) {
-                    // Find the pictograms of the selected category to be copied
-                    List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
-
-                    // Create a copy of the selected category (this will be "given" to the child)
-                    Category newCategory = new Category();
-                    newCategory.setName(selectedCategory.getName());
-                    newCategory.setColour(selectedCategory.getColour());
-                    newCategory.setImage(selectedCategory.getImage());
-                    newCategory.setSuperCategoryId(selectedCategory.getId());
-
-                    // Add the category and join-table entry
-                    int insertedCategoryIdentifier = helper.categoryHelper.insert(newCategory);
-
-                    // Insert the same pictograms to the new category
-                    for (Pictogram pictogram : pictograms) {
-                        helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogram.getId(), insertedCategoryIdentifier));
-                    }
-
-                    // Insert the relation between the new category and the associated child
-                    helper.profileCategoryController.insert(new ProfileCategory(child.getId(), insertedCategoryIdentifier));
-                }
-            }
+            new UpdateChildProfiles(checkedProfileList).execute();
         }
     }
 
