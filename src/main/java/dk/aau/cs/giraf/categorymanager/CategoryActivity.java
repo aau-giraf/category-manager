@@ -2,7 +2,6 @@ package dk.aau.cs.giraf.categorymanager;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,7 +39,7 @@ import dk.aau.cs.giraf.dblib.models.PictogramCategory;
 import dk.aau.cs.giraf.dblib.models.Profile;
 import dk.aau.cs.giraf.dblib.models.ProfileCategory;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification, GirafProfileSelectorDialog.OnReturnProfilesListener {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification, GirafProfileSelectorDialog.OnMultipleProfilesSelectedListener {
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 101;
@@ -63,8 +62,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
-    private static final int COPY_TO_USER_DIALOG_ID = 109;
-    private static final String COPY_TO_USER_DIALOG_TAG = "COPY_TO_USER_DIALOG_TAG";
+    private static final int UPDATE_USER_ACCESS_DIALOG = 109;
 
     // Helper that will be used to fetch profiles
     private final Helper helper = new Helper(this);
@@ -88,119 +86,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     // Save the current category and its adapters
     private CategoryAdapter categoryAdapter;
     private CategoryAdapter.CategoryViewPair selectedCategoryAndViewItem = null;
-
-    /**
-     * Will be called every time the back-button is pressed
-     * Used to handle the fragment-stack properly
-     */
-    @Override
-    public void onBackPressed() {
-
-        // Check if there is a previously selected view and if there is no popup
-        if (selectedCategoryAndViewItem != null && getSupportFragmentManager().findFragmentByTag(CATEGORY_SETTINGS_TAG) == null) {
-            // Set the selected category to "null" and set background to in-active
-            selectedCategoryAndViewItem.getView().setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_inactive));
-            selectedCategoryAndViewItem = null;
-        }
-
-        super.onBackPressed();
-    }
-
-    @Override
-    public void editCustomView(ViewGroup viewGroup, int i) {
-        switch (i) {
-            case EDIT_CATEGORY_DIALOG:
-                // Finds the views
-                GirafPictogramItemView girafPictogram = (GirafPictogramItemView) viewGroup.findViewById(R.id.editable_pictogram_view);
-                categoryTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
-
-                // If PictoSearch returned a pictogram, update the view. Otherwise set it to the regular pictogram
-                if (changedPictogram != null) {
-                    girafPictogram.setImageModel(changedPictogram);
-                } else {
-                    Pictogram temp = new Pictogram();
-                    temp.setName(getSelectedCategory().getName());
-                    temp.setImage(getSelectedCategory().getImage());
-                    girafPictogram.setImageModel(temp);
-                }
-
-                // Hide the title of the pictogram.
-                // Notice: This is the title of the pictogram selected for the category and not the actual title of the category
-                girafPictogram.hideTitle();
-
-                // If the text was changed insert that into the edittex otherwise use selected category name
-                if (changedText == null) {
-                    categoryTitle.setText(getSelectedCategory().getName());
-                } else {
-                    categoryTitle.setText(changedText);
-                }
-
-                break;
-        }
-    }
-
-
-    /*
-    @Override
-    public void onProfilesSelected(int i, List<Profile> profiles) {
-
-        if(i == COPY_TO_USER_DIALOG_ID) {
-
-            // The selected category to be copied
-            Category selectedCategory = getSelectedCategory();
-
-            // The pictograms of the selected category to be copied
-            List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
-
-            for (Profile child : profiles) {
-
-                // Check if the child already have a copy of this category
-                List<Category> ownedCategories = helper.categoryHelper.getCategoriesByProfileId(child.getId());
-
-                boolean categoryAlreadyCopied = false;
-                for (Category ownedCategory : ownedCategories) {
-                    if (ownedCategory.getSuperCategoryId() == selectedCategory.getId()) {
-                        categoryAlreadyCopied = true;
-                    }
-                }
-
-                // If the category was already copied
-                if (categoryAlreadyCopied) {
-                    break;
-                }
-
-                // Create a copy of the selected category
-                Category categoryCopy = new Category();
-
-                categoryCopy.setName(selectedCategory.getName());
-                categoryCopy.setColour(selectedCategory.getColour());
-                categoryCopy.setImage(selectedCategory.getImage());
-                categoryCopy.setSuperCategoryId(selectedCategory.getId());
-
-                // Insert the new category and get its assigned identifier
-                int latestCategoryId = helper.categoryHelper.insertCategory(categoryCopy);
-
-                // Insert the same pictograms to the new category
-                for (Pictogram pictogram : pictograms) {
-                    helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogram.getId(), categoryCopy.getId()));
-                }
-
-                // Insert the relation between the new category and the associated child
-                helper.profileCategoryController.insert(new ProfileCategory(child.getId(), latestCategoryId));
-            }
-        }
-    }*/
-
-    @Override
-    public void onProfilesSelected(int dialogIdentifier, List<Pair<Profile, Boolean>> checkedProfileList) {
-
-        for(Pair<Profile,Boolean> pair : checkedProfileList) {
-            Toast.makeText(this, pair.first.getName() + " : " + pair.second, Toast.LENGTH_SHORT).show();
-        }
-
-
-
-    }
 
     /**
      * Used to load categories into the category container (left side)
@@ -436,6 +321,23 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
 
     /**
+     * Will be called every time the back-button is pressed
+     * Used to handle the fragment-stack properly
+     */
+    @Override
+    public void onBackPressed() {
+
+        // Check if there is a previously selected view and if there is no popup
+        if (selectedCategoryAndViewItem != null && getSupportFragmentManager().findFragmentByTag(CATEGORY_SETTINGS_TAG) == null) {
+            // Set the selected category to "null" and set background to in-active
+            selectedCategoryAndViewItem.getView().setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_inactive));
+            selectedCategoryAndViewItem = null;
+        }
+
+        super.onBackPressed();
+    }
+
+    /**
      * Called when the pictogram is clicked
      *
      * @param view needed for onClickListner
@@ -510,9 +412,38 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      * @param view needed for onClickListner
      */
     public void onUserSettingsButtonClicked(final View view) {
+        // Find the selected category
+        Category selectedCategory = getSelectedCategory();
 
-        GirafProfileSelectorDialog selectorDialog = GirafProfileSelectorDialog.newInstance(this, getCurrentUser().getId(), false, true, "Vælg hvem du vil kopiere kategorien " + getSelectedCategory().getName() + " ud til", COPY_TO_USER_DIALOG_ID);
-        selectorDialog.show(getSupportFragmentManager(), COPY_TO_USER_DIALOG_TAG);
+        // Find the children that the guardian is responsible for. Notice that getCurrentUser will always return a guardian
+        List<Profile> profiles = helper.profilesHelper.getChildrenByGuardian(getCurrentUser());
+
+        // List that will be used to open the user-selection dialog
+        List<Pair<Profile, Boolean>> pairList = new ArrayList<Pair<Profile, Boolean>>();
+
+        // Run through all the profiles and check if the user "has" the category
+        boolean childHasProfile = false;
+        List<Category> userCategories;
+        for (Profile child : profiles) {
+            userCategories = helper.categoryHelper.getCategoriesByProfileId(child.getId());
+
+            for (Category category : userCategories) {
+                if(category.getSuperCategoryId() == selectedCategory.getId()) {
+                    childHasProfile = true;
+                    break;
+                }
+            }
+
+            // Add the profile-boolean pair to the list
+            pairList.add(new Pair<Profile, Boolean>(child, childHasProfile));
+
+            // Reset variable
+            childHasProfile = false;
+        }
+
+        // Create the dialog and show it to the user
+        GirafProfileSelectorDialog selectorDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "tosset", UPDATE_USER_ACCESS_DIALOG);
+        selectorDialog.show(getSupportFragmentManager(), "" + UPDATE_USER_ACCESS_DIALOG);
     }
 
     /**
@@ -557,6 +488,109 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     /*
      * Methods required from interfaces below
      * */
+
+    /**
+     * Will be called whenever a custom dialog box requests content (ie when settings button is pressed)
+     */
+    @Override
+    public void editCustomView(ViewGroup viewGroup, int i) {
+        if (i == EDIT_CATEGORY_DIALOG) {// Finds the views
+            GirafPictogramItemView girafPictogram = (GirafPictogramItemView) viewGroup.findViewById(R.id.editable_pictogram_view);
+            categoryTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
+
+            // If PictoSearch returned a pictogram, update the view. Otherwise set it to the regular pictogram
+            if (changedPictogram != null) {
+                girafPictogram.setImageModel(changedPictogram);
+            } else {
+                Pictogram temp = new Pictogram();
+                temp.setName(getSelectedCategory().getName());
+                temp.setImage(getSelectedCategory().getImage());
+                girafPictogram.setImageModel(temp);
+            }
+
+            // Hide the title of the pictogram.
+            // Notice: This is the title of the pictogram selected for the category and not the actual title of the category
+            girafPictogram.hideTitle();
+
+            // If the text was changed insert that into the edit text otherwise use selected category name
+            if (changedText == null) {
+                categoryTitle.setText(getSelectedCategory().getName());
+            } else {
+                categoryTitle.setText(changedText);
+            }
+        }
+    }
+
+    /**
+     * Will be called whenever the user selects some profiles
+     * @param dialogIdentifier the identifier of the dialog the user just handled
+     * @param checkedProfileList a list of pairs of users and booleans representing the selected status for that specific user
+     */
+    @Override
+    public void onProfilesSelected(int dialogIdentifier, List<Pair<Profile, Boolean>> checkedProfileList) {
+        // Check if the dialog was a "copy to user" dialog
+        if(dialogIdentifier == UPDATE_USER_ACCESS_DIALOG) {
+            // The selected category to be copied
+            Category selectedCategory = getSelectedCategory();
+
+            // Run through the list and modify the children's categories dependently
+            for (Pair<Profile, Boolean> profileBooleanPair : checkedProfileList) {
+                final Profile child = profileBooleanPair.first;
+                final boolean checkedStatus = profileBooleanPair.second;
+
+                // Check if the child already have a copy of this category
+                List<Category> categoriesByProfileId = helper.categoryHelper.getCategoriesByProfileId(child.getId());
+
+                // Boolean and category reference used to indicate weather or not the child already has the category
+                boolean categoryAlreadyCopied = false;
+                Category childCategory = null;
+
+                // Run through the child's categories, searching for the selected category
+                for (Category ownedCategory : categoriesByProfileId) {
+                    if (ownedCategory.getSuperCategoryId() == selectedCategory.getId()) {
+                        categoryAlreadyCopied = true;
+                        childCategory = ownedCategory;
+                        break;
+                    }
+                }
+
+                // Check if the child already has the category and is supposed to have it
+                // OR if the child does not have the category and is not supposed to have it
+                if ((categoryAlreadyCopied && checkedStatus) || (!categoryAlreadyCopied && !checkedStatus)) {
+                    continue;
+                }
+                // Check if the child already has the category, but is not supposed to have it
+                else if (categoryAlreadyCopied && !checkedStatus) {
+                    // Remove the category and the join-table entry
+                    helper.categoryHelper.remove(childCategory);
+                    helper.profileCategoryController.remove(child.getId(), childCategory.getId());
+                    // TODO: Remove all pictogram to category references from database
+                }
+                else if(!categoryAlreadyCopied && checkedStatus) {
+                    // Find the pictograms of the selected category to be copied
+                    List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
+
+                    // Create a copy of the selected category (this will be "given" to the child)
+                    Category newCategory = new Category();
+                    newCategory.setName(selectedCategory.getName());
+                    newCategory.setColour(selectedCategory.getColour());
+                    newCategory.setImage(selectedCategory.getImage());
+                    newCategory.setSuperCategoryId(selectedCategory.getId());
+
+                    // Add the category and join-table entry
+                    int insertedCategoryIdentifier = helper.categoryHelper.insert(newCategory);
+
+                    // Insert the same pictograms to the new category
+                    for (Pictogram pictogram : pictograms) {
+                        helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogram.getId(), insertedCategoryIdentifier));
+                    }
+
+                    // Insert the relation between the new category and the associated child
+                    helper.profileCategoryController.insert(new ProfileCategory(child.getId(), insertedCategoryIdentifier));
+                }
+            }
+        }
+    }
 
     /**
      * Called whenever an item in the category list is clicked/selected
