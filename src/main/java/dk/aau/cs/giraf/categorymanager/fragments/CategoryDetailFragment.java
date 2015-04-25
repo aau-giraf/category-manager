@@ -222,6 +222,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
             @Override
             public void onClick(View v) {
                 if (selectedPictograms.isEmpty()) {
+
                     // TODO: Use something different than a toast
                     Toast.makeText(CategoryDetailFragment.this.getActivity(), getActivity().getResources().getString(R.string.pick_pictogram_before_delete), Toast.LENGTH_SHORT).show();
                 } else // delete the selected pictogram and reload

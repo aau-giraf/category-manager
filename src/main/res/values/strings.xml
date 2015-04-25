@@ -158,5 +158,9 @@
 
     <string name="no_pictogram_selected">Der blev ikke valgt noget piktogram</string>
     <string name="multiple_pictogram_selected_first_used">Mere end et piktogram valgt, det øverste i listen bruges</string>
+    <string name="add_pictograms_wait_dialog_description">Tilføjer piktogrammer ...</string>
+    <string name="remove_pictograms_wait_dialog_description">Fjerner piktorgrammer ...</string>
+    <string name="please_wait_waitdialog_title">Vent venligst</string>
+    <string name="setting_up_categories_waitdialog_description">Kategorierne indstilles...</string>
 
 </resources>
