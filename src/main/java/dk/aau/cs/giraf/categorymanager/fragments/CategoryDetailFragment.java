@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
@@ -90,6 +91,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
             // Reset selected pictogram
             selectedPictograms.clear();
             pictogramGrid.setAdapter(null);
+
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(new ProgressBar(CategoryDetailFragment.this.getActivity()));
@@ -214,27 +216,6 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
                 // Update the UI accordingly to above changes
                 ((GirafPictogramItemView) view).toggle();
-            }
-        });
-
-        final GirafButton deletePictogramButton = (GirafButton) categoryDetailLayout.findViewById(R.id.deletePictogramButton);
-        deletePictogramButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedPictograms.isEmpty()) {
-
-                    // TODO: Use something different than a toast
-                    Toast.makeText(CategoryDetailFragment.this.getActivity(), getActivity().getResources().getString(R.string.pick_pictogram_before_delete), Toast.LENGTH_SHORT).show();
-                } else // delete the selected pictogram and reload
-                {
-                    // Create and show confirmation dialog
-                    final GirafConfirmDialog confirmDialog = GirafConfirmDialog.newInstance(
-                            getActivity().getResources().getString(R.string.remove_pictograms_dialog_title), // Title of the dialog
-                            String.format(getActivity().getResources().getString(R.string.remove_pictogram_dialog_body), selectedPictograms.size(), selectedCategory.getName()), // Body of the dialog
-                            CategoryActivity.CONFIRM_PICTOGRAM_DELETION_METHOD_ID
-                    );
-                    confirmDialog.show(getActivity().getSupportFragmentManager(), CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG);
-                }
             }
         });
 
@@ -559,4 +540,9 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
             showShowcase();
         }
     }
+
+    public Set<Pictogram> getSelectedPicotgrams() {
+        return selectedPictograms;
+    }
+
 }

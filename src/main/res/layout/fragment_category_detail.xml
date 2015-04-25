@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/fragment_category_detail_id"
     tools:context="dk.aau.cs.giraf.categorymanager.fragments.CategoryDetailFragment">
 
     <!-- Contextual bottom bar -->
@@ -51,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/contextual_bottom_bar_spacing"
+                android:onClick="onRemoveButtonClick"
                 app:icon="@drawable/icon_delete" />
 
             <dk.aau.cs.giraf.gui.GirafButton
