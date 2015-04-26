@@ -12,6 +12,7 @@
          For instance when viewing the content of a category. -->
     <FrameLayout
         android:id="@+id/categorytool_framelayout"
+        android:tag="FRAGMENT_CONTAINER"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 

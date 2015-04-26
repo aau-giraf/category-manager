@@ -82,7 +82,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
 
         // Create a "template" pictogram
         final Pictogram pictogramPlaceholder = new Pictogram();
-        pictogramPlaceholder.setImage(BitmapFactory.decodeResource(this.getResources(), R.drawable.icon_add));
+        pictogramPlaceholder.setImage(BitmapFactory.decodeResource(this.getResources(), R.drawable.icon_change_picto_nodpi));
         iconView.setImageModel(pictogramPlaceholder);
 
         // Set the default result (if something goes wrong or the user canceled the process)
@@ -203,11 +203,13 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
                         // TODO Update when pictosearch changes how they return a single pictogram
 
                         // If there were returned more than one pictogram tell the user that the first is used
-                        if (pictogramIds.length > 1) {
-                            Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
-                        } else if (pictogramIds.length < 1) {
+                        if (pictogramIds.length < 1) {
                             Toast.makeText(this, getString(R.string.no_pictogram_selected), Toast.LENGTH_LONG).show();
                         } else {
+                            if (pictogramIds.length > 1) {
+                                Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
+                            }
+
                             // Set the wanted pictogram to be what was returned form pictosearh
                             iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
 

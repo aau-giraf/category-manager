@@ -158,5 +158,15 @@
 
     <string name="no_pictogram_selected">Der blev ikke valgt noget piktogram</string>
     <string name="multiple_pictogram_selected_first_used">Mere end et piktogram valgt, det øverste i listen bruges</string>
+    <string name="add_pictograms_wait_dialog_description">Tilføjer piktogrammer ...</string>
+    <string name="remove_pictograms_wait_dialog_description">Fjerner piktorgrammer ...</string>
+    <string name="please_wait_waitdialog_title">Vent venligst</string>
+    <string name="setting_up_categories_waitdialog_description">Kategorierne indstilles...</string>
+    <string name="updating_categories_waitdialog_description">Kategorierne opdateres...</string>
+    <string name="deleting_categories_waitdialog_description">Kategorierne slettes...</string>
+    <string name="select_users_to_get_category">Vælg hvilke borgere skal have kategorien.</string>
+    <string name="no_pictograms_selected">Ingen piktogrammer valgt</string>
+    <string name="remove_pictograms_from_category_dialog_description">Hvilke brugere skal have de valgt piktogrammer fjernet? Alle er valgt fra starten</string>
+    <string name="could_not_open_pictosearch">Could not open PictoSearch</string>
 
 </resources>
