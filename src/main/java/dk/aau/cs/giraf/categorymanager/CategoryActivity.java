@@ -566,8 +566,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         if (ActivityManager.isUserAMonkey()) {
             Helper h = new Helper(this);
 
-            childProfile = h.profilesHelper.getChildren().get(0);
-            guardianProfile = h.profilesHelper.getGuardiansByChild(childProfile).get(0);
+            Profile child = h.profilesHelper.getChildren().get(0);
+            guardianProfile = h.profilesHelper.getGuardiansByChild(child).get(0);
 
         }
         // Test if the activity was started correctly
