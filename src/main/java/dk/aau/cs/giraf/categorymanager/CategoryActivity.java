@@ -1,5 +1,6 @@
 package dk.aau.cs.giraf.categorymanager;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -561,8 +562,16 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         // Get the extra information from when the activity was started (contains profile ids etc.)
         final Bundle extras = getIntent().getExtras();
 
+        //Check if user is monkey
+        if (ActivityManager.isUserAMonkey()) {
+            Helper h = new Helper(this);
+            h.CreateDummyData();
+            childProfile = h.profilesHelper.getChildren().get(0);
+            guardianProfile = h.profilesHelper.getGuardiansByChild(childProfile).get(0);
+
+        }
         // Test if the activity was started correctly
-        if (extras == null || (!extras.containsKey(getString(R.string.current_child_id)) && !extras.containsKey(getString(R.string.current_guardian_id)))) {
+        else if (extras == null || (!extras.containsKey(getString(R.string.current_child_id)) && !extras.containsKey(getString(R.string.current_guardian_id)))) {
             Toast.makeText(CategoryActivity.this, String.format(getString(R.string.error_must_be_started_from_giraf), getString(R.string.categorymanager)), Toast.LENGTH_SHORT).show();
 
             // The activity was not started correctly, now finish it!
