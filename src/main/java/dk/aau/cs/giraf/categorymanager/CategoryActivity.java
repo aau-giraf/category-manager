@@ -65,6 +65,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     private static final int UPDATE_CITIZEN_CATEGORIES_DIALOG = 109;
     private static final int ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG = 110;
     private static final int REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG = 111;
+    private static final int DELTE_CATEGORY_CONFIRM_DIALOG = 112;
 
     // Helper that will be used to fetch profiles
     private final Helper helper = new Helper(this);
@@ -84,7 +85,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     // List of categories
     private List<Category> categoryList;
-    private List<Pair<Category,Pair<Profile,Boolean>>> profileCategoryStatusList;
+    private List<Pair<Category, Pair<Profile, Boolean>>> profileCategoryStatusList;
 
     // Save the current category and its adapters
     private CategoryAdapter categoryAdapter;
@@ -96,7 +97,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     // Reference to category detail fragment
     private CategoryDetailFragment categoryDetailFragment;
-
 
 
     /**
@@ -140,7 +140,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         @Override
         protected Void doInBackground(Void... params) {
             profileCategoryStatusList = new ArrayList<Pair<Category, Pair<Profile, Boolean>>>();
-            for(Category guardianCategory : categoryList) {
+            for (Category guardianCategory : categoryList) {
 
                 // Find the children that the guardian is responsible for. Notice that getCurrentUser will always return a guardian
                 List<Profile> profiles = helper.profilesHelper.getChildrenByGuardian(getCurrentUser());
@@ -159,7 +159,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                     }
 
                     // Add the category-profile-boolean pair to the list
-                    Pair<Category, Pair<Profile, Boolean>> categoryProfileStaus = new Pair<Category, Pair<Profile, Boolean>>(guardianCategory, new Pair<Profile, Boolean>(citizen,citizenHasCategory));
+                    Pair<Category, Pair<Profile, Boolean>> categoryProfileStaus = new Pair<Category, Pair<Profile, Boolean>>(guardianCategory, new Pair<Profile, Boolean>(citizen, citizenHasCategory));
                     profileCategoryStatusList.add(categoryProfileStaus);
 
                     // Reset variable
@@ -305,15 +305,15 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         protected Void doInBackground(Void... params) {
             List<Category> citizenCategories = helper.categoryHelper.getSubcategoriesByCategory(oldCategory);
 
+            // Update the super category
             helper.categoryHelper.modify(newCategory);
 
-            for(Category citizenCategory : citizenCategories) {
+            // Update the categories of the citizens
+            for (Category citizenCategory : citizenCategories) {
                 citizenCategory.setName(newCategory.getName());
                 citizenCategory.setImage(newCategory.getImage());
                 helper.categoryHelper.modify(citizenCategory);
             }
-
-
 
             // Background thread is now complete...
             return null;
@@ -324,13 +324,77 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             super.onPostExecute(m);
 
             // If the category was from the categoryAdapter update the adapter
-            if(getSelectedCategory().getId() == oldCategory.getId())
-            {
+            if (getSelectedCategory().getId() == oldCategory.getId()) {
                 getSelectedCategory().setName(newCategory.getName());
                 getSelectedCategory().setImage(newCategory.getImage());
                 categoryAdapter.notifyDataSetChanged();
             }
 
+            waitingDialog.dismiss();
+        }
+    }
+
+    ;
+
+    /**
+     * Class to process the deleting and adding of new categories
+     */
+    public class DeleteCategories extends AsyncTask<Void, Void, Void> {
+
+        private static final String DELETING_CATEGORIES_WAITING_DIALOG = "UPDATING_CATEGORIES_WAITING_DIALOG";
+        private GirafWaitingDialog waitingDialog;
+        private Category deletionCategory;
+
+        public DeleteCategories(Category deletionCategory) {
+            this.deletionCategory = deletionCategory;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            waitingDialog = GirafWaitingDialog.newInstance(getString(R.string.please_wait_waitdialog_title), getString(R.string.deleting_categories_waitdialog_description));
+            waitingDialog.show(getSupportFragmentManager(), DELETING_CATEGORIES_WAITING_DIALOG);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            List<Category> citizenCategories = helper.categoryHelper.getSubcategoriesByCategory(deletionCategory);
+
+            // Remove the pictograms of the main category
+            for (Pictogram pictogram : helper.pictogramHelper.getPictogramsByCategory(deletionCategory)) {
+                helper.pictogramCategoryHelper.remove(new PictogramCategory(pictogram.getId(), deletionCategory.getId()));
+            }
+
+            // Delete the super category
+            helper.categoryHelper.remove(deletionCategory);
+
+            // Delete the categories of the citizens
+            for (Category citizenCategory : citizenCategories) {
+
+                // Remove the pictograms from the citizen category
+                for (Pictogram pictogram : helper.pictogramHelper.getPictogramsByCategory(citizenCategory)) {
+                    helper.pictogramCategoryHelper.remove(new PictogramCategory(pictogram.getId(), citizenCategory.getId()));
+                }
+                helper.categoryHelper.modify(citizenCategory);
+            }
+
+            // Background thread is now complete...
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void m) {
+            super.onPostExecute(m);
+
+            // If the category was from the categoryAdapter update the adapter
+            if (getSelectedCategory().getId() == deletionCategory.getId()) {
+                categoryList.remove(getSelectedCategory()); // Remove from list in adapter
+                categoryAdapter.notifyDataSetChanged(); // Tell the adapter to update
+            }
+
+            selectedCategoryAndViewItem = null; // Set the selected category to nothing
+            getSupportFragmentManager().popBackStack(); // Remove the pictogram grid and go back to start page
             waitingDialog.dismiss();
         }
     }
@@ -385,15 +449,15 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             Category selectedCategory = getSelectedCategory();
 
             // Update the seleted category accordingly
-            if(pictogramAction == ADD_PICTOGRAMS) {
+            if (pictogramAction == ADD_PICTOGRAMS) {
                 // Add pictograms to the selected category
-                for(int pictogramId : pictogramIds) {
-                    helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogramId,getSelectedCategory().getId()));
+                for (int pictogramId : pictogramIds) {
+                    helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogramId, getSelectedCategory().getId()));
                 }
-            } else if(pictogramAction == REMOVE_PICTOGRAMS) {
+            } else if (pictogramAction == REMOVE_PICTOGRAMS) {
                 // Remove pictograms from the selected category
-                for(int pictogramId : pictogramIds) {
-                    helper.pictogramCategoryHelper.remove(new PictogramCategory(pictogramId,getSelectedCategory().getId()));
+                for (int pictogramId : pictogramIds) {
+                    helper.pictogramCategoryHelper.remove(new PictogramCategory(pictogramId, getSelectedCategory().getId()));
                 }
             }
 
@@ -403,7 +467,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 final boolean checkedStatus = profileBooleanPair.second;
 
                 // If the citizen was not checked ignore it on this particular citizen
-                if(checkedStatus == false) {
+                if (checkedStatus == false) {
                     continue;
                 }
 
@@ -423,15 +487,15 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 }
 
                 // Update the seleted category accordingly
-                if(pictogramAction == ADD_PICTOGRAMS) {
+                if (pictogramAction == ADD_PICTOGRAMS) {
                     // Add pictograms to the selected category
-                    for(int pictogramId : pictogramIds) {
-                        helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogramId,citizenCategory.getId()));
+                    for (int pictogramId : pictogramIds) {
+                        helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogramId, citizenCategory.getId()));
                     }
-                } else if(pictogramAction == REMOVE_PICTOGRAMS) {
+                } else if (pictogramAction == REMOVE_PICTOGRAMS) {
                     // Remove pictograms from the selected category
-                    for(int pictogramId : pictogramIds) {
-                        helper.pictogramCategoryHelper.remove(new PictogramCategory(pictogramId,citizenCategory.getId()));
+                    for (int pictogramId : pictogramIds) {
+                        helper.pictogramCategoryHelper.remove(new PictogramCategory(pictogramId, citizenCategory.getId()));
                     }
                 }
 
@@ -448,7 +512,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
             // Find the pictogram grid
             GridView pictogramGrid = (GridView) findViewById(R.id.pictogram_gridview);
-            ((PictogramAdapter)pictogramGrid.getAdapter()).notifyDataSetInvalidated();
+            ((PictogramAdapter) pictogramGrid.getAdapter()).notifyDataSetInvalidated();
 
             // Close the dialog
             waitingDialog.dismiss();
@@ -659,7 +723,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         fm.beginTransaction().replace(frameLayoutResource, fragment).addToBackStack(null).commit();
 
-        if(fragment instanceof CategoryDetailFragment) {
+        if (fragment instanceof CategoryDetailFragment) {
             categoryDetailFragment = (CategoryDetailFragment) fragment;
         }
     }
@@ -718,13 +782,18 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onDeleteCategoryClicked(final View view) {
 
-        helper.categoryHelper.removeCategory(getSelectedCategory()); // Remove from DB
-        categoryList.remove(getSelectedCategory()); // Remove from list in adapter
-        categoryAdapter.notifyDataSetChanged(); // Tell the adapter to update
+        int subCategoryCount = getProrileWithCategoryList(getSelectedCategory()).size();
+        String deleteDescription = "Vil du slette kategorien " + getSelectedCategory().getName() + "?";
 
-        // TODO - Check if any children are affected by this, and ask if they still want to delete it
-        Toast.makeText(CategoryActivity.this, "Kategorien blev slettet", Toast.LENGTH_SHORT).show();
-        editDialog.dismiss();
+        if (subCategoryCount > 0) {
+            deleteDescription = deleteDescription + " Der er " + subCategoryCount + " borgere som mister denne kategori.";
+        }
+
+        editDialog.dismiss(); // Close the editing dialog
+
+        // Ask for permission
+        GirafConfirmDialog deleteConfirm = GirafConfirmDialog.newInstance("Slet " + getSelectedCategory().getName() + "?", deleteDescription, DELTE_CATEGORY_CONFIRM_DIALOG);
+        deleteConfirm.show(getSupportFragmentManager(), "" + DELTE_CATEGORY_CONFIRM_DIALOG);
     }
 
     /**
@@ -745,7 +814,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             newCategory.setImage(getSelectedCategory().getImage());
         }
 
-        new UpdateCategories(oldCategory,newCategory).execute();
+        new UpdateCategories(oldCategory, newCategory).execute();
         changedText = null; // Reset the changed text so that next edit wont have this text
         editDialog.dismiss();
 
@@ -759,7 +828,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     public void onUserSettingsButtonClicked(final View view) {
 
         // The list of people who has the selectedCategor associated
-        List<Pair<Profile,Boolean>> pairList = getProfileStatusListFromCategory(getSelectedCategory());
+        List<Pair<Profile, Boolean>> pairList = getProfileStatusListFromCategory(getSelectedCategory());
 
         // Create the dialog and show it to the user
         GirafProfileSelectorDialog selectorDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "tosset", UPDATE_CITIZEN_CATEGORIES_DIALOG);
@@ -815,9 +884,9 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         CategoryDetailFragment categoryDetailFragment = (CategoryDetailFragment) getSupportFragmentManager().findFragmentByTag("FRAGMENT_CONTAINER");
 
         // Get a list of profiles who has the category and a boolean sat to true
-        List<Pair<Profile,Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
-        GirafProfileSelectorDialog removePictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList,true, "Hvilke brugere skal have de valgt piktogrammer fjernet? Alle er valgt fra starten", REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
-        removePictoGramDialog.show(getSupportFragmentManager(),"" + REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+        List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
+        GirafProfileSelectorDialog removePictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer fjernet? Alle er valgt fra starten", REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+        removePictoGramDialog.show(getSupportFragmentManager(), "" + REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
 
     }
 
@@ -942,7 +1011,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                     if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
                         lastAddedPictogramsIds.clear();
                         // TODO pictosearch should use longs instead of integers
-                        for(int i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
+                        for (int i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
                             lastAddedPictogramsIds.add(i);
                         }
 
@@ -973,14 +1042,14 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
                         // TODO pictosearch should use longs instead of integers
                         lastAddedPictogramsIds.clear();
-                        for(int i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
+                        for (int i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
                             lastAddedPictogramsIds.add(i);
                         }
 
                         // Get a list of profiles who has the category and a boolean sat to true
-                        List<Pair<Profile,Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
-                        GirafProfileSelectorDialog addPictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList,true, "Hvilke brugere skal have de valgt piktogrammer tilføjet? Alle er valgt fra starten", ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
-                        addPictoGramDialog.show(getSupportFragmentManager(),"" + ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                        List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
+                        GirafProfileSelectorDialog addPictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer tilføjet? Alle er valgt fra starten", ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                        addPictoGramDialog.show(getSupportFragmentManager(), "" + ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
 
                     }
                 }
@@ -998,6 +1067,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         if (methodID == CONFIRM_PICTOGRAM_DELETION_METHOD_ID) {
             final CategoryDetailFragment categoryDetailFragment = (CategoryDetailFragment) getSupportFragmentManager().findFragmentById(R.id.categorytool_framelayout);
             categoryDetailFragment.confirmDialog(methodID);
+        } else if (methodID == DELTE_CATEGORY_CONFIRM_DIALOG) {
+            new DeleteCategories(getSelectedCategory()).execute();
         }
     }
 
@@ -1032,18 +1103,17 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         // Check if the dialog was a "copy to user" dialog
         if (dialogIdentifier == UPDATE_CITIZEN_CATEGORIES_DIALOG) {
             new SetCitizenCategories(checkedProfileList).execute();
-        } else if (dialogIdentifier == ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG)
-        {
-            new UpdatePictogramsInCategory(checkedProfileList,UpdatePictogramsInCategory.ADD_PICTOGRAMS, lastAddedPictogramsIds).execute();
+        } else if (dialogIdentifier == ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG) {
+            new UpdatePictogramsInCategory(checkedProfileList, UpdatePictogramsInCategory.ADD_PICTOGRAMS, lastAddedPictogramsIds).execute();
         } else if (dialogIdentifier == REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG) {
-            new UpdatePictogramsInCategory(checkedProfileList,UpdatePictogramsInCategory.REMOVE_PICTOGRAMS, selectedPictogramsIdsInFragment).execute();
+            new UpdatePictogramsInCategory(checkedProfileList, UpdatePictogramsInCategory.REMOVE_PICTOGRAMS, selectedPictogramsIdsInFragment).execute();
         }
     }
 
     @Override
     public void pictogramsUpdated(List<Pictogram> selectedPictograms) {
         selectedPictogramsIdsInFragment.clear();
-        for(Pictogram pictogram : selectedPictograms) {
+        for (Pictogram pictogram : selectedPictograms) {
             selectedPictogramsIdsInFragment.add(pictogram.getId());
         }
 
@@ -1055,18 +1125,19 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     /**
      * Finds a list of profiles status if the boolean is true the profile has the category else false
+     *
      * @param category the category of which a status is wanted
      * @return a list of profiles and a boolean set to the status of the profile having the category
      */
-    public List<Pair<Profile,Boolean>> getProfileStatusListFromCategory(Category category) {
+    public List<Pair<Profile, Boolean>> getProfileStatusListFromCategory(Category category) {
 
-        List<Pair<Profile,Boolean>> profileBooleanList = new ArrayList<Pair<Profile, Boolean>>();
+        List<Pair<Profile, Boolean>> profileBooleanList = new ArrayList<Pair<Profile, Boolean>>();
 
         // Run through all categories and find the wanted one
-        for(Pair<Category,Pair<Profile,Boolean>> profileStatusPair : profileCategoryStatusList) {
+        for (Pair<Category, Pair<Profile, Boolean>> profileStatusPair : profileCategoryStatusList) {
 
             // If it is the correct category copy the profile boolean pair to the list
-            if(profileStatusPair.first == category) {
+            if (profileStatusPair.first == category) {
                 profileBooleanList.add(profileStatusPair.second);
             }
         }
@@ -1076,20 +1147,21 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     /**
      * Finds a list of profiles who have this category and the boolean is all true
+     *
      * @param category the category of which a list of associated profiles is wanted
      * @return a list of profiles who has the category along with a boolean sat to true
      */
-    public List<Pair<Profile,Boolean>> getProrileWithCategoryList(Category category) {
+    public List<Pair<Profile, Boolean>> getProrileWithCategoryList(Category category) {
 
         // Get the list of total status for a category
-        List<Pair<Profile,Boolean>> oldProfileBooleanList = getProfileStatusListFromCategory(category);
+        List<Pair<Profile, Boolean>> oldProfileBooleanList = getProfileStatusListFromCategory(category);
 
         // Create a list to be returned
-        List<Pair<Profile,Boolean>> newProfileBooleanList = new ArrayList<Pair<Profile, Boolean>>();
+        List<Pair<Profile, Boolean>> newProfileBooleanList = new ArrayList<Pair<Profile, Boolean>>();
 
-        for(Pair<Profile, Boolean> profileBooleanPair : oldProfileBooleanList) {
+        for (Pair<Profile, Boolean> profileBooleanPair : oldProfileBooleanList) {
             // If it the profile status was true in the old list add it to this list
-            if(profileBooleanPair.second == true) {
+            if (profileBooleanPair.second == true) {
                 newProfileBooleanList.add(profileBooleanPair);
             }
         }
