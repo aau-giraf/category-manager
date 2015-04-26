@@ -1,5 +1,6 @@
 package dk.aau.cs.giraf.categorymanager.fragments;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +49,13 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
     private static final String CATEGORY_ID_TAG = "CATEGORY_ID_TAG";
     private static final String IS_CHILD_CATEGORY_TAG = "IS_CHILD_CATEGORY_TAG";
 
+    /**
+     * Interface that lets the activity know which pictograms are selected
+     */
+    public interface OnSelectedPictogramsUpdateListener {
+        public void pictogramsUpdated(List<Pictogram> selectedPictograms);
+    }
+
     // Dialog fragment Tags
     private static final String CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG = "CONFIRM_PICTOGRAM_DELETION_DIALOG_FRAGMENT_TAG";
 
@@ -62,7 +71,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
     private LoadPictogramTask loadPictogramTask;
 
-    private Set<Pictogram> selectedPictograms = null;
+    private List<Pictogram> selectedPictograms = null;
     private Category selectedCategory = null;
 
     /**
@@ -73,6 +82,9 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
 
     private boolean isChildCategory;
+
+
+    OnSelectedPictogramsUpdateListener callBack;
 
     /**
      * Used in onResume and onPause for handling showcaseview for first run
@@ -180,6 +192,21 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
      * Methods for fragment lifecycle below
      */
 
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // Check if the activity using the fragment implements the needed interface
+        try {
+            callBack = (OnSelectedPictogramsUpdateListener) activity;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnSelectedPictogramsUpdateListener interface");
+        }
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,7 +214,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         // Helper that will be used to fetch profiles
         helper = new Helper(this.getActivity());
 
-        selectedPictograms = new HashSet<Pictogram>();
+        selectedPictograms = new ArrayList<Pictogram>();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -206,12 +233,14 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
                 // If the pictogram is in the selected set remove it
                 if (selectedPictograms.contains(selectedPictogram)) {
                     // Remove the pictogram to the selected pictogram(s)
-                    selectedPictograms.remove(selectedPictogram);
+                    selectedPictograms.remove(selectedPictogram); // Add to selected
+                    callBack.pictogramsUpdated(selectedPictograms); // Tell the activity
                 }
                 // If the pictogram is not in the selected set add it
                 else {
                     // Add the pictogram to the selected pictogram(s)
-                    selectedPictograms.add(selectedPictogram);
+                    selectedPictograms.add(selectedPictogram); // Remove from selected
+                    callBack.pictogramsUpdated(selectedPictograms); // Tell the activity)
                 }
 
                 // Update the UI accordingly to above changes
@@ -539,10 +568,6 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         } else {
             showShowcase();
         }
-    }
-
-    public Set<Pictogram> getSelectedPicotgrams() {
-        return selectedPictograms;
     }
 
 }

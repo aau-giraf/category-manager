@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/fragment_category_detail_id"
+    android:tag="FRAGMENT_CONTAINER"
+    android:id="@+id/category_detail_fragment_id"
     tools:context="dk.aau.cs.giraf.categorymanager.fragments.CategoryDetailFragment">
 
     <!-- Contextual bottom bar -->
