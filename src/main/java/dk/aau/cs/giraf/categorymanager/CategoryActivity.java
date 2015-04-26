@@ -59,12 +59,13 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     public static final String PICTO_SEARCH_PURPOSE_TAG = "purpose";
     public static final String PICTO_SEARCH_MULTI_TAG = "multi";
     public static final String PICTO_SEARCH_SINGLE_TAG = "single";
+    public static final String INTENT_STRING_CURRENT_GUARDIAN_ID = "currentGuardianID";
 
     // Identifiers used to create fragments
     private static final String CATEGORY_SETTINGS_TAG = "CATEGORY_SETTINGS_TAG";
     private static final int UPDATE_CITIZEN_CATEGORIES_DIALOG = 109;
     private static final int ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG = 110;
-    private static final int REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG = 111;
+    private static final int REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG = 111;
     private static final int DELTE_CATEGORY_CONFIRM_DIALOG = 112;
 
     // Helper that will be used to fetch profiles
@@ -512,14 +513,12 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
             // Find the pictogram grid
             GridView pictogramGrid = (GridView) findViewById(R.id.pictogram_gridview);
-            ((PictogramAdapter) pictogramGrid.getAdapter()).notifyDataSetInvalidated();
 
             // Close the dialog
             waitingDialog.dismiss();
 
             // Update the pictograms in the gridview
             categoryDetailFragment.loadPictograms();
-            pictogramGrid.deferNotifyDataSetChanged();
 
         }
     }
@@ -677,7 +676,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             }
         }
     }
-
+/**/
     /*
      * Methods to handle right-side fragment (FrameLayout) below
      */
@@ -771,7 +770,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // Sends the intent
             startActivityForResult(request, GET_SINGLE_PICTOGRAM);
         } catch (Exception e) {
-            Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.could_not_open_pictosearch), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -779,6 +778,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      * Called when a category is selected and the delete button is pressed
      */
     public void onDeleteCategoryClicked(final View view) {
+
+        // TODO Insert strings to strings.xml
 
         int subCategoryCount = getProrileWithCategoryList(getSelectedCategory()).size();
         String deleteDescription = "Vil du slette kategorien " + getSelectedCategory().getName() + "?";
@@ -829,7 +830,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         List<Pair<Profile, Boolean>> pairList = getProfileStatusListFromCategory(getSelectedCategory());
 
         // Create the dialog and show it to the user
-        GirafProfileSelectorDialog selectorDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "tosset", UPDATE_CITIZEN_CATEGORIES_DIALOG);
+        GirafProfileSelectorDialog selectorDialog = GirafProfileSelectorDialog.newInstance(pairList, true, getString(R.string.select_users_to_get_category), UPDATE_CITIZEN_CATEGORIES_DIALOG);
         selectorDialog.show(getSupportFragmentManager(), "" + UPDATE_CITIZEN_CATEGORIES_DIALOG);
     }
 
@@ -866,7 +867,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // Sends the intent
             startActivityForResult(request, GET_MULTIPLE_PICTOGRAMS);
         } catch (Exception e) {
-            Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.could_not_open_pictosearch), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -877,15 +878,23 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onRemoveButtonClick(View view) {
 
-        // If the category has any profiles added ask who wants the change
-        if(getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
-            CategoryDetailFragment categoryDetailFragment = (CategoryDetailFragment) getSupportFragmentManager().findFragmentByTag("FRAGMENT_CONTAINER");
+        // If there are any pictograms selected
+        if(selectedPictogramsIdsInFragment.size() > 0) {
+            // If the category has any profiles added ask who wants the change
+            if(getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
 
-            // Get a list of profiles who has the category and a boolean sat to true
-            List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
-            GirafProfileSelectorDialog removePictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer fjernet? Alle er valgt fra starten", REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
-            removePictoGramDialog.show(getSupportFragmentManager(), "" + REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                // Get a list of profiles who has the category and a boolean sat to true
+                List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
+                GirafProfileSelectorDialog removePictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, getString(R.string.remove_pictograms_from_category_dialog_description), REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG);
+                removePictoGramDialog.show(getSupportFragmentManager(), "" + REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG);
+            } else {
+                new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()),UpdatePictogramsInCategory.REMOVE_PICTOGRAMS,selectedPictogramsIdsInFragment).execute();
+            }
+        } else {
+            Toast.makeText(this,getString(R.string.no_pictograms_selected), Toast.LENGTH_SHORT).show();
         }
+
+
 
     }
 
@@ -963,7 +972,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // TODO: Handle it. Crash app or open select user dialog
         } else {
             final Intent intent = new Intent(this, CreateCategoryActivity.class);
-            intent.putExtra("currentGuardianID", guardianProfile.getId());
+            intent.putExtra(INTENT_STRING_CURRENT_GUARDIAN_ID, guardianProfile.getId());
             startActivityForResult(intent, CREATE_CATEGORY_REQUEST);
         }
     }
@@ -1022,7 +1031,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                                 Toast.makeText(this, getString(R.string.multiple_pictogram_selected_first_used), Toast.LENGTH_LONG).show();
                             }
                             // Set the wanted pictogram to be what was returned form pictosearh
-                            changedPictogram = helper.pictogramHelper.getPictogramById(lastAddedPictogramsIds.get(0));
+                            changedPictogram = helper.pictogramHelper.getById(lastAddedPictogramsIds.get(0));
                         }
                     }
                 }
@@ -1052,6 +1061,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                             List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
                             GirafProfileSelectorDialog addPictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer tilføjet? Alle er valgt fra starten", ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
                             addPictoGramDialog.show(getSupportFragmentManager(), "" + ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                        } else {
+                            new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()),UpdatePictogramsInCategory.ADD_PICTOGRAMS,lastAddedPictogramsIds).execute();
                         }
 
                     }
@@ -1108,7 +1119,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             new SetCitizenCategories(checkedProfileList).execute();
         } else if (dialogIdentifier == ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG) {
             new UpdatePictogramsInCategory(checkedProfileList, UpdatePictogramsInCategory.ADD_PICTOGRAMS, lastAddedPictogramsIds).execute();
-        } else if (dialogIdentifier == REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG) {
+        } else if (dialogIdentifier == REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG) {
             new UpdatePictogramsInCategory(checkedProfileList, UpdatePictogramsInCategory.REMOVE_PICTOGRAMS, selectedPictogramsIdsInFragment).execute();
         }
     }
