@@ -771,9 +771,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // Sends the intent
             startActivityForResult(request, GET_SINGLE_PICTOGRAM);
         } catch (Exception e) {
-
             Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
-            // TODO - Open notify dialog instead of toast
         }
     }
 
@@ -868,9 +866,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // Sends the intent
             startActivityForResult(request, GET_MULTIPLE_PICTOGRAMS);
         } catch (Exception e) {
-
             Toast.makeText(this, "Could not open PictoSearch", Toast.LENGTH_SHORT).show();
-            // TODO - Open notify dialog instead of toast
         }
     }
 
@@ -880,13 +876,16 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      * @param view
      */
     public void onRemoveButtonClick(View view) {
-        // TODO Remove pictograms from category
-        CategoryDetailFragment categoryDetailFragment = (CategoryDetailFragment) getSupportFragmentManager().findFragmentByTag("FRAGMENT_CONTAINER");
 
-        // Get a list of profiles who has the category and a boolean sat to true
-        List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
-        GirafProfileSelectorDialog removePictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer fjernet? Alle er valgt fra starten", REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
-        removePictoGramDialog.show(getSupportFragmentManager(), "" + REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+        // If the category has any profiles added ask who wants the change
+        if(getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
+            CategoryDetailFragment categoryDetailFragment = (CategoryDetailFragment) getSupportFragmentManager().findFragmentByTag("FRAGMENT_CONTAINER");
+
+            // Get a list of profiles who has the category and a boolean sat to true
+            List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
+            GirafProfileSelectorDialog removePictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer fjernet? Alle er valgt fra starten", REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+            removePictoGramDialog.show(getSupportFragmentManager(), "" + REMOVE_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+        }
 
     }
 
@@ -1046,10 +1045,14 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                             lastAddedPictogramsIds.add(i);
                         }
 
-                        // Get a list of profiles who has the category and a boolean sat to true
-                        List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
-                        GirafProfileSelectorDialog addPictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer tilføjet? Alle er valgt fra starten", ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
-                        addPictoGramDialog.show(getSupportFragmentManager(), "" + ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                        // If the category has any profiles added ask who wants the change
+                        if(getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
+
+                            // Get a list of profiles who has the category and a boolean sat to true
+                            List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
+                            GirafProfileSelectorDialog addPictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer tilføjet? Alle er valgt fra starten", ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                            addPictoGramDialog.show(getSupportFragmentManager(), "" + ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                        }
 
                     }
                 }
