@@ -201,7 +201,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         //Check if user is monkey
         if (ActivityManager.isUserAMonkey()) {
             Helper h = new Helper(this);
-            h.CreateDummyData();
+
             childProfile = h.profilesHelper.getChildren().get(0);
             guardianProfile = h.profilesHelper.getGuardiansByChild(childProfile).get(0);
 
