@@ -146,7 +146,7 @@
     <string name="copy_category_to_user_button_showcase_help_titel_text">Administrer borgere</string>
     <string name="copy_category_to_user_button_showcase_help_content_text">Vælg hvilke borgere der skal have en kopi af denne kategori</string>
     <string name="create_category_button_showcase_help_titel_text">Opret kategori</string>
-    <string name="create_category_button_showcase_help_content_text">Opret en ny kategori</string>
+    <string name="create_category_button_showcase_help_content_text">Klik her for at oprette en ny kategori</string>
     <string name="administrate_citizen_button_showcase_help_titel_text">Administrér borger</string>
     <string name="administrate_citizen_button_showcase_help_content_text">Administrér katagorier for en borger</string>
 
