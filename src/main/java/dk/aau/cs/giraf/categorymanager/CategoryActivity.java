@@ -854,7 +854,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // Sends the intent
             startActivityForResult(request, GET_MULTIPLE_PICTOGRAMS);
         } catch (Exception e) {
-            Toast.makeText(this, getString(R.string.could_not_open_pictosearch), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, String.format(getString(R.string.could_not_open_pictosearch), getString(R.string.pictosearch)), Toast.LENGTH_SHORT).show();
         }
     }
 
