@@ -102,8 +102,9 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
             // Reset selected pictogram
             selectedPictograms.clear();
-            pictogramGrid.setAdapter(null);
+            callBack.pictogramsUpdated(selectedPictograms);
 
+            pictogramGrid.setAdapter(null);
 
             // Set view when list is empty
             pictogramGrid.setEmptyView(new ProgressBar(CategoryDetailFragment.this.getActivity()));
@@ -367,6 +368,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
     public synchronized void loadPictograms()
     {
+
         if(loadPictogramTask != null)
         {
             loadPictogramTask.cancel(true);
