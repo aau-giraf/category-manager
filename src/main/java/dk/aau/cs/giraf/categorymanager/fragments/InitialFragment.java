@@ -136,7 +136,6 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
 
         // Targets for the Showcase
         final ViewTarget createCategoryTarget = new ViewTarget(R.id.category_create_button, getActivity(), 1.5f);
-        final ViewTarget adminCitizenTarget = new ViewTarget(R.id.administrate_citizen_button, getActivity(), 1.5f);
 
         // Create a relative location for the next button
         final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -159,23 +158,6 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
                 showcaseView.setContentTitle(getString(R.string.create_category_button_showcase_help_titel_text));
                 showcaseView.setContentText(getString(R.string.create_category_button_showcase_help_content_text));
                 showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
-                showcaseView.setButtonPosition(lps);
-                showcaseView.setTextPostion(textX, textY);
-            }
-        });
-
-        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
-            @Override
-            public void configShowCaseView(final ShowcaseView showcaseView) {
-                showcaseView.setShowcase(adminCitizenTarget, true);
-                showcaseView.setContentTitle(getString(R.string.administrate_citizen_button_showcase_help_titel_text));
-                showcaseView.setContentText(getString(R.string.administrate_citizen_button_showcase_help_content_text));
-
-                if (!isFirstRun) {
-                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
-                } else {
-                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
-                }
                 showcaseView.setButtonPosition(lps);
                 showcaseView.setTextPostion(textX, textY);
             }
