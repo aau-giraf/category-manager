@@ -12,7 +12,8 @@
         android:layout_centerInParent="true"
         android:dividerPadding="200dp"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusableInTouchMode="true">
 
         <dk.aau.cs.giraf.gui.GirafPictogramItemView
             android:id="@+id/editable_pictogram_view"
