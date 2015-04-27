@@ -42,7 +42,7 @@ import dk.aau.cs.giraf.dblib.models.Profile;
 import dk.aau.cs.giraf.dblib.models.ProfileCategory;
 import dk.aau.cs.giraf.gui.GirafWaitingDialog;
 
-public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification, GirafProfileSelectorDialog.OnMultipleProfilesSelectedListener, CategoryDetailFragment.OnSelectedPictogramsUpdateListener {
+public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification, GirafProfileSelectorDialog.OnMultipleProfilesSelectedListener, GirafProfileSelectorDialog.OnSingleProfileSelectedListener, CategoryDetailFragment.OnSelectedPictogramsUpdateListener {
 
     // Identifiers used to start activities etc. for results
     public static final int CREATE_CATEGORY_REQUEST = 101;
@@ -68,6 +68,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     private static final int ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG = 110;
     private static final int REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG = 111;
     private static final int DELTE_CATEGORY_CONFIRM_DIALOG = 112;
+    private static final int CHANGE_USER_DIALOG = 113;
 
     // Helper that will be used to fetch profiles
     private final Helper helper = new Helper(this);
@@ -638,54 +639,29 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         LoadCategoriesTask categoryLoader = (LoadCategoriesTask) new LoadCategoriesTask().execute();
 
         // Check if we are aware of the current guardian profile
-        if (guardianProfile != null) {
+        if (getCurrentUser() != null) {
 
-            // Check if the user currently signed in is a guardian
-            if (getCurrentUser().getRole() != Profile.Roles.CHILD) {
-                // Add the change-user button to the top-bar
-                GirafButton changeUserGirafButton = new GirafButton(this, this.getResources().getDrawable(R.drawable.icon_change_user));
 
-                // Method to use whenever the change user-button is pressed
-                changeUserGirafButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Create the new profile editor. Note that it is important that guardians are not shown in this list.
-                        final GProfileSelector profileSelectorDialog = new GProfileSelector(CategoryActivity.this, guardianProfile, null, false);
+            // Add the change-user button to the top-bar
+            GirafButton changeUserGirafButton = new GirafButton(this, this.getResources().getDrawable(R.drawable.icon_change_user));
 
-                        // Method to use whenever the user has selected a button
-                        profileSelectorDialog.setOnListItemClick(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Profile selectedProfile = helper.profilesHelper.getProfileById((int) id);
+            // Method to use whenever the change user-button is pressed
+            changeUserGirafButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Create the new profile editor. Note that it is important that guardians are not shown in this list.
+                    final GirafProfileSelectorDialog profileSelectorDialog = GirafProfileSelectorDialog.newInstance(CategoryActivity.this, guardianProfile.getId(), false, false, getString(R.string.categorymanager_change_user_dialog_description), CHANGE_USER_DIALOG);
 
-                                // Make sure that the selected profile is a child
-                                if (selectedProfile.getRole() == Profile.Roles.CHILD) {
-                                    // Dismiss the dialog
-                                    profileSelectorDialog.dismiss();
+                    profileSelectorDialog.show(getSupportFragmentManager(),"" + CHANGE_USER_DIALOG);
 
-                                    // Start a new activity with the selected child
-                                    Intent intent = new Intent(CategoryActivity.this, CategoryActivity.class);
-                                    intent.putExtra(getString(R.string.current_child_id), selectedProfile.getId());
-                                    intent.putExtra(getString(R.string.current_guardian_id), guardianProfile.getId());
-                                    startActivity(intent);
-                                }
-                            }
-                        });
+                }
+            });
 
-                        // Show the dialog
-                        profileSelectorDialog.show();
-                    }
-                });
+            addGirafButtonToActionBar(changeUserGirafButton, GirafActivity.LEFT);
 
-                addGirafButtonToActionBar(changeUserGirafButton, GirafActivity.LEFT);
-            }
-            // The user is signed in as a child
-            else {
-
-            }
         }
     }
-/**/
+    /**/
     /*
      * Methods to handle right-side fragment (FrameLayout) below
      */
@@ -850,6 +826,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onSettingsButtonClicked(View view) {
         // Create the dialog
+
+        changedPictogram = null;
         editDialog = GirafInflatableDialog.newInstance(String.format(getString(R.string.settings_for), getSelectedCategory().getName()),
                 getString(R.string.settings_dialog_description),
                 R.layout.category_settings_dialog, EDIT_CATEGORY_DIALOG);
@@ -888,21 +866,20 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     public void onRemoveButtonClick(View view) {
 
         // If there are any pictograms selected
-        if(selectedPictogramsIdsInFragment.size() > 0) {
+        if (selectedPictogramsIdsInFragment.size() > 0) {
             // If the category has any profiles added ask who wants the change
-            if(getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
+            if (getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
 
                 // Get a list of profiles who has the category and a boolean sat to true
                 List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
                 GirafProfileSelectorDialog removePictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, getString(R.string.remove_pictograms_from_category_dialog_description), REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG);
                 removePictoGramDialog.show(getSupportFragmentManager(), "" + REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG);
             } else {
-                new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()),UpdatePictogramsInCategory.REMOVE_PICTOGRAMS,selectedPictogramsIdsInFragment).execute();
+                new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()), UpdatePictogramsInCategory.REMOVE_PICTOGRAMS, selectedPictogramsIdsInFragment).execute();
             }
         } else {
-            Toast.makeText(this,getString(R.string.no_pictograms_selected), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_pictograms_selected), Toast.LENGTH_SHORT).show();
         }
-
 
 
     }
@@ -1063,15 +1040,20 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                             lastAddedPictogramsIds.add(i);
                         }
 
-                        // If the category has any profiles added ask who wants the change
-                        if(getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
-
-                            // Get a list of profiles who has the category and a boolean sat to true
-                            List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
-                            GirafProfileSelectorDialog addPictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer tilføjet? Alle er valgt fra starten", ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
-                            addPictoGramDialog.show(getSupportFragmentManager(), "" + ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                        // If no pictograms was returned tell the user
+                        if (lastAddedPictogramsIds.size() < 1) {
+                            Toast.makeText(this, this.getString(R.string.no_pictograms_selected), Toast.LENGTH_SHORT).show();
                         } else {
-                            new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()),UpdatePictogramsInCategory.ADD_PICTOGRAMS,lastAddedPictogramsIds).execute();
+                            // If the category has any profiles added ask who wants the change
+                            if (getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
+
+                                // Get a list of profiles who has the category and a boolean sat to true
+                                List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
+                                GirafProfileSelectorDialog addPictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer tilføjet? Alle er valgt fra starten", ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                                addPictoGramDialog.show(getSupportFragmentManager(), "" + ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
+                            } else {
+                                new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()), UpdatePictogramsInCategory.ADD_PICTOGRAMS, lastAddedPictogramsIds).execute();
+                            }
                         }
 
                     }
@@ -1130,6 +1112,22 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             new UpdatePictogramsInCategory(checkedProfileList, UpdatePictogramsInCategory.ADD_PICTOGRAMS, lastAddedPictogramsIds).execute();
         } else if (dialogIdentifier == REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG) {
             new UpdatePictogramsInCategory(checkedProfileList, UpdatePictogramsInCategory.REMOVE_PICTOGRAMS, selectedPictogramsIdsInFragment).execute();
+        }
+    }
+
+    @Override
+    public void onProfileSelected(int i, Profile profile) {
+        if(i == CHANGE_USER_DIALOG) {
+            // If it is a citizen profile
+            if (getCurrentUser().getRole() == Profile.Roles.CHILD) {
+                CategoryActivity.this.finish();
+            }
+
+            // Start a new activity with the selected child
+            Intent intent = new Intent(CategoryActivity.this, CategoryActivity.class);
+            intent.putExtra(getString(R.string.current_child_id), profile.getId());
+            intent.putExtra(getString(R.string.current_guardian_id), guardianProfile.getId());
+            startActivity(intent);
         }
     }
 

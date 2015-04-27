@@ -168,5 +168,6 @@
     <string name="no_pictograms_selected">Ingen piktogrammer valgt</string>
     <string name="remove_pictograms_from_category_dialog_description">Hvilke brugere skal have de valgte piktogrammer fjernet?</string>
     <string name="could_not_open_pictosearch">Kunne ikke åbne %1$s - Er det installeret?</string>
+    <string name="categorymanager_change_user_dialog_description">Vælg en borger du ønsker at administrere kategorier for</string>
 
 </resources>
