@@ -10,9 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
 
-        <!-- Pictogram selector and text edit box -->
+"        <!-- Pictogram selector and text edit box -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/create_category_edittext_hint"
                 android:singleLine="true"
-                android:inputType="textPersonName"
+                android:inputType="textCapWords"
                 android:layout_gravity="center"/>
 
         </LinearLayout>

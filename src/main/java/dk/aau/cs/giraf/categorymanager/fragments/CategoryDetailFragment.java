@@ -10,25 +10,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import dk.aau.cs.giraf.categorymanager.CategoryActivity;
 import dk.aau.cs.giraf.categorymanager.PictogramAdapter;
 import dk.aau.cs.giraf.categorymanager.R;
 import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.dblib.models.Profile;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
@@ -84,7 +81,8 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
     private boolean isChildCategory;
 
 
-    OnSelectedPictogramsUpdateListener callBack;
+    OnSelectedPictogramsUpdateListener onSelectedPictogramsUpdateListener;
+    CategoryActivity categoryActivity;
 
     /**
      * Used in onResume and onPause for handling showcaseview for first run
@@ -102,7 +100,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
             // Reset selected pictogram
             selectedPictograms.clear();
-            callBack.pictogramsUpdated(selectedPictograms);
+            onSelectedPictogramsUpdateListener.pictogramsUpdated(selectedPictograms);
 
             pictogramGrid.setAdapter(null);
 
@@ -200,11 +198,13 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
         // Check if the activity using the fragment implements the needed interface
         try {
-            callBack = (OnSelectedPictogramsUpdateListener) activity;
+            onSelectedPictogramsUpdateListener = (OnSelectedPictogramsUpdateListener) activity;
         }
         catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnSelectedPictogramsUpdateListener interface");
         }
+
+        categoryActivity = (CategoryActivity) activity;
 
     }
 
@@ -235,13 +235,13 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
                 if (selectedPictograms.contains(selectedPictogram)) {
                     // Remove the pictogram to the selected pictogram(s)
                     selectedPictograms.remove(selectedPictogram); // Add to selected
-                    callBack.pictogramsUpdated(selectedPictograms); // Tell the activity
+                    onSelectedPictogramsUpdateListener.pictogramsUpdated(selectedPictograms); // Tell the activity
                 }
                 // If the pictogram is not in the selected set add it
                 else {
                     // Add the pictogram to the selected pictogram(s)
                     selectedPictograms.add(selectedPictogram); // Remove from selected
-                    callBack.pictogramsUpdated(selectedPictograms); // Tell the activity)
+                    onSelectedPictogramsUpdateListener.pictogramsUpdated(selectedPictograms); // Tell the activity)
                 }
 
                 // Update the UI accordingly to above changes
@@ -407,43 +407,46 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
         showcaseManager = new ShowcaseManager();
 
-        // Add showcase for copyToUserButton
-        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
-            @Override
-            public void configShowCaseView(final ShowcaseView showcaseView) {
 
-                final ViewTarget copyToUserButtonTarget = new ViewTarget(R.id.userSettingsButton, getActivity());
+        if(categoryActivity.getCurrentUser().getRole() != Profile.Roles.CHILD) {
+            // Add showcase for categorySettingsButton
+            showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+                @Override
+                public void configShowCaseView(final ShowcaseView showcaseView) {
 
-                showcaseView.setShowcase(copyToUserButtonTarget, true);
-                showcaseView.setContentTitle(getString(R.string.copy_category_to_user_button_showcase_help_titel_text));
-                showcaseView.setContentText(getString(R.string.copy_category_to_user_button_showcase_help_content_text));
-                showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
-                showcaseView.setButtonPosition(rightButtonParams);
+                    final ViewTarget categorySettingsButtonTarget = new ViewTarget(R.id.categorySettingsButton, getActivity());
 
-                final int textXPosition = (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 220);
-                final int textYPosition = copyToUserButtonTarget.getPoint().y - (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 200);
-                showcaseView.setTextPostion(textXPosition, textYPosition);
-            }
-        });
+                    showcaseView.setShowcase(categorySettingsButtonTarget, true);
+                    showcaseView.setContentTitle(getString(R.string.pictogram_settings_button_showcase_help_titel_text));
+                    showcaseView.setContentText(getString(R.string.pictogram_settings_button_showcase_help_content_text));
+                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                    showcaseView.setButtonPosition(rightButtonParams);
 
-        // Add showcase for categorySettingsButton
-        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
-            @Override
-            public void configShowCaseView(final ShowcaseView showcaseView) {
+                    final int textXPosition = categorySettingsButtonTarget.getPoint().x;
+                    final int textYPosition = categorySettingsButtonTarget.getPoint().y - (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 200);
+                    showcaseView.setTextPostion(textXPosition, textYPosition);
+                }
+            });
 
-                final ViewTarget categorySettingsButtonTarget = new ViewTarget(R.id.categorySettingsButton, getActivity());
+            // Add showcase for copyToUserButton
+            showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+                @Override
+                public void configShowCaseView(final ShowcaseView showcaseView) {
 
-                showcaseView.setShowcase(categorySettingsButtonTarget, true);
-                showcaseView.setContentTitle(getString(R.string.pictogram_settings_button_showcase_help_titel_text));
-                showcaseView.setContentText(getString(R.string.pictogram_settings_button_showcase_help_content_text));
-                showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
-                showcaseView.setButtonPosition(rightButtonParams);
+                    final ViewTarget copyToUserButtonTarget = new ViewTarget(R.id.userSettingsButton, getActivity());
 
-                final int textXPosition = categorySettingsButtonTarget.getPoint().x;
-                final int textYPosition = categorySettingsButtonTarget.getPoint().y - (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 200);
-                showcaseView.setTextPostion(textXPosition, textYPosition);
-            }
-        });
+                    showcaseView.setShowcase(copyToUserButtonTarget, true);
+                    showcaseView.setContentTitle(getString(R.string.copy_category_to_user_button_showcase_help_titel_text));
+                    showcaseView.setContentText(getString(R.string.copy_category_to_user_button_showcase_help_content_text));
+                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                    showcaseView.setButtonPosition(rightButtonParams);
+
+                    final int textXPosition = (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 220);
+                    final int textYPosition = copyToUserButtonTarget.getPoint().y - (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 200);
+                    showcaseView.setTextPostion(textXPosition, textYPosition);
+                }
+            });
+        }
 
         // Add showcase for deletePictogramButton
         showcaseManager.addShowCase(new ShowcaseManager.Showcase() {

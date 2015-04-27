@@ -8,8 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import dk.aau.cs.giraf.categorymanager.R;
+import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.dblib.models.Profile;
 
 /**
@@ -20,10 +24,16 @@ import dk.aau.cs.giraf.dblib.models.Profile;
  * Use the {@link dk.aau.cs.giraf.categorymanager.fragments.InitialFragmentSpecificUser#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class InitialFragmentSpecificUser extends Fragment {
+public class InitialFragmentSpecificUser extends Fragment implements ShowcaseManager.ShowcaseCapable {
 
     private OnFragmentInteractionListener mListener;
     private Profile profile;
+
+    /**
+     * Used to showcase views
+     */
+    private ShowcaseManager showcaseManager;
+    private boolean isFirstRun;
 
     /**
      * Use this factory method to create a new instance of
@@ -96,6 +106,31 @@ public class InitialFragmentSpecificUser extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void showShowcase() {
+        // TODO Add showcases here if any
+        Toast.makeText(getActivity(),"Hjælp er ikke tilgængelig",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public synchronized void hideShowcase() {
+
+        if (showcaseManager != null) {
+            showcaseManager.stop();
+            showcaseManager = null;
+        }
+    }
+
+    @Override
+    public synchronized void toggleShowcase() {
+
+        if (showcaseManager != null) {
+            hideShowcase();
+        } else {
+            showShowcase();
+        }
     }
 
     /**

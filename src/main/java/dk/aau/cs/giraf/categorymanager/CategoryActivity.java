@@ -537,7 +537,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      *
      * @return the current profile. {@code null} if no current profile.
      */
-    private Profile getCurrentUser() {
+    public Profile getCurrentUser() {
         if (childProfile != null) {
             return childProfile;
         } else if (guardianProfile != null) {
