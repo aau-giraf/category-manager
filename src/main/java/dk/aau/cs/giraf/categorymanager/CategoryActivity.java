@@ -95,8 +95,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     private CategoryAdapter.CategoryViewPair selectedCategoryAndViewItem = null;
 
     // Lists to update pictograms
-    private List<Integer> lastAddedPictogramsIds = new ArrayList<Integer>();
-    private List<Integer> selectedPictogramsIdsInFragment = new ArrayList<Integer>();
+    private List<Long> lastAddedPictogramsIds = new ArrayList<Long>();
+    private List<Long> selectedPictogramsIdsInFragment = new ArrayList<Long>();
 
     // Reference to category detail fragment
     private CategoryDetailFragment categoryDetailFragment;
@@ -255,7 +255,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                     newCategory.setSuperCategoryId(selectedCategory.getId());
 
                     // Add the category and join-table entry
-                    int insertedCategoryIdentifier = helper.categoryHelper.insert(newCategory);
+                    long insertedCategoryIdentifier = helper.categoryHelper.insert(newCategory);
 
                     // Insert the same pictograms to the new category
                     for (Pictogram pictogram : pictograms) {
@@ -413,11 +413,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         private final List<Pair<Profile, Boolean>> checkedProfileList;
         private GirafWaitingDialog waitingDialog;
         private int pictogramAction;
-        private List<Integer> pictogramIds;
+        private List<Long> pictogramIds;
         public static final int ADD_PICTOGRAMS = 0;
         public static final int REMOVE_PICTOGRAMS = 1;
 
-        public UpdatePictogramsInCategory(List<Pair<Profile, Boolean>> checkedProfileList, int pictogramAction, List<Integer> pictogramIds) {
+        public UpdatePictogramsInCategory(List<Pair<Profile, Boolean>> checkedProfileList, int pictogramAction, List<Long> pictogramIds) {
             this.checkedProfileList = checkedProfileList;
 
             // Throw exception if illegal arguments is given
@@ -454,12 +454,12 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             // Update the seleted category accordingly
             if (pictogramAction == ADD_PICTOGRAMS) {
                 // Add pictograms to the selected category
-                for (int pictogramId : pictogramIds) {
+                for (long pictogramId : pictogramIds) {
                     helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogramId, getSelectedCategory().getId()));
                 }
             } else if (pictogramAction == REMOVE_PICTOGRAMS) {
                 // Remove pictograms from the selected category
-                for (int pictogramId : pictogramIds) {
+                for (long pictogramId : pictogramIds) {
                     helper.pictogramCategoryHelper.remove(new PictogramCategory(pictogramId, getSelectedCategory().getId()));
                 }
             }
@@ -492,12 +492,12 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 // Update the seleted category accordingly
                 if (pictogramAction == ADD_PICTOGRAMS) {
                     // Add pictograms to the selected category
-                    for (int pictogramId : pictogramIds) {
+                    for (long pictogramId : pictogramIds) {
                         helper.pictogramCategoryHelper.insert(new PictogramCategory(pictogramId, citizenCategory.getId()));
                     }
                 } else if (pictogramAction == REMOVE_PICTOGRAMS) {
                     // Remove pictograms from the selected category
-                    for (int pictogramId : pictogramIds) {
+                    for (long pictogramId : pictogramIds) {
                         helper.pictogramCategoryHelper.remove(new PictogramCategory(pictogramId, citizenCategory.getId()));
                     }
                 }
@@ -579,8 +579,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             finish();
             return;
         } else {
-            final int childId = extras.getInt(getString(R.string.current_child_id));
-            final int guardianId = extras.getInt(getString(R.string.current_guardian_id));
+            final long childId = extras.getLong(getString(R.string.current_child_id));
+            final long guardianId = extras.getLong(getString(R.string.current_guardian_id));
 
             if (childId != -1) {
                 childProfile = helper.profilesHelper.getProfileById(childId);
@@ -610,7 +610,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             setContent(InitialFragmentSpecificUser.newInstance(currentUserProfile), R.id.categorytool_framelayout);
         } else {
             // Find the department for the guardian
-            Department department = helper.departmentsHelper.getDepartmentById(currentUserProfile.getDepartmentId());
+            Department department = helper.departmentsHelper.getDepartmentById((int) currentUserProfile.getDepartmentId());
 
             // Change the title bar text
             setActionBarTitle(String.format(getString(R.string.categories_for), department.getName()));
@@ -1005,7 +1005,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                     if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
                         lastAddedPictogramsIds.clear();
                         // TODO pictosearch should use longs instead of integers
-                        for (int i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
+                        for (long i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
                             lastAddedPictogramsIds.add(i);
                         }
 
@@ -1036,7 +1036,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
                         // TODO pictosearch should use longs instead of integers
                         lastAddedPictogramsIds.clear();
-                        for (int i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
+                        for (long i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
                             lastAddedPictogramsIds.add(i);
                         }
 
