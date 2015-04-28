@@ -48,7 +48,7 @@
 
     <!-- Helpful text used to guide the user back the the main view when trying to copy user categories -->
     <string name="disabled_button_notification_dialog_body_copy">
-        Det er ikke muligt at kopiere bruger-kategorier. Vend i stedet tilbage til hovedoversigten.
+        Det er ikke muligt at administrere bruger-kategorier. Vend i stedet tilbage til hovedoversigten.
     </string>
 
     <!-- Helpful text used to guide the user back the the main view when trying change settings for user categories -->
@@ -137,16 +137,16 @@
     <string name="pictogram_grid_pictogram_showcase_help_content_text">Her er dine piktogrammer</string>
     <string name="pictogram_grid_empty_showcase_help_content_text">Her vil dine piktogrammer dukke up</string>
     <string name="pictogram_grid_showcase_help_titel_text">Piktogrammer</string>
-    <string name="add_pictogram_button_showcase_help_titel_text">Tilføj piktogram</string>
-    <string name="add_pictogram_button_showcase_help_content_text">Tilføj et piktogram til den\n nuværende kategori</string>
-    <string name="delete_pictogram_button_showcase_help_titel_text">Slet piktogram</string>
-    <string name="delete_pictogram_button_showcase_help_content_text">Slet det nuværende valgte piktogram</string>
+    <string name="add_pictogram_button_showcase_help_titel_text">Tilføj piktogrammer</string>
+    <string name="add_pictogram_button_showcase_help_content_text">Tilføj piktogrammer til den\n nuværende kategori</string>
+    <string name="delete_pictogram_button_showcase_help_titel_text">Fjern piktogrammer</string>
+    <string name="delete_pictogram_button_showcase_help_content_text">Vælg piktogrammer og tryk her for at fjerne dem fra kategorien</string>
     <string name="pictogram_settings_button_showcase_help_titel_text">Indstillinger for kategori</string>
-    <string name="pictogram_settings_button_showcase_help_content_text">Indstil navn og piktogram icon for den valgte kategori</string>
-    <string name="copy_category_to_user_button_showcase_help_titel_text">Kopier kategori til bruger</string>
-    <string name="copy_category_to_user_button_showcase_help_content_text">Kopier den nuværende kategori til en bruger</string>
+    <string name="pictogram_settings_button_showcase_help_content_text">Indstil navn og piktogram ikon for den valgte kategori</string>
+    <string name="copy_category_to_user_button_showcase_help_titel_text">Administrer borgere</string>
+    <string name="copy_category_to_user_button_showcase_help_content_text">Vælg hvilke borgere der skal have en kopi af denne kategori</string>
     <string name="create_category_button_showcase_help_titel_text">Opret kategori</string>
-    <string name="create_category_button_showcase_help_content_text">Opret en ny kategori</string>
+    <string name="create_category_button_showcase_help_content_text">Klik her for at oprette en ny kategori</string>
     <string name="administrate_citizen_button_showcase_help_titel_text">Administrér borger</string>
     <string name="administrate_citizen_button_showcase_help_content_text">Administrér katagorier for en borger</string>
 
@@ -157,6 +157,17 @@
 
 
     <string name="no_pictogram_selected">Der blev ikke valgt noget piktogram</string>
-    <string name="multiple_pictogram_selected_first_used">Mere end et piktogram valgt, det øverste i listen bruges</string>
+    <string name="multiple_pictogram_selected_first_used">Mere end et piktogram valgt - Vi bruger det første</string>
+    <string name="add_pictograms_wait_dialog_description">Tilføjer piktogrammer...</string>
+    <string name="remove_pictograms_wait_dialog_description">Fjerner piktorgrammer...</string>
+    <string name="please_wait_waitdialog_title">Vent venligst...</string>
+    <string name="setting_up_categories_waitdialog_description">Kategorierne indstilles...</string>
+    <string name="updating_categories_waitdialog_description">Kategorierne opdateres...</string>
+    <string name="deleting_categories_waitdialog_description">Kategorierne slettes...</string>
+    <string name="select_users_to_get_category">Vælg hvilke borgere der skal have en kopi af kategorien</string>
+    <string name="no_pictograms_selected">Ingen piktogrammer valgt</string>
+    <string name="remove_pictograms_from_category_dialog_description">Hvilke brugere skal have de valgte piktogrammer fjernet?</string>
+    <string name="could_not_open_pictosearch">Kunne ikke åbne %1$s - Er det installeret?</string>
+    <string name="categorymanager_change_user_dialog_description">Vælg en borger du ønsker at administrere kategorier for</string>
 
 </resources>
