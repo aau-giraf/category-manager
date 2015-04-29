@@ -71,7 +71,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
         if (extras == null) {
             Toast.makeText(this, "The activity was not started correctly", Toast.LENGTH_LONG).show();
         } else {
-            final int guardianId = extras.getInt(getString(R.string.current_guardian_id));
+            final long guardianId = extras.getLong(getString(R.string.current_guardian_id));
 
             if (guardianId != -1) {
                 guardianProfile = helper.profilesHelper.getProfileById(guardianId);
@@ -103,12 +103,12 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
                 final Category createdCategory = new Category(titleBox.getText().toString(), R.color.gBrowncolor, iconPictogram.getImage());
 
                 // Test if the category is already added
-                if (!helper.categoryHelper.getCategories().contains(createdCategory)) {
+                if (!helper.categoryHelper.getListOfObjects().contains(createdCategory)) {
                     // Add the category into database
-                    helper.categoryHelper.insertCategory(createdCategory);
+                    helper.categoryHelper.insert(createdCategory);
 
                     // Add relation between the created category and the guardian who created the category
-                    helper.profileCategoryController.insertProfileCategory(new ProfileCategory(guardianProfile.getId(), createdCategory.getId()));
+                    helper.profileCategoryController.insert(new ProfileCategory(guardianProfile.getId(), createdCategory.getId()));
                 }
 
                 // Add the ID to the result. This can later be used to identify what category was created
@@ -199,7 +199,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
                     // Check if there was returned any pictogram ids
                     if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
                         // TODO pictosearch should use longs instead of integers
-                        int[] pictogramIds = extras.getIntArray(PICTO_SEARCH_IDS_TAG);
+                        long[] pictogramIds = extras.getLongArray(PICTO_SEARCH_IDS_TAG);
                         // TODO Update when pictosearch changes how they return a single pictogram
 
                         // If there were returned more than one pictogram tell the user that the first is used
@@ -211,7 +211,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
                             }
 
                             // Set the wanted pictogram to be what was returned form pictosearh
-                            iconPictogram = helper.pictogramHelper.getPictogramById(pictogramIds[0]);
+                            iconPictogram = helper.pictogramHelper.getById(pictogramIds[0]);
 
                             // Update the gui with the found pictogram
                             iconView.setImageModel(iconPictogram);

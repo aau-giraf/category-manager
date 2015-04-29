@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,13 +25,6 @@ import dk.aau.cs.giraf.categorymanager.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.categorymanager.fragments.InitialFragment;
 import dk.aau.cs.giraf.categorymanager.fragments.InitialFragmentSpecificUser;
 import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
-import dk.aau.cs.giraf.gui.GProfileSelector;
-import dk.aau.cs.giraf.gui.GirafButton;
-import dk.aau.cs.giraf.gui.GirafConfirmDialog;
-import dk.aau.cs.giraf.gui.GirafInflatableDialog;
-import dk.aau.cs.giraf.gui.GirafNotifyDialog;
-import dk.aau.cs.giraf.gui.GirafPictogramItemView;
-import dk.aau.cs.giraf.gui.GirafProfileSelectorDialog;
 import dk.aau.cs.giraf.dblib.Helper;
 import dk.aau.cs.giraf.dblib.models.Category;
 import dk.aau.cs.giraf.dblib.models.Department;
@@ -40,6 +32,12 @@ import dk.aau.cs.giraf.dblib.models.Pictogram;
 import dk.aau.cs.giraf.dblib.models.PictogramCategory;
 import dk.aau.cs.giraf.dblib.models.Profile;
 import dk.aau.cs.giraf.dblib.models.ProfileCategory;
+import dk.aau.cs.giraf.gui.GirafButton;
+import dk.aau.cs.giraf.gui.GirafConfirmDialog;
+import dk.aau.cs.giraf.gui.GirafInflatableDialog;
+import dk.aau.cs.giraf.gui.GirafNotifyDialog;
+import dk.aau.cs.giraf.gui.GirafPictogramItemView;
+import dk.aau.cs.giraf.gui.GirafProfileSelectorDialog;
 import dk.aau.cs.giraf.gui.GirafWaitingDialog;
 
 public class CategoryActivity extends GirafActivity implements AdapterView.OnItemClickListener, InitialFragment.OnFragmentInteractionListener, InitialFragmentSpecificUser.OnFragmentInteractionListener, CategoryAdapter.SelectedCategoryAware, GirafConfirmDialog.Confirmation, GirafInflatableDialog.OnCustomViewCreatedListener, GirafNotifyDialog.Notification, GirafProfileSelectorDialog.OnMultipleProfilesSelectedListener, GirafProfileSelectorDialog.OnSingleProfileSelectedListener, CategoryDetailFragment.OnSelectedPictogramsUpdateListener {
@@ -81,7 +79,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     GirafInflatableDialog editDialog;
     private Pictogram changedPictogram; // Returned from pictosearch
     private EditText categoryTitle; // The textView
-    private String changedText; // The text before openeing pictosearch
+    private String changedText; // The text before opening pictosearch
 
     // View to contain categories
     private ListView categoryContainer;
@@ -99,7 +97,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     private List<Long> selectedPictogramsIdsInFragment = new ArrayList<Long>();
 
     // Reference to category detail fragment
-    private CategoryDetailFragment categoryDetailFragment;
+    //private CategoryDetailFragment categoryDetailFragment;
 
 
     /**
@@ -175,8 +173,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
     }
-
-    ;
 
     /**
      * Class to process the deleting and adding of new categories
@@ -449,7 +445,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         @Override
         protected Void doInBackground(Void... params) {
             // Find the selected category to be copied
-            Category selectedCategory = getSelectedCategory();
+            final Category selectedCategory = getSelectedCategory();
 
             // Update the seleted category accordingly
             if (pictogramAction == ADD_PICTOGRAMS) {
@@ -513,19 +509,17 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             super.onPostExecute(m);
             new UpdateCategoryProfileStatusList().execute();
 
-            // Find the pictogram grid
-            GridView pictogramGrid = (GridView) findViewById(R.id.pictogram_gridview);
-
             // Close the dialog
             waitingDialog.dismiss();
 
             // Update the pictograms in the gridview
-            categoryDetailFragment.loadPictograms();
+            final CategoryDetailFragment fragment = (CategoryDetailFragment) getSupportFragmentManager().findFragmentById(R.id.categorytool_framelayout);
 
+            if (fragment != null) {
+                fragment.loadPictograms();
+            }
         }
     }
-
-    ;
 
     /**
      * Will return the current profile. If the application is launched from a child profile,
@@ -583,11 +577,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             final long guardianId = extras.getLong(getString(R.string.current_guardian_id));
 
             if (childId != -1) {
-                childProfile = helper.profilesHelper.getProfileById(childId);
+                childProfile = helper.profilesHelper.getById(childId);
             }
 
             if (guardianId != -1) {
-                guardianProfile = helper.profilesHelper.getProfileById(guardianId);
+                guardianProfile = helper.profilesHelper.getById(guardianId);
             }
         }
 
@@ -610,7 +604,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             setContent(InitialFragmentSpecificUser.newInstance(currentUserProfile), R.id.categorytool_framelayout);
         } else {
             // Find the department for the guardian
-            Department department = helper.departmentsHelper.getDepartmentById((int) currentUserProfile.getDepartmentId());
+            Department department = helper.departmentsHelper.getById((int) currentUserProfile.getDepartmentId());
 
             // Change the title bar text
             setActionBarTitle(String.format(getString(R.string.categories_for), department.getName()));
@@ -652,7 +646,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                     // Create the new profile editor. Note that it is important that guardians are not shown in this list.
                     final GirafProfileSelectorDialog profileSelectorDialog = GirafProfileSelectorDialog.newInstance(CategoryActivity.this, guardianProfile.getId(), false, false, getString(R.string.categorymanager_change_user_dialog_description), CHANGE_USER_DIALOG);
 
-                    profileSelectorDialog.show(getSupportFragmentManager(),"" + CHANGE_USER_DIALOG);
+                    profileSelectorDialog.show(getSupportFragmentManager(), "" + CHANGE_USER_DIALOG);
 
                 }
             });
@@ -696,8 +690,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      * @param frameLayoutResource resource to place fragment in
      */
     public void pushContent(final Fragment fragment, final int frameLayoutResource) {
-        final FragmentManager fm = getSupportFragmentManager();
 
+        final FragmentManager fm = getSupportFragmentManager();
         final Fragment currentContent = getSupportFragmentManager().findFragmentById(frameLayoutResource);
 
         if (currentContent == fragment) {
@@ -707,9 +701,10 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         fm.beginTransaction().replace(frameLayoutResource, fragment).addToBackStack(null).commit();
 
+        /*
         if (fragment instanceof CategoryDetailFragment) {
             categoryDetailFragment = (CategoryDetailFragment) fragment;
-        }
+        }*/
     }
 
     /*
@@ -738,22 +733,16 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      *
      * @param view needed for onClickListner
      */
-    public void onEditCategoryPictogramClicked(View view) {
+    public void onEditCategoryPictogramClicked(final View view) {
 
         // Reset the returned value
         changedPictogram = null;
         changedText = categoryTitle.getText().toString();
 
-        Intent request = new Intent(); // A intent request
-
         // Try to send the intent
         try {
-            // Sets properties on the intent
-            request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
-            request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_SINGLE_TAG);
 
-            // Sends the intent
-            startActivityForResult(request, GET_SINGLE_PICTOGRAM);
+            makePictosearchRequest(PICTO_SEARCH_SINGLE_TAG, GET_SINGLE_PICTOGRAM);
         } catch (Exception e) {
             Toast.makeText(this, getString(R.string.could_not_open_pictosearch), Toast.LENGTH_SHORT).show();
         }
@@ -766,7 +755,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // TODO Insert strings to strings.xml
 
-        int subCategoryCount = getProrileWithCategoryList(getSelectedCategory()).size();
+        int subCategoryCount = getProfileWithCategoryList(getSelectedCategory()).size();
         String deleteDescription = "Vil du slette kategorien " + getSelectedCategory().getName() + "?";
 
         if (subCategoryCount > 0) {
@@ -785,9 +774,9 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      */
     public void onSaveCategoryClicked(final View view) {
 
-        Category oldCategory = getSelectedCategory();
+        final Category oldCategory = getSelectedCategory();
 
-        Category newCategory = new Category();
+        final Category newCategory = new Category();
         newCategory.setId(getSelectedCategory().getId());
         newCategory.setName(categoryTitle.getText().toString());
 
@@ -824,7 +813,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      *
      * @param view needed for onClickListner
      */
-    public void onSettingsButtonClicked(View view) {
+    public void onSettingsButtonClicked(final View view) {
         // Create the dialog
 
         changedPictogram = null;
@@ -842,17 +831,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      *
      * @param view
      */
-    public void onAddButtonClick(View view) {
-        Intent request = new Intent(); // A intent request
-
+    public void onAddButtonClick(final View view) {
         // Try to send the intent
         try {
-            // Sets properties on the intent
-            request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
-            request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_MULTI_TAG);
+            makePictosearchRequest(PICTO_SEARCH_MULTI_TAG, GET_MULTIPLE_PICTOGRAMS);
 
-            // Sends the intent
-            startActivityForResult(request, GET_MULTIPLE_PICTOGRAMS);
         } catch (Exception e) {
             Toast.makeText(this, String.format(getString(R.string.could_not_open_pictosearch), getString(R.string.pictosearch)), Toast.LENGTH_SHORT).show();
         }
@@ -863,27 +846,97 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      *
      * @param view
      */
-    public void onRemoveButtonClick(View view) {
+    public void onRemoveButtonClick(final View view) {
 
         // If there are any pictograms selected
         if (selectedPictogramsIdsInFragment.size() > 0) {
             // If the category has any profiles added ask who wants the change
-            if (getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
+            if (getProfileWithCategoryList(getSelectedCategory()).size() > 0) {
 
                 // Get a list of profiles who has the category and a boolean sat to true
-                List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
+                List<Pair<Profile, Boolean>> pairList = getProfileWithCategoryList(getSelectedCategory());
                 GirafProfileSelectorDialog removePictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, getString(R.string.remove_pictograms_from_category_dialog_description), REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG);
                 removePictoGramDialog.show(getSupportFragmentManager(), "" + REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG);
+
             } else {
-                GirafConfirmDialog confirmDelete = GirafConfirmDialog.newInstance("Fjern?", "Vil du fjerne disse " +  selectedPictogramsIdsInFragment.size() + " piktogram(mer)?",CONFIRM_PICTOGRAM_DELETION_METHOD_ID);
-                confirmDelete.show(getSupportFragmentManager(),"" + CONFIRM_PICTOGRAM_DELETION_METHOD_ID);
+                GirafConfirmDialog confirmDelete = GirafConfirmDialog.newInstance("Fjern?", "Vil du fjerne disse " + selectedPictogramsIdsInFragment.size() + " piktogram(mer)?", CONFIRM_PICTOGRAM_DELETION_METHOD_ID);
+                confirmDelete.show(getSupportFragmentManager(), "" + CONFIRM_PICTOGRAM_DELETION_METHOD_ID);
 
             }
         } else {
             Toast.makeText(this, getString(R.string.no_pictograms_selected), Toast.LENGTH_SHORT).show();
         }
+    }
 
 
+    public Category getSelectedCategory() {
+        return selectedCategoryAndViewItem.getCategory();
+    }
+
+    /**
+     * Finds a list of profiles status if the boolean is true the profile has the category else false
+     *
+     * @param category the category of which a status is wanted
+     * @return a list of profiles and a boolean set to the status of the profile having the category
+     */
+    public List<Pair<Profile, Boolean>> getProfileStatusListFromCategory(final Category category) {
+
+        final List<Pair<Profile, Boolean>> profileBooleanList = new ArrayList<Pair<Profile, Boolean>>();
+
+        // Run through all categories and find the wanted one
+        for (Pair<Category, Pair<Profile, Boolean>> profileStatusPair : profileCategoryStatusList) {
+
+            // If it is the correct category copy the profile boolean pair to the list
+            if (profileStatusPair.first == category) {
+                profileBooleanList.add(profileStatusPair.second);
+            }
+        }
+
+        return profileBooleanList;
+    }
+
+    /**
+     * Finds a list of profiles who have this category and the boolean is all true
+     *
+     * @param category the category of which a list of associated profiles is wanted
+     * @return a list of profiles who has the category along with a boolean sat to true
+     */
+    public List<Pair<Profile, Boolean>> getProfileWithCategoryList(final Category category) {
+
+        // Get the list of total status for a category
+        final List<Pair<Profile, Boolean>> oldProfileBooleanList = getProfileStatusListFromCategory(category);
+
+        // Create a list to be returned
+        final List<Pair<Profile, Boolean>> newProfileBooleanList = new ArrayList<Pair<Profile, Boolean>>();
+
+        for (Pair<Profile, Boolean> profileBooleanPair : oldProfileBooleanList) {
+            // If it the profile status was true in the old list add it to this list
+            if (profileBooleanPair.second == true) {
+                newProfileBooleanList.add(profileBooleanPair);
+            }
+        }
+
+        return newProfileBooleanList;
+    }
+
+    private void makePictosearchRequest(final String pictosearchPurposeTag, final int pictosearchRequestCode) {
+
+        final Intent request = new Intent(); // A intent request
+
+        // Sets properties on the intent
+        request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
+        request.putExtra(PICTO_SEARCH_PURPOSE_TAG, pictosearchPurposeTag);
+
+        if (childProfile != null) {
+            request.putExtra(getString(R.string.current_child_id), childProfile.getId());
+        } else {
+            request.putExtra(getString(R.string.current_child_id), getResources().getInteger(R.integer.no_child_selected_id));
+        }
+
+        request.putExtra(getString(R.string.current_guardian_id), guardianProfile.getId());
+
+        // Sends the intent
+        startActivityForResult(request, pictosearchRequestCode);
     }
 
     /*
@@ -894,9 +947,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      * Will be called whenever a custom dialog box requests content (ie when settings button is pressed)
      */
     @Override
-    public void editCustomView(ViewGroup viewGroup, int i) {
+    public void editCustomView(final ViewGroup viewGroup, final int i) {
+
         if (i == EDIT_CATEGORY_DIALOG) {// Finds the views
-            GirafPictogramItemView girafPictogram = (GirafPictogramItemView) viewGroup.findViewById(R.id.editable_pictogram_view);
+
+            final GirafPictogramItemView girafPictogram = (GirafPictogramItemView) viewGroup.findViewById(R.id.editable_pictogram_view);
             categoryTitle = (EditText) viewGroup.findViewById(R.id.category_edit_title);
 
             // If PictoSearch returned a pictogram, update the view. Otherwise set it to the regular pictogram
@@ -926,9 +981,10 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
      * Called whenever an item in the category list is clicked/selected
      */
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
         // Check if there is a previously selected view
         if (selectedCategoryAndViewItem != null) {
+
             // Set the content of the frame layout to the default fragment
             getSupportFragmentManager().popBackStack();
 
@@ -1006,13 +1062,15 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                     // Check if there was returned any pictogram ids
                     if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
                         lastAddedPictogramsIds.clear();
-                        // TODO pictosearch should use longs instead of integers
-                        for (long i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
+
+                        final long[] pictosearchIds = extras.getLongArray(PICTO_SEARCH_IDS_TAG);
+
+                        for (long i : pictosearchIds) {
                             lastAddedPictogramsIds.add(i);
                         }
 
                         // If there were returned more than one pictogram tell the user that the first is used
-                        if (lastAddedPictogramsIds.size() < 1) {
+                        if (lastAddedPictogramsIds.isEmpty()) {
                             Toast.makeText(this, getString(R.string.no_pictogram_selected), Toast.LENGTH_LONG).show();
                         } else {
                             if (lastAddedPictogramsIds.size() > 1) {
@@ -1031,30 +1089,30 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
                 // Make sure the request was successful
                 if (resultCode == RESULT_OK) {
-                    Bundle extras = data.getExtras(); // Get the data from the intent
+
+                    final Bundle extras = data.getExtras(); // Get the data from the intent
 
                     // Check if there was returned any pictogram ids
                     if (data.hasExtra(PICTO_SEARCH_IDS_TAG)) {
 
-                        // TODO pictosearch should use longs instead of integers
                         lastAddedPictogramsIds.clear();
-                        for (long i : extras.getIntArray(PICTO_SEARCH_IDS_TAG)) {
+                        for (long i : extras.getLongArray(PICTO_SEARCH_IDS_TAG)) {
                             lastAddedPictogramsIds.add(i);
                         }
 
                         // If no pictograms was returned tell the user
-                        if (lastAddedPictogramsIds.size() < 1) {
+                        if (lastAddedPictogramsIds.isEmpty()) {
                             Toast.makeText(this, this.getString(R.string.no_pictograms_selected), Toast.LENGTH_SHORT).show();
                         } else {
                             // If the category has any profiles added ask who wants the change
-                            if (getProrileWithCategoryList(getSelectedCategory()).size() > 0) {
+                            if (getProfileWithCategoryList(getSelectedCategory()).size() > 0) {
 
                                 // Get a list of profiles who has the category and a boolean sat to true
-                                List<Pair<Profile, Boolean>> pairList = getProrileWithCategoryList(getSelectedCategory());
+                                List<Pair<Profile, Boolean>> pairList = getProfileWithCategoryList(getSelectedCategory());
                                 GirafProfileSelectorDialog addPictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, "Hvilke brugere skal have de valgt piktogrammer tilføjet? Alle er valgt fra starten", ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
                                 addPictoGramDialog.show(getSupportFragmentManager(), "" + ADD_PICTOGRAMS_TO_CATEGORIES_DIALOG);
                             } else {
-                                new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()), UpdatePictogramsInCategory.ADD_PICTOGRAMS, lastAddedPictogramsIds).execute();
+                                new UpdatePictogramsInCategory(getProfileWithCategoryList(getSelectedCategory()), UpdatePictogramsInCategory.ADD_PICTOGRAMS, lastAddedPictogramsIds).execute();
                             }
                         }
 
@@ -1072,7 +1130,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     public void confirmDialog(final int methodID) {
         // Check if the confirmation is from the delete pictogram dialog
         if (methodID == CONFIRM_PICTOGRAM_DELETION_METHOD_ID) {
-            new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()), UpdatePictogramsInCategory.REMOVE_PICTOGRAMS, selectedPictogramsIdsInFragment).execute();
+            new UpdatePictogramsInCategory(getProfileWithCategoryList(getSelectedCategory()), UpdatePictogramsInCategory.REMOVE_PICTOGRAMS, selectedPictogramsIdsInFragment).execute();
         } else if (methodID == DELTE_CATEGORY_CONFIRM_DIALOG) {
             new DeleteCategories(getSelectedCategory()).execute();
         }
@@ -1117,15 +1175,15 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     }
 
     @Override
-    public void onProfileSelected(int i, Profile profile) {
-        if(i == CHANGE_USER_DIALOG) {
+    public void onProfileSelected(final int i, final Profile profile) {
+        if (i == CHANGE_USER_DIALOG) {
             // If it is a citizen profile
             if (getCurrentUser().getRole() == Profile.Roles.CHILD) {
-                CategoryActivity.this.finish();
+                finish();
             }
 
             // Start a new activity with the selected child
-            Intent intent = new Intent(CategoryActivity.this, CategoryActivity.class);
+            final Intent intent = new Intent(CategoryActivity.this, CategoryActivity.class);
             intent.putExtra(getString(R.string.current_child_id), profile.getId());
             intent.putExtra(getString(R.string.current_guardian_id), guardianProfile.getId());
             startActivity(intent);
@@ -1133,61 +1191,11 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     }
 
     @Override
-    public void pictogramsUpdated(List<Pictogram> selectedPictograms) {
+    public void pictogramsUpdated(final List<Pictogram> selectedPictograms) {
         selectedPictogramsIdsInFragment.clear();
         for (Pictogram pictogram : selectedPictograms) {
             selectedPictogramsIdsInFragment.add(pictogram.getId());
         }
 
-    }
-
-    public Category getSelectedCategory() {
-        return selectedCategoryAndViewItem.getCategory();
-    }
-
-    /**
-     * Finds a list of profiles status if the boolean is true the profile has the category else false
-     *
-     * @param category the category of which a status is wanted
-     * @return a list of profiles and a boolean set to the status of the profile having the category
-     */
-    public List<Pair<Profile, Boolean>> getProfileStatusListFromCategory(Category category) {
-
-        List<Pair<Profile, Boolean>> profileBooleanList = new ArrayList<Pair<Profile, Boolean>>();
-
-        // Run through all categories and find the wanted one
-        for (Pair<Category, Pair<Profile, Boolean>> profileStatusPair : profileCategoryStatusList) {
-
-            // If it is the correct category copy the profile boolean pair to the list
-            if (profileStatusPair.first == category) {
-                profileBooleanList.add(profileStatusPair.second);
-            }
-        }
-
-        return profileBooleanList;
-    }
-
-    /**
-     * Finds a list of profiles who have this category and the boolean is all true
-     *
-     * @param category the category of which a list of associated profiles is wanted
-     * @return a list of profiles who has the category along with a boolean sat to true
-     */
-    public List<Pair<Profile, Boolean>> getProrileWithCategoryList(Category category) {
-
-        // Get the list of total status for a category
-        List<Pair<Profile, Boolean>> oldProfileBooleanList = getProfileStatusListFromCategory(category);
-
-        // Create a list to be returned
-        List<Pair<Profile, Boolean>> newProfileBooleanList = new ArrayList<Pair<Profile, Boolean>>();
-
-        for (Pair<Profile, Boolean> profileBooleanPair : oldProfileBooleanList) {
-            // If it the profile status was true in the old list add it to this list
-            if (profileBooleanPair.second == true) {
-                newProfileBooleanList.add(profileBooleanPair);
-            }
-        }
-
-        return newProfileBooleanList;
     }
 }
