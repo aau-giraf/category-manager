@@ -875,7 +875,9 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 GirafProfileSelectorDialog removePictoGramDialog = GirafProfileSelectorDialog.newInstance(pairList, true, getString(R.string.remove_pictograms_from_category_dialog_description), REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG);
                 removePictoGramDialog.show(getSupportFragmentManager(), "" + REMOVE_PICTOGRAMS_FROM_CATEGORIES_DIALOG);
             } else {
-                new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()), UpdatePictogramsInCategory.REMOVE_PICTOGRAMS, selectedPictogramsIdsInFragment).execute();
+                GirafConfirmDialog confirmDelete = GirafConfirmDialog.newInstance("Fjern?", "Vil du fjerne disse " +  selectedPictogramsIdsInFragment.size() + " piktogram(mer)?",CONFIRM_PICTOGRAM_DELETION_METHOD_ID);
+                confirmDelete.show(getSupportFragmentManager(),"" + CONFIRM_PICTOGRAM_DELETION_METHOD_ID);
+
             }
         } else {
             Toast.makeText(this, getString(R.string.no_pictograms_selected), Toast.LENGTH_SHORT).show();
@@ -1070,8 +1072,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     public void confirmDialog(final int methodID) {
         // Check if the confirmation is from the delete pictogram dialog
         if (methodID == CONFIRM_PICTOGRAM_DELETION_METHOD_ID) {
-            final CategoryDetailFragment categoryDetailFragment = (CategoryDetailFragment) getSupportFragmentManager().findFragmentById(R.id.categorytool_framelayout);
-            categoryDetailFragment.confirmDialog(methodID);
+            new UpdatePictogramsInCategory(getProrileWithCategoryList(getSelectedCategory()), UpdatePictogramsInCategory.REMOVE_PICTOGRAMS, selectedPictogramsIdsInFragment).execute();
         } else if (methodID == DELTE_CATEGORY_CONFIRM_DIALOG) {
             new DeleteCategories(getSelectedCategory()).execute();
         }
