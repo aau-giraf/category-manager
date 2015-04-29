@@ -3,6 +3,7 @@ package dk.aau.cs.giraf.categorymanager;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -721,7 +722,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         // Check if there is a previously selected view and if there is no popup
         if (selectedCategoryAndViewItem != null && getSupportFragmentManager().findFragmentByTag(CATEGORY_SETTINGS_TAG) == null) {
             // Set the selected category to "null" and set background to in-active
-            selectedCategoryAndViewItem.getView().setBackgroundColor(this.getResources().getColor(R.color.giraf_page_indicator_inactive));
+            selectedCategoryAndViewItem.getView().setBackgroundColor(Color.TRANSPARENT);
             selectedCategoryAndViewItem = null;
         }
 
