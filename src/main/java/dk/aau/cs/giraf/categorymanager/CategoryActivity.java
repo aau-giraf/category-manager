@@ -97,10 +97,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     private List<Long> lastAddedPictogramsIds = new ArrayList<Long>();
     private List<Long> selectedPictogramsIdsInFragment = new ArrayList<Long>();
 
-    // Reference to category detail fragment
-    //private CategoryDetailFragment categoryDetailFragment;
-
-
     /**
      * Used to load categories into the category container (left side)
      */
@@ -109,7 +105,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         @Override
         protected List<Category> doInBackground(Void... params) {
             return helper.categoryHelper.getCategoriesByProfileId(getCurrentUser().getId());
-
         }
 
         @Override
@@ -145,7 +140,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             for (Category guardianCategory : categoryList) {
 
                 // Find the children that the guardian is responsible for. Notice that getCurrentUser will always return a guardian
-                List<Profile> profiles = helper.profilesHelper.getChildrenByGuardian(getCurrentUser());
+                final List<Profile> profiles = helper.profilesHelper.getChildrenByGuardian(getCurrentUser());
 
                 // Run through all the profiles and check if the user "has" the category
                 boolean citizenHasCategory = false;
@@ -199,7 +194,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         @Override
         protected Void doInBackground(Void... params) {
             // Find the selected category to be copied
-            Category selectedCategory = getSelectedCategory();
+            final Category selectedCategory = getSelectedCategory();
 
             // Run through the list and modify the children's categories dependently
             for (Pair<Profile, Boolean> profileBooleanPair : checkedProfileList) {
@@ -207,7 +202,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 final boolean checkedStatus = profileBooleanPair.second;
 
                 // Check if the citizen already have a copy of this category
-                List<Category> categoriesByProfileId = helper.categoryHelper.getCategoriesByProfileId(citizen.getId());
+                final List<Category> categoriesByProfileId = helper.categoryHelper.getCategoriesByProfileId(citizen.getId());
 
                 // Boolean and category reference used to indicate weather or not the citizen already has the category
                 boolean categoryAlreadyCopied = false;
@@ -230,7 +225,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                 // Check if the citizen already has the category, but is not supposed to have it
                 else if (categoryAlreadyCopied && !checkedStatus) {
                     // Find all pictograms that should be removed from the citizen's category
-                    List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(citizenCategory);
+                    final List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(citizenCategory);
 
                     // Remove all relations between the above pictograms and the citizen's category
                     for (Pictogram pictogram : pictograms) {
@@ -245,14 +240,14 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                     List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
 
                     // Create a copy of the selected category (this will be "given" to the citizen)
-                    Category newCategory = new Category();
+                    final Category newCategory = new Category();
                     newCategory.setName(selectedCategory.getName());
                     newCategory.setColour(selectedCategory.getColour());
                     newCategory.setImage(selectedCategory.getImage());
                     newCategory.setSuperCategoryId(selectedCategory.getId());
 
                     // Add the category and join-table entry
-                    long insertedCategoryIdentifier = helper.categoryHelper.insert(newCategory);
+                    final long insertedCategoryIdentifier = helper.categoryHelper.insert(newCategory);
 
                     // Insert the same pictograms to the new category
                     for (Pictogram pictogram : pictograms) {
@@ -276,8 +271,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
     }
 
-    ;
-
     /**
      * Class to process the deleting and adding of new categories
      */
@@ -285,8 +278,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         private static final String UPDATING_CATEGORIES_WAITING_DIALOG = "UPDATING_CATEGORIES_WAITING_DIALOG";
         private GirafWaitingDialog waitingDialog;
-        private Category oldCategory;
-        private Category newCategory;
+        private final Category oldCategory;
+        private final Category newCategory;
 
         public UpdateCategories(Category oldCategory, Category newCategory) {
             this.oldCategory = oldCategory;
@@ -334,8 +327,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
     }
 
-    ;
-
     /**
      * Class to process the deleting and adding of new categories
      */
@@ -359,7 +350,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         @Override
         protected Void doInBackground(Void... params) {
-            List<Category> citizenCategories = helper.categoryHelper.getSubcategoriesByCategory(deletionCategory);
+            final List<Category> citizenCategories = helper.categoryHelper.getSubcategoriesByCategory(deletionCategory);
 
             // Remove the pictograms of the main category
             for (Pictogram pictogram : helper.pictogramHelper.getPictogramsByCategory(deletionCategory)) {
@@ -398,8 +389,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             waitingDialog.dismiss();
         }
     }
-
-    ;
 
     /**
      * Class to process the deleting and adding of new categories
@@ -636,9 +625,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         // Check if we are aware of the current guardian profile
         if (getCurrentUser() != null) {
 
-
             // Add the change-user button to the top-bar
-            GirafButton changeUserGirafButton = new GirafButton(this, this.getResources().getDrawable(R.drawable.icon_change_user));
+            final GirafButton changeUserGirafButton = new GirafButton(this, this.getResources().getDrawable(R.drawable.icon_change_user));
 
             // Method to use whenever the change user-button is pressed
             changeUserGirafButton.setOnClickListener(new View.OnClickListener() {
@@ -653,7 +641,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             });
 
             addGirafButtonToActionBar(changeUserGirafButton, GirafActivity.LEFT);
-
         }
     }
     /**/
@@ -755,9 +742,8 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     public void onDeleteCategoryClicked(final View view) {
 
         // TODO Insert strings to strings.xml
-
-        int subCategoryCount = getProfileWithCategoryList(getSelectedCategory()).size();
-        String deleteDescription = "Vil du slette kategorien " + getSelectedCategory().getName() + "?";
+        final int subCategoryCount = getProfileWithCategoryList(getSelectedCategory()).size();
+        String deleteDescription = getString(R.string.on_delete_category_clicked_deletion_confirmation) + getSelectedCategory().getName() + "?";
 
         if (subCategoryCount > 0) {
             deleteDescription = deleteDescription + " Der er " + subCategoryCount + " borgere som mister denne kategori.";
@@ -791,7 +777,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         new UpdateCategories(oldCategory, newCategory).execute();
         changedText = null; // Reset the changed text so that next edit wont have this text
         editDialog.dismiss();
-
     }
 
     /**
@@ -824,7 +809,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
         // Sho the dialog
         editDialog.show(getSupportFragmentManager(), CATEGORY_SETTINGS_TAG);
-
     }
 
     /**
@@ -931,7 +915,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         if (childProfile != null) {
             request.putExtra(getString(R.string.current_child_id), childProfile.getId());
         } else {
-            request.putExtra(getString(R.string.current_child_id), getResources().getInteger(R.integer.no_child_selected_id));
+            request.putExtra(getString(R.string.current_child_id), (long) getResources().getInteger(R.integer.no_child_selected_id));
         }
 
         request.putExtra(getString(R.string.current_guardian_id), guardianProfile.getId());
