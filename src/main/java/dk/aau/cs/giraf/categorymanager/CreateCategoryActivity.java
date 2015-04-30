@@ -18,13 +18,13 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
-import dk.aau.cs.giraf.gui.GirafButton;
-import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 import dk.aau.cs.giraf.dblib.Helper;
 import dk.aau.cs.giraf.dblib.models.Category;
 import dk.aau.cs.giraf.dblib.models.Pictogram;
 import dk.aau.cs.giraf.dblib.models.Profile;
 import dk.aau.cs.giraf.dblib.models.ProfileCategory;
+import dk.aau.cs.giraf.gui.GirafButton;
+import dk.aau.cs.giraf.gui.GirafPictogramItemView;
 
 
 public class CreateCategoryActivity extends GirafActivity implements ShowcaseManager.ShowcaseCapable {
@@ -143,6 +143,9 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
             // Sets properties on the intent
             request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
             request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_SINGLE_TAG);
+
+            request.putExtra(getString(R.string.current_child_id), (long) getResources().getInteger(R.integer.no_child_selected_id));
+            request.putExtra(getString(R.string.current_guardian_id), guardianProfile.getId());
 
             // Sends the intent
             startActivityForResult(request, GET_SINGLE_PICTOGRAM);
