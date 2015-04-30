@@ -25,14 +25,14 @@ import dk.aau.cs.giraf.categorymanager.CategoryActivity;
 import dk.aau.cs.giraf.categorymanager.PictogramAdapter;
 import dk.aau.cs.giraf.categorymanager.R;
 import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.dblib.Helper;
+import dk.aau.cs.giraf.dblib.models.Category;
+import dk.aau.cs.giraf.dblib.models.Pictogram;
 import dk.aau.cs.giraf.dblib.models.Profile;
 import dk.aau.cs.giraf.gui.GirafButton;
 import dk.aau.cs.giraf.gui.GirafConfirmDialog;
 import dk.aau.cs.giraf.gui.GirafNotifyDialog;
 import dk.aau.cs.giraf.gui.GirafPictogramItemView;
-import dk.aau.cs.giraf.dblib.Helper;
-import dk.aau.cs.giraf.dblib.models.Category;
-import dk.aau.cs.giraf.dblib.models.Pictogram;
 import dk.aau.cs.giraf.utilities.GirafScalingUtilities;
 
 /**
@@ -76,10 +76,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
      */
     private ShowcaseManager showcaseManager;
     private boolean isFirstRun;
-
-
     private boolean isChildCategory;
-
 
     OnSelectedPictogramsUpdateListener onSelectedPictogramsUpdateListener;
     CategoryActivity categoryActivity;
@@ -199,8 +196,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         // Check if the activity using the fragment implements the needed interface
         try {
             onSelectedPictogramsUpdateListener = (OnSelectedPictogramsUpdateListener) activity;
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnSelectedPictogramsUpdateListener interface");
         }
 
@@ -217,6 +213,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
         selectedPictograms = new ArrayList<Pictogram>();
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -322,9 +319,10 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         super.onPause();
 
         synchronized (CategoryDetailFragment.this) {
-            if (globalLayoutListener != null)
+            if (globalLayoutListener != null) {
                 getView().getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
-            globalLayoutListener = null;
+                globalLayoutListener = null;
+            }
         }
 
         if (showcaseManager != null) {
@@ -366,11 +364,9 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         }
     }
 
-    public synchronized void loadPictograms()
-    {
+    public synchronized void loadPictograms() {
 
-        if(loadPictogramTask != null)
-        {
+        if (loadPictogramTask != null) {
             loadPictogramTask.cancel(true);
         }
 
@@ -408,7 +404,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         showcaseManager = new ShowcaseManager();
 
 
-        if(categoryActivity.getCurrentUser().getRole() != Profile.Roles.CHILD) {
+        if (categoryActivity.getCurrentUser().getRole() != Profile.Roles.CHILD) {
             // Add showcase for categorySettingsButton
             showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
                 @Override

@@ -138,7 +138,6 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
 
         final ListView categoryListView = (ListView) getActivity().findViewById(R.id.giraf_sidebar_container);
 
-
         // Targets for the Showcase
         final ViewTarget createCategoryTarget = new ViewTarget(R.id.category_create_button, getActivity(), 1.5f);
         final ViewTarget sideBarEmptyViewTarget = new ViewTarget(categoryListView.getEmptyView(), 1.0f);

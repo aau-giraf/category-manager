@@ -83,6 +83,9 @@ public class ShowcaseView extends RelativeLayout
     // Current target
     private Target currentTarget;
 
+    // GlobalLayoutListener
+    private UpdateOnGlobalLayout updateOnGlobalLayout;
+
     protected ShowcaseView(Context context, boolean newStyle) {
         this(context, null, R.styleable.CustomTheme_showcaseViewStyle, newStyle);
     }
@@ -97,7 +100,6 @@ public class ShowcaseView extends RelativeLayout
 
         apiUtils.setFitsSystemWindowsCompat(this);
         getViewTreeObserver().addOnPreDrawListener(new CalculateTextOnPreDraw());
-        getViewTreeObserver().addOnGlobalLayoutListener(new UpdateOnGlobalLayout());
 
         // Get the attributes for the ShowcaseView
         final TypedArray styled = context.getTheme()
@@ -200,7 +202,6 @@ public class ShowcaseView extends RelativeLayout
             if (bitmapBuffer != null)
                 bitmapBuffer.recycle();
             bitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-
         }
     }
 
@@ -306,6 +307,8 @@ public class ShowcaseView extends RelativeLayout
         // If the type is set to one-shot, store that it has shot
         shotStateStore.storeShot();
         mEventListener.onShowcaseViewHide(this);
+        getViewTreeObserver().removeGlobalOnLayoutListener(updateOnGlobalLayout);
+        updateOnGlobalLayout = null;
         fadeOutShowcase();
     }
 
@@ -331,6 +334,13 @@ public class ShowcaseView extends RelativeLayout
     public void show() {
         isShowing = true;
         mEventListener.onShowcaseViewShow(this);
+
+        if (updateOnGlobalLayout != null) {
+            getViewTreeObserver().removeGlobalOnLayoutListener(updateOnGlobalLayout);
+            updateOnGlobalLayout = null;
+        }
+
+        getViewTreeObserver().addOnGlobalLayoutListener(updateOnGlobalLayout = new UpdateOnGlobalLayout());
         fadeInShowcase();
     }
 
