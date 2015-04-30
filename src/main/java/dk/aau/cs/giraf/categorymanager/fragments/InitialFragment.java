@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -16,6 +17,7 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import dk.aau.cs.giraf.categorymanager.R;
 import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.utilities.GirafScalingUtilities;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -134,8 +136,13 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
     @Override
     public synchronized void showShowcase() {
 
+        final ListView categoryListView = (ListView) getActivity().findViewById(R.id.giraf_sidebar_container);
+
+
         // Targets for the Showcase
         final ViewTarget createCategoryTarget = new ViewTarget(R.id.category_create_button, getActivity(), 1.5f);
+        final ViewTarget sideBarEmptyViewTarget = new ViewTarget(categoryListView.getEmptyView(), 1.0f);
+        final ViewTarget sideBarFirstCategoryViewTarget = new ViewTarget(categoryListView.getChildAt(categoryListView.getFirstVisiblePosition()), 1.0f);
 
         // Create a relative location for the next button
         final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -160,6 +167,28 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
                 showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
                 showcaseView.setButtonPosition(lps);
                 showcaseView.setTextPostion(textX, textY);
+            }
+        });
+
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+
+                if (categoryListView.getCount() == 0) {
+                    showcaseView.setShowcase(sideBarEmptyViewTarget, true);
+                    showcaseView.setContentTitle("Kategorier");
+                    showcaseView.setContentText("Når du har oprettet kategorier kan de ses her");
+                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                    showcaseView.setButtonPosition(lps);
+                    showcaseView.setTextPostion(textX + (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 14), textY);
+                } else {
+                    showcaseView.setShowcase(sideBarFirstCategoryViewTarget, true);
+                    showcaseView.setContentTitle("Kategorier");
+                    showcaseView.setContentText("Tryk på en kategori for at se dennes indhold");
+                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                    showcaseView.setButtonPosition(lps);
+                    showcaseView.setTextPostion(textX, textY);
+                }
             }
         });
 

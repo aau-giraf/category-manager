@@ -688,11 +688,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         }
 
         fm.beginTransaction().replace(frameLayoutResource, fragment).addToBackStack(null).commit();
-
-        /*
-        if (fragment instanceof CategoryDetailFragment) {
-            categoryDetailFragment = (CategoryDetailFragment) fragment;
-        }*/
     }
 
     /*

@@ -8,13 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import dk.aau.cs.giraf.categorymanager.R;
 import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
 import dk.aau.cs.giraf.dblib.models.Profile;
+import dk.aau.cs.giraf.utilities.GirafScalingUtilities;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -33,7 +36,6 @@ public class InitialFragmentSpecificUser extends Fragment implements ShowcaseMan
      * Used to showcase views
      */
     private ShowcaseManager showcaseManager;
-    private boolean isFirstRun;
 
     /**
      * Use this factory method to create a new instance of
@@ -71,7 +73,7 @@ public class InitialFragmentSpecificUser extends Fragment implements ShowcaseMan
         View initialFragmentSpecificUser = inflater.inflate(R.layout.fragment_initial_specific_user, container, false);
 
         // Check if user is signed in (aka the fragment was created correctly)
-        if(profile != null) {
+        if (profile != null) {
             // Find the image associated with the profile
             Bitmap profileImage = profile.getImage();
 
@@ -79,11 +81,10 @@ public class InitialFragmentSpecificUser extends Fragment implements ShowcaseMan
             ImageView profilePicture = (ImageView) initialFragmentSpecificUser.findViewById(R.id.profile_picture);
 
             // Check if the profile have a profile picture
-            if(profileImage != null) {
+            if (profileImage != null) {
                 // Update the profile picture
                 profilePicture.setImageBitmap(profileImage);
-            }
-            else {
+            } else {
                 // Set default image
                 profilePicture.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.icon_default_citizen));
             }
@@ -110,8 +111,56 @@ public class InitialFragmentSpecificUser extends Fragment implements ShowcaseMan
 
     @Override
     public void showShowcase() {
-        // TODO Add showcases here if any
-        Toast.makeText(getActivity(),"Hjælp er ikke tilgængelig",Toast.LENGTH_SHORT).show();
+
+        final ListView categoryListView = (ListView) getActivity().findViewById(R.id.giraf_sidebar_container);
+
+        // Targets for the Showcase
+        final ViewTarget sideBarEmptyViewTarget = new ViewTarget(categoryListView.getEmptyView(), 1.0f);
+        final ViewTarget sideBarFirstCategoryViewTarget = new ViewTarget(categoryListView.getChildAt(categoryListView.getFirstVisiblePosition()), 1.0f);
+
+        // Create a relative location for the next button
+        final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        final int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        // Calculate position for the help text
+        final int textX = getActivity().findViewById(R.id.category_sidebar).getLayoutParams().width + margin * 2;
+        final int textY = getResources().getDisplayMetrics().heightPixels / 2 + margin;
+
+        showcaseManager = new ShowcaseManager();
+
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+
+                if (categoryListView.getCount() == 0) {
+                    showcaseView.setShowcase(sideBarEmptyViewTarget, true);
+                    showcaseView.setContentTitle("Kategorier");
+                    showcaseView.setContentText("Når du har oprettet kategorier kan de ses her");
+                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                    showcaseView.setButtonPosition(lps);
+                    showcaseView.setTextPostion(textX + (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 14), textY);
+                } else {
+                    showcaseView.setShowcase(sideBarFirstCategoryViewTarget, true);
+                    showcaseView.setContentTitle("Kategorier");
+                    showcaseView.setContentText("Tryk på en kategori for at se dennes indhold");
+                    showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                    showcaseView.setButtonPosition(lps);
+                    showcaseView.setTextPostion(textX, textY);
+                }
+            }
+        });
+
+        showcaseManager.setOnDoneListener(new ShowcaseManager.OnDoneListener() {
+            @Override
+            public void onDone(ShowcaseView showcaseView) {
+                showcaseManager = null;
+            }
+        });
+
+        showcaseManager.start(getActivity());
     }
 
     @Override
