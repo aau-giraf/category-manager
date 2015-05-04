@@ -18,6 +18,7 @@
         android:icon="@drawable/category_tool"
         android:label="@string/categorymanager"
         android:theme="@style/GirafTheme"
+        android:largeHeap="true"
         tools:replace="label, icon">
 
         <activity
