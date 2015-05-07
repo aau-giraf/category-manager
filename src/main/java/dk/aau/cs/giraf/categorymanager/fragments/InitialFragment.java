@@ -188,6 +188,11 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
                     showcaseView.setButtonPosition(lps);
                     showcaseView.setTextPostion(textX, textY);
                 }
+
+                if(!isFirstRun)
+                {
+                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
+                }
             }
         });
 
