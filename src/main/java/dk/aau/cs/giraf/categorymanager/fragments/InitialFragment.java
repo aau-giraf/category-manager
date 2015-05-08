@@ -12,11 +12,10 @@ import android.view.ViewTreeObserver;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
-
 import dk.aau.cs.giraf.categorymanager.R;
-import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.showcaseview.ShowcaseManager;
+import dk.aau.cs.giraf.showcaseview.ShowcaseView;
+import dk.aau.cs.giraf.showcaseview.targets.ViewTarget;
 import dk.aau.cs.giraf.utilities.GirafScalingUtilities;
 
 /**
@@ -141,7 +140,6 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
         // Targets for the Showcase
         final ViewTarget createCategoryTarget = new ViewTarget(R.id.category_create_button, getActivity(), 1.5f);
         final ViewTarget sideBarEmptyViewTarget = new ViewTarget(categoryListView.getEmptyView(), 1.0f);
-        final ViewTarget sideBarFirstCategoryViewTarget = new ViewTarget(categoryListView.getChildAt(categoryListView.getFirstVisiblePosition()), 1.0f);
 
         // Create a relative location for the next button
         final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -181,6 +179,7 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
                     showcaseView.setButtonPosition(lps);
                     showcaseView.setTextPostion(textX + (int) GirafScalingUtilities.convertDpToPixel(getActivity(), 14), textY);
                 } else {
+                    final ViewTarget sideBarFirstCategoryViewTarget = new ViewTarget(categoryListView.getChildAt(categoryListView.getFirstVisiblePosition()), 1.0f);
                     showcaseView.setShowcase(sideBarFirstCategoryViewTarget, true);
                     showcaseView.setContentTitle("Kategorier");
                     showcaseView.setContentText("Tryk på en kategori for at se dennes indhold");
@@ -189,8 +188,7 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
                     showcaseView.setTextPostion(textX, textY);
                 }
 
-                if(!isFirstRun)
-                {
+                if (!isFirstRun) {
                     showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
                 }
             }
