@@ -2,6 +2,5 @@
 <resources>
     <color name="transparent_color">#00000000</color>
     <color name="transparent_color2">#88000000</color>
-    <color name="showcase_button_color">#FFB52C</color>
-    <color name="showcase_overlay_color">#B00d1323</color>
+
 </resources>

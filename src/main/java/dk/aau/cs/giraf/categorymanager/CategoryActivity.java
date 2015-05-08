@@ -25,7 +25,7 @@ import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.categorymanager.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.categorymanager.fragments.InitialFragment;
 import dk.aau.cs.giraf.categorymanager.fragments.InitialFragmentSpecificUser;
-import dk.aau.cs.giraf.categorymanager.showcase.ShowcaseManager;
+import dk.aau.cs.giraf.showcaseview.ShowcaseManager;
 import dk.aau.cs.giraf.dblib.Helper;
 import dk.aau.cs.giraf.dblib.models.Category;
 import dk.aau.cs.giraf.dblib.models.Department;
