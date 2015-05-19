@@ -901,10 +901,9 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
     private void makePictosearchRequest(final String pictosearchPurposeTag, final int pictosearchRequestCode) {
 
-        final Intent request = new Intent(); // A intent request
+        final Intent request = new Intent(this, dk.aau.cs.giraf.pictosearch.PictoAdminMain.class); // A intent request
 
         // Sets properties on the intent
-        request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
         request.putExtra(PICTO_SEARCH_PURPOSE_TAG, pictosearchPurposeTag);
 
         if (childProfile != null) {

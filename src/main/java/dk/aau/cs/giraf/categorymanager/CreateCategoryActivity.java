@@ -136,12 +136,11 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
     }
 
     public void onIconClick(View view) {
-        Intent request = new Intent(); // A intent request
+        Intent request = new Intent(this, dk.aau.cs.giraf.pictosearch.PictoAdminMain.class); // A intent request
 
         // Try to send the intent
         try {
             // Sets properties on the intent
-            request.setComponent(new ComponentName("dk.aau.cs.giraf.pictosearch", "dk.aau.cs.giraf.pictosearch.PictoAdminMain"));
             request.putExtra(PICTO_SEARCH_PURPOSE_TAG, PICTO_SEARCH_SINGLE_TAG);
 
             request.putExtra(getString(R.string.current_child_id), (long) getResources().getInteger(R.integer.no_child_selected_id));
