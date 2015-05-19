@@ -937,10 +937,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
             if (changedPictogram != null) {
                 girafPictogram.setImageModel(changedPictogram);
             } else {
-                Pictogram temp = new Pictogram();
-                temp.setName(getSelectedCategory().getName());
-                temp.setImage(getSelectedCategory().getImage());
-                girafPictogram.setImageModel(temp);
+                girafPictogram.setImageModel(getSelectedCategory());
             }
 
             // Hide the title of the pictogram.
