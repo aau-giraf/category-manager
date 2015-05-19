@@ -295,6 +295,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
         this.isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
 
         // If it is the first run display ShowcaseView
+        /*
         if (isFirstRun) {
             getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -312,6 +313,7 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
                 }
             });
         }
+        */
     }
 
     @Override

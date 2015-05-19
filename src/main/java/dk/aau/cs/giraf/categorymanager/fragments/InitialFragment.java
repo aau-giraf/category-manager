@@ -93,6 +93,7 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
         this.isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
 
         // If it is the first run display ShowcaseView
+        /*
         if (isFirstRun) {
             getView().getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -109,7 +110,7 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
                     }
                 }
             });
-        }
+        }*/
     }
 
     @Override

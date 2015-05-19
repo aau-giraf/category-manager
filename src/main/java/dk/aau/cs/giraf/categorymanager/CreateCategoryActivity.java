@@ -164,6 +164,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
         this.isFirstRun = prefs.getBoolean(IS_FIRST_RUN_KEY, true);
 
         // If it is the first run display ShowcaseView
+        /*
         if (isFirstRun) {
 
             final ViewGroup rootView = (ViewGroup) this.findViewById(android.R.id.content);
@@ -182,6 +183,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
                 }
             });
         }
+        */
     }
 
     /**
