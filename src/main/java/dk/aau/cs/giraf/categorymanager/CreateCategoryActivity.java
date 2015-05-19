@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import dk.aau.cs.giraf.dblib.controllers.ImageEntity;
 import dk.aau.cs.giraf.showcaseview.ShowcaseView;
 import dk.aau.cs.giraf.showcaseview.targets.ViewTarget;
 
@@ -82,8 +83,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
 
         // Create a "template" pictogram
         final Pictogram pictogramPlaceholder = new Pictogram();
-        pictogramPlaceholder.setImage(BitmapFactory.decodeResource(this.getResources(), R.drawable.icon_change_picto_nodpi));
-        iconView.setImageModel(pictogramPlaceholder);
+        iconView.setImageModel(pictogramPlaceholder, this.getResources().getDrawable(R.drawable.icon_change_picto_nodpi));
 
         // Set the default result (if something goes wrong or the user canceled the process)
         setResult(RESULT_CANCELED, returnIntent);
