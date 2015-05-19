@@ -82,10 +82,9 @@
         android:clipToPadding="false"
         android:columnWidth="120dp"
         android:gravity="center"
-        android:horizontalSpacing="30dp"
+        android:horizontalSpacing="20dp"
         android:numColumns="auto_fit"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
+        android:padding="20dp"
         android:stretchMode="columnWidth"
         android:verticalSpacing="20dp" />
 
