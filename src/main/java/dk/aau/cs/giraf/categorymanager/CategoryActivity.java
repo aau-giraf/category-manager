@@ -25,6 +25,7 @@ import dk.aau.cs.giraf.activity.GirafActivity;
 import dk.aau.cs.giraf.categorymanager.fragments.CategoryDetailFragment;
 import dk.aau.cs.giraf.categorymanager.fragments.InitialFragment;
 import dk.aau.cs.giraf.categorymanager.fragments.InitialFragmentSpecificUser;
+import dk.aau.cs.giraf.dblib.controllers.BaseImageControllerHelper;
 import dk.aau.cs.giraf.showcaseview.ShowcaseManager;
 import dk.aau.cs.giraf.dblib.Helper;
 import dk.aau.cs.giraf.dblib.models.Category;
@@ -239,15 +240,17 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
                     // Find the pictograms of the selected category to be copied
                     List<Pictogram> pictograms = helper.pictogramHelper.getPictogramsByCategory(selectedCategory);
 
+                    BaseImageControllerHelper h = new BaseImageControllerHelper(CategoryActivity.this);
+
                     // Create a copy of the selected category (this will be "given" to the citizen)
                     final Category newCategory = new Category();
                     newCategory.setName(selectedCategory.getName());
-                    newCategory.setColour(selectedCategory.getColour());
-                    newCategory.setImage(selectedCategory.getImage());
                     newCategory.setSuperCategoryId(selectedCategory.getId());
 
                     // Add the category and join-table entry
                     final long insertedCategoryIdentifier = helper.categoryHelper.insert(newCategory);
+                    Category createdCategoryFromDatabase = helper.categoryHelper.getById(insertedCategoryIdentifier);
+                    h.setImage(createdCategoryFromDatabase, h.getImage(selectedCategory));
 
                     // Insert the same pictograms to the new category
                     for (Pictogram pictogram : pictograms) {
@@ -298,13 +301,15 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         protected Void doInBackground(Void... params) {
             List<Category> citizenCategories = helper.categoryHelper.getSubcategoriesByCategory(oldCategory);
 
+            BaseImageControllerHelper h = new BaseImageControllerHelper(CategoryActivity.this);
+
             // Update the super category
             helper.categoryHelper.modify(newCategory);
 
             // Update the categories of the citizens
             for (Category citizenCategory : citizenCategories) {
                 citizenCategory.setName(newCategory.getName());
-                citizenCategory.setImage(newCategory.getImage());
+                h.setImage(citizenCategory, h.getImage(newCategory));
                 helper.categoryHelper.modify(citizenCategory);
             }
 
@@ -316,10 +321,12 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         protected void onPostExecute(Void m) {
             super.onPostExecute(m);
 
+            BaseImageControllerHelper h = new BaseImageControllerHelper(CategoryActivity.this);
+
             // If the category was from the categoryAdapter update the adapter
             if (getSelectedCategory().getId() == oldCategory.getId()) {
                 getSelectedCategory().setName(newCategory.getName());
-                getSelectedCategory().setImage(newCategory.getImage());
+                h.setImage(getSelectedCategory(), h.getImage(newCategory));
                 categoryAdapter.notifyDataSetChanged();
             }
 
@@ -762,11 +769,14 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
         newCategory.setId(getSelectedCategory().getId());
         newCategory.setName(categoryTitle.getText().toString());
 
+        BaseImageControllerHelper h = new BaseImageControllerHelper(this);
+
         // If an image was update use that otherwise use the old one
         if (changedPictogram != null) {
-            newCategory.setImage(changedPictogram.getImage());
+
+            h.setImage(newCategory, h.getImage(changedPictogram));
         } else {
-            newCategory.setImage(getSelectedCategory().getImage());
+            h.setImage(newCategory, h.getImage(getSelectedCategory()));
         }
 
         new UpdateCategories(oldCategory, newCategory).execute();

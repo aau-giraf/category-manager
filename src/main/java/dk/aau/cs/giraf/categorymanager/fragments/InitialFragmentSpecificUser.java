@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import dk.aau.cs.giraf.dblib.controllers.BaseImageControllerHelper;
 import dk.aau.cs.giraf.showcaseview.ShowcaseView;
 import dk.aau.cs.giraf.showcaseview.targets.ViewTarget;
 
@@ -71,11 +72,12 @@ public class InitialFragmentSpecificUser extends Fragment implements ShowcaseMan
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View initialFragmentSpecificUser = inflater.inflate(R.layout.fragment_initial_specific_user, container, false);
+        BaseImageControllerHelper h = new BaseImageControllerHelper(getActivity());
 
         // Check if user is signed in (aka the fragment was created correctly)
         if (profile != null) {
             // Find the image associated with the profile
-            Bitmap profileImage = profile.getImage();
+            Bitmap profileImage = h.getImage(profile);
 
             // Find the place to insert the image
             ImageView profilePicture = (ImageView) initialFragmentSpecificUser.findViewById(R.id.profile_picture);

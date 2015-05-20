@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import dk.aau.cs.giraf.dblib.controllers.BaseImageControllerHelper;
 import dk.aau.cs.giraf.dblib.controllers.ImageEntity;
 import dk.aau.cs.giraf.showcaseview.ShowcaseView;
 import dk.aau.cs.giraf.showcaseview.targets.ViewTarget;
@@ -64,6 +65,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
         setContentView(R.layout.activity_create_category);
 
         final GirafButton createButton = (GirafButton) findViewById(R.id.category_create_button);
+        final BaseImageControllerHelper h = new BaseImageControllerHelper(CreateCategoryActivity.this);
 
         // Get the extra information from when the activity was started (contains profile ids etc.)
         final Bundle extras = getIntent().getExtras();
@@ -100,15 +102,22 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
                     return;
                 }
 
-                final Category createdCategory = new Category(titleBox.getText().toString(), R.color.gBrowncolor, iconPictogram.getImage());
+                Category createdCategory = new Category();//titleBox.getText().toString(), R.color.gBrowncolor, h.getImage(iconPictogram));
+                createdCategory.setName(titleBox.getText().toString());
+
+
 
                 // Test if the category is already added
                 if (!helper.categoryHelper.getListOfObjects().contains(createdCategory)) {
                     // Add the category into database
-                    helper.categoryHelper.insert(createdCategory);
+                    long createdCategoryID = helper.categoryHelper.insert(createdCategory);
 
                     // Add relation between the created category and the guardian who created the category
                     helper.profileCategoryController.insert(new ProfileCategory(guardianProfile.getId(), createdCategory.getId()));
+
+                    // Find the category again in the database and set its image
+                    Category createdCategoryFromDatabase = helper.categoryHelper.getById(createdCategoryID);
+                    h.setImage(createdCategoryFromDatabase, h.getImage(iconPictogram));
                 }
 
                 // Add the ID to the result. This can later be used to identify what category was created
