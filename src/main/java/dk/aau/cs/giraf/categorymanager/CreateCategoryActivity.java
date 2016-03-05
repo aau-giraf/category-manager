@@ -12,7 +12,7 @@ import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
+import com.google.analytics.tracking.android.EasyTracker;
 import dk.aau.cs.giraf.dblib.controllers.BaseImageControllerHelper;
 import dk.aau.cs.giraf.dblib.controllers.ImageEntity;
 import dk.aau.cs.giraf.showcaseview.ShowcaseView;
@@ -142,6 +142,19 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
         });
 
         addGirafButtonToActionBar(helpGirafButton, GirafActivity.RIGHT);
+    }
+
+    //Google analytics - start logging
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);  // Start logging
+    }
+    //Google analytics - Stop logging
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);  // stop logging
     }
 
     public void onIconClick(View view) {
