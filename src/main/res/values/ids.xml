@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="help_button" type="id"/>
+    <item name="changeuser_button" type="id"/>
 </resources>

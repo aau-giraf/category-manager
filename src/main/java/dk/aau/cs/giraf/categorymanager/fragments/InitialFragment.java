@@ -141,6 +141,7 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
         // Targets for the Showcase
         final ViewTarget createCategoryTarget = new ViewTarget(R.id.category_create_button, getActivity(), 1.5f);
         final ViewTarget sideBarEmptyViewTarget = new ViewTarget(categoryListView.getEmptyView(), 1.0f);
+        final ViewTarget changeUserTarget = new ViewTarget(getActivity().getActionBar().getCustomView().findViewById(R.id.changeuser_button), 1.5f);
 
         // Create a relative location for the next button
         final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -158,10 +159,21 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
         showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
             @Override
             public void configShowCaseView(final ShowcaseView showcaseView) {
-
                 showcaseView.setShowcase(createCategoryTarget, true);
                 showcaseView.setContentTitle(getString(R.string.create_category_button_showcase_help_titel_text));
                 showcaseView.setContentText(getString(R.string.create_category_button_showcase_help_content_text));
+                showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
+                showcaseView.setButtonPosition(lps);
+                showcaseView.setTextPostion(textX, textY);
+            }
+        });
+
+        showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
+            @Override
+            public void configShowCaseView(final ShowcaseView showcaseView) {
+                showcaseView.setShowcase(changeUserTarget, true);
+                showcaseView.setContentTitle(getString(R.string.change_user_button_showcase_help_titel_text));
+                showcaseView.setContentText(getString(R.string.change_user_button_showcase_help_content_text));
                 showcaseView.setStyle(R.style.GirafCustomShowcaseTheme);
                 showcaseView.setButtonPosition(lps);
                 showcaseView.setTextPostion(textX, textY);
@@ -194,22 +206,6 @@ public class InitialFragment extends Fragment implements ShowcaseManager.Showcas
                 }
             }
         });
-
-        if (isFirstRun) {
-            final ViewTarget helpButtonTarget = new ViewTarget(getActivity().getActionBar().getCustomView().findViewById(R.id.help_button), 1.5f);
-
-            showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
-                @Override
-                public void configShowCaseView(final ShowcaseView showcaseView) {
-                    showcaseView.setShowcase(helpButtonTarget, true);
-                    showcaseView.setContentTitle("Hjælpe knap");
-                    showcaseView.setContentText("Hvis du bliver i tvivl kan du altid få hjælp her");
-                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
-                    showcaseView.setButtonPosition(lps);
-                    showcaseView.setTextPostion(textX, textY);
-                }
-            });
-        }
 
         showcaseManager.setOnDoneListener(new ShowcaseManager.OnDoneListener() {
             @Override

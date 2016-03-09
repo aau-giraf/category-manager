@@ -268,7 +268,7 @@ public class CreateCategoryActivity extends GirafActivity implements ShowcaseMan
         lps.setMargins(margin, margin, margin, margin);
 
         // Calculate position for the help text
-        final int textX = this.findViewById(R.id.editable_pictogram_view).getLayoutParams().width + margin * 2;
+        final int textX = margin;
         final int textY = getResources().getDisplayMetrics().heightPixels / 2 + margin;
 
         showcaseManager = new ShowcaseManager();

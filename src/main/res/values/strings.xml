@@ -135,23 +135,25 @@
     <string name="administrate_citizen">Administrer borgere</string>
 
     <string name="pictogram_grid_pictogram_showcase_help_content_text">Her er dine piktogrammer</string>
-    <string name="pictogram_grid_empty_showcase_help_content_text">Her vil dine piktogrammer dukke up</string>
+    <string name="pictogram_grid_empty_showcase_help_content_text">Her vil dine piktogrammer fremvises</string>
     <string name="pictogram_grid_showcase_help_titel_text">Piktogrammer</string>
     <string name="add_pictogram_button_showcase_help_titel_text">Tilføj piktogrammer</string>
     <string name="add_pictogram_button_showcase_help_content_text">Tilføj piktogrammer til den\n nuværende kategori</string>
     <string name="delete_pictogram_button_showcase_help_titel_text">Fjern piktogrammer</string>
-    <string name="delete_pictogram_button_showcase_help_content_text">Vælg piktogrammer og tryk her for at fjerne dem fra kategorien</string>
+    <string name="delete_pictogram_button_showcase_help_content_text">Vælg piktogrammer og tryk her for\n at fjerne dem fra kategorien</string>
     <string name="pictogram_settings_button_showcase_help_titel_text">Indstillinger for kategori</string>
-    <string name="pictogram_settings_button_showcase_help_content_text">Indstil navn og piktogram ikon for den valgte kategori</string>
+    <string name="pictogram_settings_button_showcase_help_content_text">Indstil navn og piktogram ikon for den valgte kategori\nHer kan en kategori også slettes</string>
     <string name="copy_category_to_user_button_showcase_help_titel_text">Administrer borgere</string>
     <string name="copy_category_to_user_button_showcase_help_content_text">Vælg hvilke borgere der skal have en kopi af denne kategori</string>
     <string name="create_category_button_showcase_help_titel_text">Opret kategori</string>
     <string name="create_category_button_showcase_help_content_text">Klik her for at oprette en ny kategori</string>
     <string name="administrate_citizen_button_showcase_help_titel_text">Administrér borger</string>
     <string name="administrate_citizen_button_showcase_help_content_text">Administrér katagorier for en borger</string>
+    <string name="change_user_button_showcase_help_titel_text">Skift bruger</string>
+    <string name="change_user_button_showcase_help_content_text">Klik her for at skifte til anden bruger</string>
 
     <string name="create_category_pick_icon_showcase_help_title_text">Vælg piktogram</string>
-    <string name="create_category_pick_icon_showcase_help_content_text">Vælg et piktogram som ikon til kategorien</string>
+    <string name="create_category_pick_icon_showcase_help_content_text">Vælg et piktogram som ikon\n til kategorien</string>
     <string name="create_category_naming_showcase_help_title_text">Navngiv kategori</string>
     <string name="create_category_naming_showcase_help_content_text">Giv kategorien et navn</string>
 

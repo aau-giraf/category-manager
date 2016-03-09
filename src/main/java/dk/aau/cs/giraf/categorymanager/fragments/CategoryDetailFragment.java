@@ -493,14 +493,14 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
                 showcaseView.setContentTitle(getString(R.string.pictogram_grid_showcase_help_titel_text));
 
                 if (pictogramGrid.getCount() == 0) {
-                    final ViewTarget pictogramGridTarget = new ViewTarget(R.id.empty_gridview_text, getActivity(), 1.3f);
+                    final ViewTarget pictogramGridTarget = new ViewTarget(R.id.empty_gridview_text, getActivity(), 1.1f);
                     showcaseView.setShowcase(pictogramGridTarget, false);
 
                     showcaseView.setContentText(getString(R.string.pictogram_grid_empty_showcase_help_content_text));
 
                     // Calculate the position of the help text
-                    final int textXPosition = categoryDetailLayoutPositionOnScreen[0] + margin * 2;
-                    final int textYPosition = categoryDetailLayoutPositionOnScreen[1] + margin * 2;
+                    final int textXPosition = margin / 2;
+                    final int textYPosition = getResources().getDisplayMetrics().heightPixels / 2 + margin;
 
                     showcaseView.setTextPostion(textXPosition, textYPosition);
 
@@ -526,22 +526,6 @@ public class CategoryDetailFragment extends Fragment implements ShowcaseManager.
 
             }
         });
-
-        if (isFirstRun) {
-            final ViewTarget helpButtonTarget = new ViewTarget(getActivity().getActionBar().getCustomView().findViewById(R.id.help_button), 1.5f);
-
-            showcaseManager.addShowCase(new ShowcaseManager.Showcase() {
-                @Override
-                public void configShowCaseView(final ShowcaseView showcaseView) {
-                    showcaseView.setShowcase(helpButtonTarget, true);
-                    showcaseView.setContentTitle("Hjælpe knap");
-                    showcaseView.setContentText("Hvis du bliver i tvivl kan du altid få hjælp her");
-                    showcaseView.setStyle(R.style.GirafLastCustomShowcaseTheme);
-                    showcaseView.setButtonPosition(lps);
-                    showcaseView.setTextPostion(textX, textY);
-                }
-            });
-        }
 
         showcaseManager.setOnDoneListener(new ShowcaseManager.OnDoneListener() {
             @Override

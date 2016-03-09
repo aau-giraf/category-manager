@@ -27,6 +27,7 @@ import dk.aau.cs.giraf.categorymanager.fragments.InitialFragment;
 import dk.aau.cs.giraf.categorymanager.fragments.InitialFragmentSpecificUser;
 import dk.aau.cs.giraf.dblib.controllers.BaseImageControllerHelper;
 import dk.aau.cs.giraf.showcaseview.ShowcaseManager;
+
 import dk.aau.cs.giraf.dblib.Helper;
 import dk.aau.cs.giraf.dblib.models.Category;
 import dk.aau.cs.giraf.dblib.models.Department;
@@ -647,7 +648,7 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
             // Add the change-user button to the top-bar
             final GirafButton changeUserGirafButton = new GirafButton(this, this.getResources().getDrawable(R.drawable.icon_change_user));
-
+            changeUserGirafButton.setId(R.id.changeuser_button);
             // Method to use whenever the change user-button is pressed
             changeUserGirafButton.setOnClickListener(new View.OnClickListener() {
                 @Override
