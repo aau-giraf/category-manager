@@ -99,6 +99,19 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
     private List<Long> lastAddedPictogramsIds = new ArrayList<Long>();
     private List<Long> selectedPictogramsIdsInFragment = new ArrayList<Long>();
 
+    //Google analytics - start logging
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);  // Start logging
+    }
+    //Google analytics - Stop logging
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);  // stop logging
+    }
+
     /**
      * Used to load categories into the category container (left side)
      */
@@ -115,19 +128,6 @@ public class CategoryActivity extends GirafActivity implements AdapterView.OnIte
 
             // Set view when list is empty
             categoryContainer.setEmptyView(new ProgressBar(CategoryActivity.this));
-        }
-
-        //Google analytics - start logging
-        @Override
-        public void onStart() {
-            super.onStart();
-            EasyTracker.getInstance(this).activityStart(this);  // Start logging
-        }
-        //Google analytics - Stop logging
-        @Override
-        public void onStop() {
-            super.onStop();
-            EasyTracker.getInstance(this).activityStop(this);  // stop logging
         }
 
         protected void onPostExecute(final List<Category> result) {
